@@ -35,6 +35,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(815, 536);
+            this.IsMdiContainer = true;
             this.Name = "frmLogin";
             this.Text = "谷谷香门店Pos系统";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
