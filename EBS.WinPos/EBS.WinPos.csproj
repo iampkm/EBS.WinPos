@@ -119,10 +119,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="sqlite\posdata.db" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="sqlite\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\EBS.Infrastructure\EBS.Infrastructure.csproj">
       <Project>{07672811-e40d-4990-b96e-9c8d26b1e867}</Project>
@@ -144,6 +143,7 @@
     <Content Include="SQLite.Interop_X86.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="sqlite\db.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

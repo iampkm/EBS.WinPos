@@ -31,14 +31,14 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.btnSave = new System.Windows.Forms.Button();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.textBox2 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -84,6 +84,28 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(409, 403);
             this.panel2.TabIndex = 1;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label4.ForeColor = System.Drawing.Color.Red;
+            this.label4.Location = new System.Drawing.Point(87, 366);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(161, 28);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "按ESC 取消订单";
+            // 
+            // btnSave
+            // 
+            this.btnSave.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnSave.Location = new System.Drawing.Point(36, 238);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(321, 76);
+            this.btnSave.TabIndex = 2;
+            this.btnSave.Text = "结 算";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // textBox3
             // 
@@ -142,34 +164,13 @@
             this.label1.TabIndex = 0;
             this.label1.Text = "总金额：";
             // 
-            // btnSave
-            // 
-            this.btnSave.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSave.Location = new System.Drawing.Point(36, 238);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(321, 76);
-            this.btnSave.TabIndex = 2;
-            this.btnSave.Text = "结 算";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.ForeColor = System.Drawing.Color.Red;
-            this.label4.Location = new System.Drawing.Point(87, 366);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(161, 28);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "按ESC 取消订单";
-            // 
             // frmPay
             // 
             this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 403);
+            this.ControlBox = false;
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.KeyPreview = true;

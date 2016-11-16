@@ -77,6 +77,7 @@ namespace EBS.WinPos
                 list.Add(item);
             }
             this.dgvData.AutoGenerateColumns = false;
+            this.dgvData.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvData.DataSource = list;
         }
 

@@ -55,5 +55,10 @@ namespace EBS.WinPos.Service
 
             return watch.Elapsed.TotalSeconds;
         }
+
+        public void Create(SaleOrder model)
+        {
+
+        }
     }
 }

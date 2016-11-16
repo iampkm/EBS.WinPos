@@ -28,11 +28,11 @@ namespace EBS.WinPos
                 //ContextService.SetCurrentAccount(user);
                
                 //收银前台
-                frmPos posForm = new frmPos();
-                ContextService.AddFrom(posForm);
-                posForm.MdiParent = ContextService.ParentForm; 
-                posForm.Show();
-                this.Hide();
+                //frmPos posForm = new frmPos();
+                //ContextService.AddFrom(posForm);
+                //posForm.MdiParent = ContextService.ParentForm; 
+                //posForm.Show();
+                //this.Hide();
             }
             catch (Exception ex)
             {
@@ -40,5 +40,7 @@ namespace EBS.WinPos
             }
           
         }
+
+       
     }
 }
