@@ -11,18 +11,29 @@ namespace EBS.WinPos.Domain
     {
         public DbSet<SaleOrder> Orders { get; set; }
         public DbSet<SaleOrderItem> OrderItems { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+
 
         public Repository()
             : base("SqliteTest")
         {
             System.Diagnostics.Debug.WriteLine("--实例化DbContext--");
             Database.Log = x => { System.Diagnostics.Debug.WriteLine(x); };
+
+           
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             base.OnModelCreating(modelBuilder);
+            
+        }
+
+        public void ToggleAutoDeleteChangeOrSave()
+        {
+            base.Configuration.AutoDetectChangesEnabled = !base.Configuration.AutoDetectChangesEnabled;
+            base.Configuration.ValidateOnSaveEnabled = !base.Configuration.AutoDetectChangesEnabled;
         }
     }
 }
