@@ -24,21 +24,31 @@ namespace EBS.WinPos
         {
             try
             {
-                //var user = _accountService.Login(this.txtUserName.Text, this.txtPasswrod.Text);
-                //ContextService.SetCurrentAccount(user);
+                var user = _accountService.Login(this.txtUserName.Text, this.txtPasswrod.Text);
+                ContextService.SetCurrentAccount(user);
                
                 //收银前台
-                //frmPos posForm = new frmPos();
-                //ContextService.AddFrom(posForm);
-                //posForm.MdiParent = ContextService.ParentForm; 
-                //posForm.Show();
-                //this.Hide();
+                frmPos posForm = new frmPos();
+                ContextService.AddFrom(posForm);
+                posForm.MdiParent = ContextService.ParentForm; 
+                posForm.Show();
+                this.Hide();
             }
             catch (Exception ex)
             {
                 this.lblMsg.Text = ex.Message;
             }
           
+        }
+
+        private void frmLogin_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void frmLogin_Load(object sender, EventArgs e)
+        {
+
         }
 
        

@@ -6,24 +6,22 @@ using System.Threading.Tasks;
 using EBS.WinPos.Domain.ValueObject;
 namespace EBS.WinPos.Domain.Entity
 {
-    public class SaleOrder
+    public class SaleOrder:BaseEntity
     {
         public SaleOrder()
         {
             this.Items = new List<SaleOrderItem>();
             this.CreatedOn = DateTime.Now;
             this.UpdatedOn = DateTime.Now;
+            this.Status = SaleOrderStatus.Create;
         }
-        public int Id { get; set; }
+        public string Code { get; set; }
 
         public int StoreId { get; set; }
 
         public SaleOrderStatus Status { get; set; }
 
         public SaleOrderPaidStatus PaidStatus { get; set; }
-
-        public string Code { get; set; }
-
         public DateTime CreatedOn { get; set; }
 
         public int CreatedBy { get; set; }
@@ -50,13 +48,10 @@ namespace EBS.WinPos.Domain.Entity
                     SalePrice = product.SalePrice,
                     Quantity = quantity,
                     ProductCode = product.Code,
-                    BarCode = product.BarCode,
-                    SaleOrderId = this.Id,
-                    Specification = product.Specification
-
+                    SaleOrderId = this.Id
                 };
-
             }
+            this.Items.Add(item);
         }
 
         public void GenerateNewCode()
@@ -65,18 +60,33 @@ namespace EBS.WinPos.Domain.Entity
             string createdBy = this.CreatedBy.ToString();
             var code = Math.Abs(Guid.NewGuid().GetHashCode());
             var hashcode = code.ToString();
-            var hashcodeLength = 15 - billType.Length - createdBy.Length;
             StringBuilder sb = new StringBuilder();
             sb.Append(billType);
             sb.Append(createdBy);
-            var lastNumber = hashcode.Length > hashcodeLength ? hashcode.Substring(0, hashcodeLength) : hashcode.PadLeft(hashcodeLength, '0');
-            sb.Append(lastNumber);
+            // hascode  取 8位，超过3位自增,2位类型订单
+            // 订单长度
+            var orderCodeLength = 13;
+            if (createdBy.Length > 3)
+            {
+                hashcode = hashcode.Substring(0, 8);  // hashCode 固定取8位
+                sb.Append(hashcode);
+            }
+            else {
+                var hashcodeLength = orderCodeLength - billType.Length - createdBy.Length;
+                var lastNumber = hashcode.Length > hashcodeLength ? hashcode.Substring(0, hashcodeLength) : hashcode.PadLeft(hashcodeLength, '0');
+                sb.Append(lastNumber);
+            }
             this.Code = sb.ToString();
-            //ts.TotalSeconds;
-            //var date = this.CreatedOn;
-            //var ts = date - DateTime.Parse("2016-01-01");
-            //var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(6, '0');  // 5位
-            //return string.Format("{0}{1}{2}{3}", (int)BillIdentity.SaleOrder, createdBy, orderYear.ToString().PadLeft(3, '0'), seconds);
+        }
+
+        public void Cancel(int editor)
+        {
+            if(this.Status!= SaleOrderStatus.Create){
+              throw new Exception("新建订单才能作废");
+            }
+            this.Status = SaleOrderStatus.Create;
+            this.UpdatedBy = editor;
+            this.UpdatedOn = DateTime.Now;
         }
     }
 

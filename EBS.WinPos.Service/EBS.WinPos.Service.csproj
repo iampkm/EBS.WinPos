@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountService.cs" />
+    <Compile Include="Dto\ShopCartItem.cs" />
+    <Compile Include="ProductService.cs" />
     <Compile Include="SaleOrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

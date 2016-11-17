@@ -24,7 +24,7 @@ namespace EBS.WinPos.Domain.ValueObject
         Cash = 1,
         [Description("支付宝")]
         AliPay = 2,
-        [Description("微信支付")]
+        [Description("微信")]
         WechatPay = 3
     }
 }

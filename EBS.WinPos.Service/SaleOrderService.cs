@@ -7,14 +7,15 @@ using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using System.Diagnostics;
 using System.Data.SQLite;
+using EBS.WinPos.Service.Dto;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
     {
-        Repository db;
+        Repository _db;
         public SaleOrderService()
         {
-            db = new Repository();
+            _db = new Repository();
         }
         public double InsertRange()
         {
@@ -36,12 +37,12 @@ namespace EBS.WinPos.Service
                 };
                 list.Add(order);
             }
-            DbContextTransaction tran = db.Database.BeginTransaction();
+            DbContextTransaction tran = _db.Database.BeginTransaction();
             try
             {
                
-                db.Accounts.AddRange(list);
-                db.SaveChanges();
+                _db.Accounts.AddRange(list);
+                _db.SaveChanges();
                 tran.Commit();
             }
             catch (Exception)
@@ -56,9 +57,22 @@ namespace EBS.WinPos.Service
             return watch.Elapsed.TotalSeconds;
         }
 
-        public void Create(SaleOrder model)
+        public SaleOrder CreateOrder(ShopCart cat)
         {
-
+            SaleOrder order = new SaleOrder()
+            {
+                StoreId = cat.StoreId,
+                CreatedBy = cat.Editor,
+                UpdatedBy = cat.Editor,
+            };
+            order.GenerateNewCode();
+            foreach (ShopCartItem item in cat.Items)
+            {
+                order.AddOrderItem(item.Product, item.Quantity);
+            }
+            this._db.Orders.Add(order);
+            this._db.SaveChanges();
+            return order;
         }
     }
 }

@@ -13,6 +13,7 @@ namespace EBS.WinPos.Domain
         public DbSet<SaleOrderItem> OrderItems { get; set; }
         public DbSet<Account> Accounts { get; set; }
 
+        public DbSet<Product> Products { get; set; }
 
         public Repository()
             : base("SqliteTest")

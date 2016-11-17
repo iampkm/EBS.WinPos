@@ -48,7 +48,7 @@ create table SaleOrderItem
    ProductCode          varchar(20),
    ProductName          varchar(50),
    SalePrice            decimal(8,2),
-   Quanttiy             INTEGER
+   Quantity             INTEGER
 );
 
 CREATE INDEX idx_SaleOrderItem_SaleOrderId ON SaleOrderItem (
