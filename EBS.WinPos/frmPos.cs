@@ -81,7 +81,7 @@ namespace EBS.WinPos
             var total = 0m;
             var quantityTotal = 0;
             foreach (DataGridViewRow row in this.dgvData.Rows)
-            {              
+            {
                 if (row.Cells["ProductId"].Value != null)
                 {
                     var price = (decimal)row.Cells["SalePrice"].Value;
@@ -124,11 +124,21 @@ namespace EBS.WinPos
                     cat.Items.Add(new ShopCartItem(product, quantity));
                 }
             }
-            var newOrder=  _saleOrderService.CreateOrder(cat);
-            this.lblOrderCode.Text = newOrder.Code;
+            var newOrder = _saleOrderService.CreateOrder(cat);
+            this.lblOrderCode.Text = newOrder.OrderCode;
+            newOrder.PayAmount = inputAmount;  
+           
+            // 模拟
+            //var newOrder = new OrderInfo()
+            //{
+            //    OrderId = 1,
+            //    OrderAmount = 89.3m,
+            //    OrderCode = "1500121356",
+            //    PayAmount = inputAmount
+            //};
+
             // 显示支付窗体          
             _payForm = new frmPay();
-            _payForm.Cat = cat;
             _payForm.CurrentOrder = newOrder;
             _payForm.PosForm = this;
             _payForm.ShowDialog(this);
@@ -139,7 +149,7 @@ namespace EBS.WinPos
         /// </summary>
         public void Cancel()
         {
-           
+
         }
         /// <summary>
         /// 减数量
@@ -198,7 +208,7 @@ namespace EBS.WinPos
         {
             // 如果没有点上班，不显示该界面
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
-           // this.lblStoreId.Text = "门店："
+            // this.lblStoreId.Text = "门店："
             this.txtBarCode.Focus();
 
         }
@@ -221,7 +231,7 @@ namespace EBS.WinPos
 
         private void frmPos_Resize(object sender, EventArgs e)
         {
-           // this.plBarCode.Width = this.Width / 2;
+            // this.plBarCode.Width = this.Width / 2;
         }
 
         //dgvData.RowHeadersDefaultCellStyle.ForeColor

@@ -85,6 +85,12 @@
     <Compile Include="frmPos.Designer.cs">
       <DependentUpon>frmPos.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmWork.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmWork.Designer.cs">
+      <DependentUpon>frmWork.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmLogin.resx">
@@ -98,6 +104,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmPos.resx">
       <DependentUpon>frmPos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmWork.resx">
+      <DependentUpon>frmWork.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

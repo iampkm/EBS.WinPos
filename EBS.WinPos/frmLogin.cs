@@ -26,12 +26,11 @@ namespace EBS.WinPos
             {
                 var user = _accountService.Login(this.txtUserName.Text, this.txtPasswrod.Text);
                 ContextService.SetCurrentAccount(user);
+
+                frmWork workForm = new frmWork();
+                workForm.MdiParent = ContextService.ParentForm;
+                workForm.Show();
                
-                //收银前台
-                frmPos posForm = new frmPos();
-                ContextService.AddFrom(posForm);
-                posForm.MdiParent = ContextService.ParentForm; 
-                posForm.Show();
                 this.Hide();
             }
             catch (Exception ex)

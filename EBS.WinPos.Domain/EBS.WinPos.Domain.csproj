@@ -41,6 +41,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.103.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Data.SQLite.Core.1.0.103\lib\net40\System.Data.SQLite.dll</HintPath>
@@ -62,12 +63,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Entity\Account.cs" />
+    <Compile Include="Entity\PaidHistory.cs" />
     <Compile Include="Entity\Product.cs" />
     <Compile Include="Entity\SaleBackOrder.cs" />
     <Compile Include="Entity\SaleBackOrderItem.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
     <Compile Include="Entity\SaleOrderItem.cs" />
+    <Compile Include="Entity\WorkSchedule.cs" />
+    <Compile Include="Event\FinishOrderEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="ValueObject\SaleOrderPaidStatus.cs" />

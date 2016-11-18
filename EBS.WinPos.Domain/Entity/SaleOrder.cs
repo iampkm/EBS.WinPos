@@ -88,6 +88,18 @@ namespace EBS.WinPos.Domain.Entity
             this.UpdatedBy = editor;
             this.UpdatedOn = DateTime.Now;
         }
+
+        public void FinishPaid()
+        {
+            if (this.Status != SaleOrderStatus.Create) { throw new Exception("订单非待支付状态"); }
+            this.Status = SaleOrderStatus.Paid;
+            this.UpdatedOn = DateTime.Now;
+        }
+
+        public decimal GetOrderAmount()
+        {
+            return this.Items.Sum(n => n.SalePrice * n.Quantity);
+        }
     }
 
 

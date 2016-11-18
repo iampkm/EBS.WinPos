@@ -14,6 +14,7 @@ namespace EBS.WinPos.Domain
         public DbSet<Account> Accounts { get; set; }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<WorkSchedule> WorkSchedules { get; set; }
 
         public Repository()
             : base("SqliteTest")

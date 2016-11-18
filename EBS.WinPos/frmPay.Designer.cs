@@ -38,9 +38,9 @@
             this.lblPayBarCode = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.lblChargeAmount = new System.Windows.Forms.Label();
-            this.lblPayAmount = new System.Windows.Forms.Label();
             this.lblOrderAmount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtPayAmount = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -71,9 +71,11 @@
             this.lstPaymentWay.Size = new System.Drawing.Size(259, 403);
             this.lstPaymentWay.TabIndex = 1;
             this.lstPaymentWay.SelectedValueChanged += new System.EventHandler(this.lstPaymentWay_SelectedValueChanged);
+            this.lstPaymentWay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstPaymentWay_KeyDown);
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.txtPayAmount);
             this.panel2.Controls.Add(this.txtPayBarCode);
             this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.btnSave);
@@ -81,7 +83,6 @@
             this.panel2.Controls.Add(this.lblPayBarCode);
             this.panel2.Controls.Add(this.label2);
             this.panel2.Controls.Add(this.lblChargeAmount);
-            this.panel2.Controls.Add(this.lblPayAmount);
             this.panel2.Controls.Add(this.lblOrderAmount);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -93,10 +94,10 @@
             // txtPayBarCode
             // 
             this.txtPayBarCode.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPayBarCode.Location = new System.Drawing.Point(149, 159);
+            this.txtPayBarCode.Location = new System.Drawing.Point(149, 206);
             this.txtPayBarCode.Name = "txtPayBarCode";
             this.txtPayBarCode.Size = new System.Drawing.Size(208, 35);
-            this.txtPayBarCode.TabIndex = 5;
+            this.txtPayBarCode.TabIndex = 3;
             this.txtPayBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPayBarCode_KeyDown);
             // 
             // label4
@@ -113,10 +114,10 @@
             // btnSave
             // 
             this.btnSave.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSave.Location = new System.Drawing.Point(36, 238);
+            this.btnSave.Location = new System.Drawing.Point(27, 269);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(321, 76);
-            this.btnSave.TabIndex = 2;
+            this.btnSave.Size = new System.Drawing.Size(330, 76);
+            this.btnSave.TabIndex = 0;
             this.btnSave.Text = "结 算";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
@@ -125,17 +126,17 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(219, 36);
+            this.label3.Location = new System.Drawing.Point(208, 30);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(81, 25);
+            this.label3.Size = new System.Drawing.Size(100, 25);
             this.label3.TabIndex = 0;
-            this.label3.Text = "找  零：";
+            this.label3.Text = "找  零￥：";
             // 
             // lblPayBarCode
             // 
             this.lblPayBarCode.AutoSize = true;
             this.lblPayBarCode.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblPayBarCode.Location = new System.Drawing.Point(36, 164);
+            this.lblPayBarCode.Location = new System.Drawing.Point(22, 211);
             this.lblPayBarCode.Name = "lblPayBarCode";
             this.lblPayBarCode.Size = new System.Drawing.Size(107, 25);
             this.lblPayBarCode.TabIndex = 0;
@@ -145,11 +146,11 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(31, 80);
+            this.label2.Location = new System.Drawing.Point(22, 151);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 25);
+            this.label2.Size = new System.Drawing.Size(107, 25);
             this.label2.TabIndex = 0;
-            this.label2.Text = "实收款：";
+            this.label2.Text = "实收款￥：";
             // 
             // lblChargeAmount
             // 
@@ -162,23 +163,13 @@
             this.lblChargeAmount.TabIndex = 0;
             this.lblChargeAmount.Text = "11111";
             // 
-            // lblPayAmount
-            // 
-            this.lblPayAmount.AutoSize = true;
-            this.lblPayAmount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblPayAmount.Location = new System.Drawing.Point(116, 80);
-            this.lblPayAmount.Name = "lblPayAmount";
-            this.lblPayAmount.Size = new System.Drawing.Size(67, 25);
-            this.lblPayAmount.TabIndex = 0;
-            this.lblPayAmount.Text = "11111";
-            // 
             // lblOrderAmount
             // 
             this.lblOrderAmount.AutoSize = true;
-            this.lblOrderAmount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblOrderAmount.Location = new System.Drawing.Point(116, 36);
+            this.lblOrderAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblOrderAmount.Location = new System.Drawing.Point(6, 55);
             this.lblOrderAmount.Name = "lblOrderAmount";
-            this.lblOrderAmount.Size = new System.Drawing.Size(67, 25);
+            this.lblOrderAmount.Size = new System.Drawing.Size(197, 75);
             this.lblOrderAmount.TabIndex = 0;
             this.lblOrderAmount.Text = "11111";
             // 
@@ -186,15 +177,25 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(31, 36);
+            this.label1.Location = new System.Drawing.Point(22, 30);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 25);
+            this.label1.Size = new System.Drawing.Size(107, 25);
             this.label1.TabIndex = 0;
-            this.label1.Text = "应收款：";
+            this.label1.Text = "应收款￥：";
+            // 
+            // txtPayAmount
+            // 
+            this.txtPayAmount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtPayAmount.Location = new System.Drawing.Point(149, 146);
+            this.txtPayAmount.Name = "txtPayAmount";
+            this.txtPayAmount.Size = new System.Drawing.Size(208, 35);
+            this.txtPayAmount.TabIndex = 2;
+            this.txtPayAmount.TextChanged += new System.EventHandler(this.txtPayAmount_TextChanged);
+            this.txtPayAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPayAmount_KeyDown);
+            this.txtPayAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPayAmount_KeyPress);
             // 
             // frmPay
             // 
-            this.AcceptButton = this.btnSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(668, 403);
@@ -224,9 +225,9 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblChargeAmount;
-        private System.Windows.Forms.Label lblPayAmount;
         private System.Windows.Forms.Label lblOrderAmount;
         private System.Windows.Forms.TextBox txtPayBarCode;
         private System.Windows.Forms.Label lblPayBarCode;
+        private System.Windows.Forms.TextBox txtPayAmount;
     }
 }

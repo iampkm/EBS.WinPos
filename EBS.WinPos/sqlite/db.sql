@@ -7,7 +7,7 @@ CREATE TABLE Product (
     Name          VARCHAR (50),
     BarCode       VARCHAR (50),
     Specification VARCHAR (200),
-    SalePrice     DECIMAL (8, 2),
+    SalePrice     DECIMAL (8,2),
     UpdatedOn     DATETIME
 );
 
@@ -24,13 +24,13 @@ create table SaleOrder
 (
    Id                    INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
    Code                 varchar(20),
-   StoreId              INTEGER comment '门店',
-   Status               INTEGER comment '状态',
-   PaidStatus           INTEGER comment '支付状态',
-   CreatedOn            datetime comment '创建时间',
-   CreatedBy            INTEGER comment '创建人',
-   UpdatedOn            datetime comment '修改时间',
-   UpdatedBy            INTEGER comment '修改人'
+   StoreId              INTEGER ,
+   Status               INTEGER ,
+   PaidStatus           INTEGER ,
+   CreatedOn            datetime ,
+   CreatedBy            INTEGER,
+   UpdatedOn            datetime ,
+   UpdatedBy            INTEGER '
 );
 CREATE UNIQUE INDEX idx_SaleOrder_code ON SaleOrder (
     Code
@@ -64,12 +64,11 @@ create table PaidHistory
    Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
    SaleOrderId          INTEGER ,
    SaleOrderCode        varchar(20),
-   PaymentWay           INTEGER comment '支付方式',
-   PaidDate             datetime comment '支付时间',
+   PaymentWay           INTEGER,
+   PaidDate             datetime ,
    OrderAmount          decimal(8,2),
    PayAmount            decimal(8,2),
-   ChargeAmount         decimal(8,2),
-   CreatedBy            INTEGER
+   CreatedBy            INTEGER,
    CreatedOn            datetime
 );
 
@@ -80,3 +79,36 @@ create table UploadFailedOrder
    SaleOrderId          INTEGER,
    CreatedOn            datetime
 );
+
+create table WorkSchedule
+(
+   Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   StoreId              INTEGER , 
+   PosId                INTEGER , 
+   CashAmount           decimal(8,2),
+   CreatedBy            INTEGER,
+   CreatedByName        varchar(50),
+   StartDate            datetime,
+   EndDate              datetime,
+   EndBy                INTEGER,
+   EndByName            varchar(50)
+);
+
+create table Store
+(
+    Id                   INTEGER  NOT NULL  PRIMARY KEY,
+    Code                 varchar(20),
+    Name                 varchar(50)
+)
+
+
+CREATE TABLE Account (
+    Id       INTEGER      PRIMARY KEY,
+    UserName VARCHAR (50) UNIQUE   NOT NULL,
+    Password VARCHAR (50) NOT NULL,
+    StoreId  INTEGER,
+    Status   INTEGER,
+    RoleId   INTEGER,
+    NickName VARCHAR (50) 
+);
+
