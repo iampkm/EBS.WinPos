@@ -29,8 +29,8 @@ namespace EBS.WinPos.Domain.Entity
        /// <summary>
        /// 交班人
        /// </summary>
-       public int? EndBy { get; set; }
-       public string? EndByName { get; set; }
+       public int EndBy { get; set; }
+       public string EndByName { get; set; }
 
        public void EndWork(Account account)
        {

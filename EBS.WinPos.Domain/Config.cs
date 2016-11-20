@@ -29,12 +29,26 @@ namespace EBS.WinPos.Domain
                 return PayServer + "/wechatpay/barcodepay";
             }
         }
+        /// <summary>
+        /// 微信密匙
+        /// </summary>
         public static string SignKey_WeChatBarcode
         {
             get
             {
                 string configKey = "SignKey_WeChatBarcode";
                 return ConfigurationManager.AppSettings[configKey].ToString().Trim();               
+            }
+        }
+        /// <summary>
+        /// Pos 机器号ID
+        /// </summary>
+        public static int PosId
+        {
+            get
+            {
+                string configKey = "PosId";
+                return Convert.ToInt32(ConfigurationManager.AppSettings[configKey]);
             }
         }
     }

@@ -11,8 +11,19 @@ namespace EBS.WinPos.Domain.Entity
        public int ProductId { get; set; }
        public string ProductName { get; set; }
        public string ProductCode { get; set; }
+        /// <summary>
+        /// 商品售价
+        /// </summary>
        public decimal SalePrice { get; set; }
-       public int Quantity { get; set; }    
+        /// <summary>
+        /// 折扣
+        /// </summary>
+        public decimal Discount { get; set; }
+        /// <summary>
+        /// 实际折后价
+        /// </summary>
+        public decimal RealPrice { get; set; }
+        public int Quantity { get; set; }    
        public virtual int SaleOrderId { get; set; }
     }
 }

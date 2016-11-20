@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.lblCreatedBy = new System.Windows.Forms.Label();
-            this.btnBegin = new System.Windows.Forms.Button();
-            this.btnEnd = new System.Windows.Forms.Button();
             this.lblTime = new System.Windows.Forms.Label();
+            this.btnBegin = new System.Windows.Forms.Button();
+            this.lblCreatedBy = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnEnd = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -51,24 +51,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "上 班";
             // 
-            // groupBox2
+            // lblTime
             // 
-            this.groupBox2.Controls.Add(this.btnEnd);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(0, 147);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(437, 211);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "下 班";
-            // 
-            // lblCreatedBy
-            // 
-            this.lblCreatedBy.AutoSize = true;
-            this.lblCreatedBy.Location = new System.Drawing.Point(56, 32);
-            this.lblCreatedBy.Name = "lblCreatedBy";
-            this.lblCreatedBy.Size = new System.Drawing.Size(0, 12);
-            this.lblCreatedBy.TabIndex = 0;
+            this.lblTime.AutoSize = true;
+            this.lblTime.Location = new System.Drawing.Point(229, 32);
+            this.lblTime.Name = "lblTime";
+            this.lblTime.Size = new System.Drawing.Size(53, 12);
+            this.lblTime.TabIndex = 2;
+            this.lblTime.Text = "上班时间";
             // 
             // btnBegin
             // 
@@ -80,6 +70,25 @@
             this.btnBegin.UseVisualStyleBackColor = true;
             this.btnBegin.Click += new System.EventHandler(this.btnBegin_Click);
             // 
+            // lblCreatedBy
+            // 
+            this.lblCreatedBy.AutoSize = true;
+            this.lblCreatedBy.Location = new System.Drawing.Point(56, 32);
+            this.lblCreatedBy.Name = "lblCreatedBy";
+            this.lblCreatedBy.Size = new System.Drawing.Size(0, 12);
+            this.lblCreatedBy.TabIndex = 0;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnEnd);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox2.Location = new System.Drawing.Point(0, 147);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(437, 211);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "下 班";
+            // 
             // btnEnd
             // 
             this.btnEnd.Location = new System.Drawing.Point(117, 72);
@@ -90,15 +99,6 @@
             this.btnEnd.UseVisualStyleBackColor = true;
             this.btnEnd.Click += new System.EventHandler(this.btnEnd_Click);
             // 
-            // lblTime
-            // 
-            this.lblTime.AutoSize = true;
-            this.lblTime.Location = new System.Drawing.Point(229, 32);
-            this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(53, 12);
-            this.lblTime.TabIndex = 2;
-            this.lblTime.Text = "上班时间";
-            // 
             // frmWork
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -108,6 +108,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "frmWork";
             this.Text = "交接班";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmWork_FormClosing);
             this.Load += new System.EventHandler(this.frmWork_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

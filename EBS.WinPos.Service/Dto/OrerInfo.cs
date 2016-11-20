@@ -13,10 +13,12 @@ namespace EBS.WinPos.Service.Dto
 
        public decimal OrderAmount { get; set; }
 
-       public decimal PayAmount { get; set; }
+        public decimal RealAmount { get; set; }
+
+        public decimal PayAmount { get; set; }
 
        public decimal ChargeAmount { get {
-           return PayAmount - OrderAmount;
+           return PayAmount - RealAmount;
        } }
 
        

@@ -28,6 +28,7 @@ namespace EBS.WinPos
                 ContextService.SetCurrentAccount(user);
 
                 frmWork workForm = new frmWork();
+                ContextService.AddFrom(workForm);
                 workForm.MdiParent = ContextService.ParentForm;
                 workForm.Show();
                

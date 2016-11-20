@@ -31,6 +31,7 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.lstPaymentWay = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.txtPayAmount = new System.Windows.Forms.TextBox();
             this.txtPayBarCode = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
@@ -40,7 +41,6 @@
             this.lblChargeAmount = new System.Windows.Forms.Label();
             this.lblOrderAmount = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtPayAmount = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +91,17 @@
             this.panel2.Size = new System.Drawing.Size(409, 403);
             this.panel2.TabIndex = 1;
             // 
+            // txtPayAmount
+            // 
+            this.txtPayAmount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtPayAmount.Location = new System.Drawing.Point(149, 146);
+            this.txtPayAmount.Name = "txtPayAmount";
+            this.txtPayAmount.Size = new System.Drawing.Size(208, 35);
+            this.txtPayAmount.TabIndex = 2;
+            this.txtPayAmount.TextChanged += new System.EventHandler(this.txtPayAmount_TextChanged);
+            this.txtPayAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPayAmount_KeyDown);
+            this.txtPayAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPayAmount_KeyPress);
+            // 
             // txtPayBarCode
             // 
             this.txtPayBarCode.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -113,13 +124,14 @@
             // 
             // btnSave
             // 
+            this.btnSave.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.btnSave.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnSave.Location = new System.Drawing.Point(27, 269);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(330, 76);
             this.btnSave.TabIndex = 0;
             this.btnSave.Text = "结 算";
-            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // label3
@@ -182,17 +194,6 @@
             this.label1.Size = new System.Drawing.Size(107, 25);
             this.label1.TabIndex = 0;
             this.label1.Text = "应收款￥：";
-            // 
-            // txtPayAmount
-            // 
-            this.txtPayAmount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPayAmount.Location = new System.Drawing.Point(149, 146);
-            this.txtPayAmount.Name = "txtPayAmount";
-            this.txtPayAmount.Size = new System.Drawing.Size(208, 35);
-            this.txtPayAmount.TabIndex = 2;
-            this.txtPayAmount.TextChanged += new System.EventHandler(this.txtPayAmount_TextChanged);
-            this.txtPayAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPayAmount_KeyDown);
-            this.txtPayAmount.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPayAmount_KeyPress);
             // 
             // frmPay
             // 

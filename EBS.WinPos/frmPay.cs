@@ -31,8 +31,15 @@ namespace EBS.WinPos
         {
             if (e.KeyCode == Keys.Escape)
             {
-                this.Close();
+                CancelOrder();
             }
+        }
+
+        public void CancelOrder()
+        {
+            _orderService.CancelOrder(this.CurrentOrder.OrderId, ContextService.CurrentAccount.Id);
+            this.Close();
+            this.PosForm.ClearAll();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -44,7 +51,7 @@ namespace EBS.WinPos
         {
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试!"); return; }
 
-            this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString();
+            this.lblOrderAmount.Text = CurrentOrder.RealAmount.ToString();
             this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();
             this.lblChargeAmount.Text = CurrentOrder.ChargeAmount.ToString();
 

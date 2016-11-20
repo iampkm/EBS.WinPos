@@ -25,12 +25,17 @@ create table SaleOrder
    Id                    INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
    Code                 varchar(20),
    StoreId              INTEGER ,
-   Status               INTEGER ,
-   PaidStatus           INTEGER ,
+   OrderAmount          decimal(8,2),
+   RealAmount        decimal(8,2),
+   PayAmount            decimal(8,2),
+   Discount                decimal(8,2),
+   PaymentWay           INTEGER,
+   PaidDate                 datetime ,  
+   Status                   INTEGER ,
    CreatedOn            datetime ,
    CreatedBy            INTEGER,
    UpdatedOn            datetime ,
-   UpdatedBy            INTEGER '
+   UpdatedBy            INTEGER 
 );
 CREATE UNIQUE INDEX idx_SaleOrder_code ON SaleOrder (
     Code
@@ -48,6 +53,8 @@ create table SaleOrderItem
    ProductCode          varchar(20),
    ProductName          varchar(50),
    SalePrice            decimal(8,2),
+   Discount             DECIMAL (8, 2),
+   RealPrice         DECIMAL (8, 2),
    Quantity             INTEGER
 );
 
@@ -65,9 +72,11 @@ create table PaidHistory
    SaleOrderId          INTEGER ,
    SaleOrderCode        varchar(20),
    PaymentWay           INTEGER,
-   PaidDate             datetime ,
+   PaidDate                 datetime ,
    OrderAmount          decimal(8,2),
+   SellingAmount        decimal(8,2),
    PayAmount            decimal(8,2),
+   Discount              decimal(8,2),
    CreatedBy            INTEGER,
    CreatedOn            datetime
 );
@@ -111,4 +120,20 @@ CREATE TABLE Account (
     RoleId   INTEGER,
     NickName VARCHAR (50) 
 );
+
+CREATE TABLE Setting (
+    Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    Name   VARCHAR (50), 
+    Key    VARCHAR (100), 
+    Value  VARCHAR (300) 
+);
+
+CREATE TABLE VipCard (
+    Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    Code   VARCHAR (50), 
+    Discount     decimal(8,2)
+);
+
+
+
 

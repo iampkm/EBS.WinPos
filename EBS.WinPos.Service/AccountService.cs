@@ -20,7 +20,7 @@ namespace EBS.WinPos.Service
            if (passwrod == "") { throw new Exception("密码为空"); }
            int userId = 0;
            int.TryParse(userName, out userId);       
-           var model = _db.Accounts.Where(n => n.Id == userId || n.UserName == userName).FirstOrDefault();
+           var model = _db.Accounts.FirstOrDefault(n => n.Id == userId || n.UserName == userName);
          
            if(model==null||!model.VerifyPassword(passwrod))
            {

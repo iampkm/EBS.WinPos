@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using EBS.WinPos.Service;
+using EBS.WinPos.Domain;
 namespace EBS.WinPos
 {
     public partial class frmWork : Form
@@ -20,7 +21,7 @@ namespace EBS.WinPos
 
         private void frmWork_Load(object sender, EventArgs e)
         {
-           var worker=  _service.GetWorking(ContextService.CurrentAccount.StoreId,1);
+           var worker=  _service.GetWorking(ContextService.CurrentAccount.StoreId,Config.PosId);
            if (worker == null)
            {
                //没人上班
@@ -30,26 +31,54 @@ namespace EBS.WinPos
               this.btnBegin.Enabled = false;
               this.lblCreatedBy.Text = "当班人：" + worker.CreatedByName;
               this.lblTime.Text = worker.StartDate.ToShortDateString();
-           }
-           this.btnEnd.Text = worker.CreatedBy == ContextService.CurrentAccount.Id ? "下 班" : "交 班";
+              this.btnEnd.Text = worker.CreatedBy == ContextService.CurrentAccount.Id ? "下 班" : "交 班";
+            }
+           
           
         }
 
         private void btnBegin_Click(object sender, EventArgs e)
         {
-
-            _service.BeginWork(ContextService.CurrentAccount, 1);
-
-            //收银前台
-            frmPos posForm = new frmPos();
-            ContextService.AddFrom(posForm);
-            posForm.MdiParent = ContextService.ParentForm;
-            posForm.Show();
+            try
+            {
+                _service.BeginWork(ContextService.CurrentAccount, Config.PosId);
+                //收银前台
+                frmPos posForm = new frmPos();
+                ContextService.AddFrom(posForm);
+                posForm.MdiParent = ContextService.ParentForm;
+                posForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnEnd_Click(object sender, EventArgs e)
         {
-            _service.EndWork(ContextService.CurrentAccount, 1);
+            try
+            {
+                _service.EndWork(ContextService.CurrentAccount, Config.PosId);
+                //关闭收银台
+                var posForm= ContextService.GetFrom(typeof(frmPos));
+                if (posForm != null)
+                {
+                    ContextService.RemoveFrom(typeof(frmPos));
+                    posForm.Close();
+                }
+                this.Close();
+              
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+           
+        }
+
+        private void frmWork_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ContextService.RemoveFrom(this.GetType());
         }
     }
 }

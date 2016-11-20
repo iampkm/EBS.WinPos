@@ -18,12 +18,19 @@ namespace EBS.WinPos
 
         SaleOrderService _saleOrderService;
         ProductService _productService;
+        VipCardService _vipService;
+
+        public string CustomerId { get; set; }
+
+        public VipCard VipCustomer { get; set; }
+
         public frmPos()
         {
             InitializeComponent();
 
             _saleOrderService = new SaleOrderService();
             _productService = new ProductService();
+            _vipService = new VipCardService();
         }
 
         frmPay _payForm;
@@ -45,6 +52,8 @@ namespace EBS.WinPos
         {
             Product model = _productService.GetProduct(productCodeOrBarCode);
             if (model == null) { MessageBox.Show("商品不存在"); return; }
+            //查询会员折扣
+            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
 
             int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
             if (lastIndex > -1)
@@ -101,6 +110,8 @@ namespace EBS.WinPos
             {
                 return;
             }
+            //查询会员折扣
+            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
             var inputAmount = 0m;
             decimal.TryParse(money, out inputAmount);
 
@@ -121,13 +132,13 @@ namespace EBS.WinPos
                     product.SalePrice = (decimal)row.Cells["SalePrice"].Value;
                     product.Code = row.Cells["ProductCode"].Value.ToString();
                     int quantity = (int)row.Cells["Quantity"].Value;
-                    cat.Items.Add(new ShopCartItem(product, quantity));
+                    cat.Items.Add(new ShopCartItem(product, quantity, discount));
                 }
             }
             var newOrder = _saleOrderService.CreateOrder(cat);
             this.lblOrderCode.Text = newOrder.OrderCode;
-            newOrder.PayAmount = inputAmount;  
-           
+            newOrder.PayAmount = inputAmount;
+            this.txtBarCode.Text = "";
             // 模拟
             //var newOrder = new OrderInfo()
             //{
@@ -149,7 +160,7 @@ namespace EBS.WinPos
         /// </summary>
         public void Cancel()
         {
-
+            this.ClearAll();
         }
         /// <summary>
         /// 减数量
@@ -181,9 +192,15 @@ namespace EBS.WinPos
             ShowOrderInfo();
         }
 
+
+
         public void ClearAll()
         {
             this.dgvData.Rows.Clear();
+            this.lblOrderTotal.Text = "";
+            this.lblQuantityTotal.Text = "";
+            this.lblOrderCode.Text = "";
+            this.VipCustomer = null;
         }
 
         private void txtBarCode_KeyDown(object sender, KeyEventArgs e)
@@ -199,15 +216,61 @@ namespace EBS.WinPos
                 case Keys.Delete:
                     DeleteQuantity();
                     break;
+                case Keys.F1:
+                    break;
+                case Keys.F2:
+                    MinusQuantity();
+                    break;
+                case Keys.F3:
+                    inputCustomer();
+                    break;
                 default:
                     break;
             }
+        }
+
+        public void MinusQuantity()
+        {
+            DeleteQuantity();
+        }
+
+        public void PlusQuantity()
+        {
+            int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
+            if (lastIndex > -1)
+            {
+                //前一行商品如果与扫码的商品一样，就直接累加数量
+                var preRow = this.dgvData.Rows[lastIndex];
+                if (preRow.Cells["ProductId"].Value != null)
+                {
+                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value + 1;
+                    preRow.Selected = true;
+                }
+            }
+            // 如果数量为 0，删除该行
+            ShowOrderInfo();
+        }
+
+        public void inputCustomer()
+        {
+            frmCustomerId vipForm = new frmCustomerId();
+            vipForm.PosFrom = this;
+            vipForm.ShowDialog(this);
+        }
+
+        public void SetVipCard(string code)
+        {
+            this.VipCustomer = _vipService.GetByCode(code);
+            this.lblDiscount.Text = this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();
+            this.ClearAll();
+            this.txtBarCode.Focus();
         }
 
         private void frmPos_Load(object sender, EventArgs e)
         {
             // 如果没有点上班，不显示该界面
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
+            this.lblStoreId.Text = "门店：" + ContextService.CurrentAccount.StoreId;
             // this.lblStoreId.Text = "门店："
             this.txtBarCode.Focus();
 

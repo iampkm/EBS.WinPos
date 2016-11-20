@@ -28,8 +28,15 @@ namespace EBS.WinPos
               _fromDic.Add(formType,form);
            }
        }
+        public static void RemoveFrom(Type formType)
+        {
+            if (_fromDic.ContainsKey(formType))
+            {
+                _fromDic.Remove(formType);
+            }
+        }
 
-       public static Form GetFrom(Type formType)
+        public static Form GetFrom(Type formType)
        {
           return _fromDic.ContainsKey(formType) ? _fromDic[formType] : null;
        }

@@ -15,38 +15,50 @@ namespace EBS.WinPos.Service.Dto
 
         public int Editor { get; set; }
 
-       public  List<ShopCartItem> Items { get; set; }
+        public List<ShopCartItem> Items { get; set; }
 
         /// <summary>
         /// 客户支付金额
         /// </summary>
-       public decimal PayAmount { get; set; }
-       public decimal OrderAmount { get {
-           return this.Items.Sum(n => n.Product.SalePrice * n.Quantity);
-       } }
+        public decimal PayAmount { get; set; }
+        public decimal OrderAmount
+        {
+            get
+            {
+                return this.Items.Sum(n => n.Product.SalePrice * n.Quantity);
+            }
+        }
 
-       public int QuantityTotal {
-           get {
-               return this.Items.Sum(n => n.Quantity);
-           }
-       }
+        public int QuantityTotal
+        {
+            get
+            {
+                return this.Items.Sum(n => n.Quantity);
+            }
+        }
 
-       public decimal ChargeAmount {
-           get {
-               return this.PayAmount - OrderAmount;
-           }
-       }
+        public decimal ChargeAmount
+        {
+            get
+            {
+                return this.PayAmount - OrderAmount;
+            }
+        }
 
     }
-   public class ShopCartItem
+    public class ShopCartItem
     {
-       public ShopCartItem(Product product,int quantity)
-       {
-           this.Product = product;
-           this.Quantity = quantity;
-       }
-       public Product Product { get; set; }
+        public ShopCartItem(Product product, int quantity, decimal discount = 1m)
+        {
+            this.Product = product;
+            this.Quantity = quantity;
+            this.Discount = discount;
 
-       public int Quantity { get; set; }
+        }
+        public Product Product { get; set; }
+
+        public int Quantity { get; set; }
+
+        public decimal Discount { get; set; }
     }
 }
