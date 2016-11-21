@@ -31,15 +31,8 @@ namespace EBS.WinPos
         {
             if (e.KeyCode == Keys.Escape)
             {
-                CancelOrder();
+                this.Close();
             }
-        }
-
-        public void CancelOrder()
-        {
-            _orderService.CancelOrder(this.CurrentOrder.OrderId, ContextService.CurrentAccount.Id);
-            this.Close();
-            this.PosForm.ClearAll();
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -51,7 +44,7 @@ namespace EBS.WinPos
         {
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试!"); return; }
 
-            this.lblOrderAmount.Text = CurrentOrder.RealAmount.ToString();
+            this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString();
             this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();
             this.lblChargeAmount.Text = CurrentOrder.ChargeAmount.ToString();
 
@@ -127,7 +120,11 @@ namespace EBS.WinPos
             try
             {
                 _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
+              
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
+                // 打印作废小票
+               
             }
             catch (Exception ex)
             {
@@ -143,6 +140,7 @@ namespace EBS.WinPos
             try
             {
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
             }
             catch (Exception ex)
@@ -157,6 +155,7 @@ namespace EBS.WinPos
             try
             {
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
             }
             catch (Exception ex)

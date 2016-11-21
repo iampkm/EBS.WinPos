@@ -19,8 +19,9 @@ namespace EBS.WinPos
         SaleOrderService _saleOrderService;
         ProductService _productService;
         VipCardService _vipService;
+        ShopCart _currentShopCat;
 
-        public string CustomerId { get; set; }
+        public int OrderId { get; set; }
 
         public VipCard VipCustomer { get; set; }
 
@@ -49,9 +50,14 @@ namespace EBS.WinPos
         }
 
         public void InputBarCode(string productCodeOrBarCode)
-        {
+        {          
             Product model = _productService.GetProduct(productCodeOrBarCode);
-            if (model == null) { MessageBox.Show("商品不存在"); return; }
+            if (model == null) { 
+                MessageBox.Show("商品不存在"); 
+                this.txtBarCode.Text = ""; 
+                return;
+            }
+
             //查询会员折扣
             var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
 
@@ -78,8 +84,9 @@ namespace EBS.WinPos
             row.Cells["ProductName"].Value = model.Name;
             row.Cells["Specification"].Value = model.Specification;
             row.Cells["SalePrice"].Value = model.SalePrice;
+            row.Cells["RealPrice"].Value = model.SalePrice * discount;
             row.Cells["Quantity"].Value = 1;
-            row.Cells["Amount"].Value = model.SalePrice * 1;
+            row.Cells["Amount"].Value = model.SalePrice * discount * 1;
             row.Selected = true;
             this.txtBarCode.Text = "";
             ShowOrderInfo();
@@ -93,7 +100,7 @@ namespace EBS.WinPos
             {
                 if (row.Cells["ProductId"].Value != null)
                 {
-                    var price = (decimal)row.Cells["SalePrice"].Value;
+                    var price = (decimal)row.Cells["RealPrice"].Value;
                     var quantity = (int)row.Cells["Quantity"].Value;
                     total += price * quantity;
                     quantityTotal += quantity;
@@ -105,17 +112,47 @@ namespace EBS.WinPos
 
         public void CreateOrder(string money)
         {
+            try
+            {
+                var inputAmount = 0m;
+                decimal.TryParse(money, out inputAmount);
+                var newOrder = SaveOrder(inputAmount);
+                this.OrderId = newOrder.OrderId;  //保存新订单Id
+                this.lblOrderCode.Text = newOrder.OrderCode;
+                newOrder.PayAmount = inputAmount;
+                this.txtBarCode.Text = "";
+
+                // 显示支付窗体  
+                if (_currentShopCat.CheckCanPay())
+                {
+                    _payForm = new frmPay();
+                    _payForm.CurrentOrder = newOrder;
+                    _payForm.PosForm = this;
+                    _payForm.ShowDialog(this);
+                }
+                else {
+                    MessageBox.Show("有商品项数量为0,不能支付！请调整数量或ESC作废订单。");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+          
+
+        }
+
+        public OrderInfo SaveOrder(decimal inputAmount)
+        {
             //1 创建订单，并显示支付窗口
             if (this.dgvData.Rows.Count == 0)
             {
-                return;
+                return null;
             }
             //查询会员折扣
             var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
-            var inputAmount = 0m;
-            decimal.TryParse(money, out inputAmount);
 
-            ShopCart cat = new ShopCart()
+            _currentShopCat = new ShopCart()
             {
                 StoreId = ContextService.CurrentAccount.StoreId,
                 Editor = ContextService.CurrentAccount.Id,
@@ -132,75 +169,26 @@ namespace EBS.WinPos
                     product.SalePrice = (decimal)row.Cells["SalePrice"].Value;
                     product.Code = row.Cells["ProductCode"].Value.ToString();
                     int quantity = (int)row.Cells["Quantity"].Value;
-                    cat.Items.Add(new ShopCartItem(product, quantity, discount));
+                    _currentShopCat.Items.Add(new ShopCartItem(product, quantity, discount));
                 }
             }
-            var newOrder = _saleOrderService.CreateOrder(cat);
-            this.lblOrderCode.Text = newOrder.OrderCode;
-            newOrder.PayAmount = inputAmount;
-            this.txtBarCode.Text = "";
-            // 模拟
-            //var newOrder = new OrderInfo()
-            //{
-            //    OrderId = 1,
-            //    OrderAmount = 89.3m,
-            //    OrderCode = "1500121356",
-            //    PayAmount = inputAmount
-            //};
-
-            // 显示支付窗体          
-            _payForm = new frmPay();
-            _payForm.CurrentOrder = newOrder;
-            _payForm.PosForm = this;
-            _payForm.ShowDialog(this);
-
+            var newOrder = _saleOrderService.CreateOrder(_currentShopCat);
+            return newOrder;
         }
-        /// <summary>
-        /// 按ESC 取消订单
-        /// </summary>
-        public void Cancel()
-        {
-            this.ClearAll();
-        }
-        /// <summary>
-        /// 减数量
-        /// </summary>
-        public void DeleteQuantity()
-        {
-            int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
-            if (lastIndex > -1)
-            {
-                //前一行商品如果与扫码的商品一样，就直接累加数量
-                var preRow = this.dgvData.Rows[lastIndex];
-                if (preRow.Cells["ProductId"].Value != null)
-                {
-                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value - 1;
-                    preRow.Selected = true;
-
-                    if ((int)preRow.Cells["Quantity"].Value == 0)
-                    {
-                        this.dgvData.Rows.RemoveAt(lastIndex);
-                        //前一行选中
-                        if (this.dgvData.Rows[lastIndex - 1] != null)
-                        {
-                            this.dgvData.Rows[lastIndex - 1].Selected = true;
-                        }
-                    }
-                }
-            }
-            // 如果数量为 0，删除该行
-            ShowOrderInfo();
-        }
+      
+       
 
 
 
         public void ClearAll()
         {
             this.dgvData.Rows.Clear();
-            this.lblOrderTotal.Text = "";
-            this.lblQuantityTotal.Text = "";
+            this.lblOrderTotal.Text = "0";
+            this.lblQuantityTotal.Text = "0";
             this.lblOrderCode.Text = "";
+            this.lblDiscount.Text = "";
             this.VipCustomer = null;
+            this._currentShopCat = null;
         }
 
         private void txtBarCode_KeyDown(object sender, KeyEventArgs e)
@@ -213,15 +201,13 @@ namespace EBS.WinPos
                 case Keys.Escape:
                     Cancel();
                     break;
-                case Keys.Delete:
-                    DeleteQuantity();
+                case Keys.F1:  // +
+                    PlusQuantity();
                     break;
-                case Keys.F1:
-                    break;
-                case Keys.F2:
+                case Keys.F2:  // - 
                     MinusQuantity();
                     break;
-                case Keys.F3:
+                case Keys.F3:  // 折扣
                     inputCustomer();
                     break;
                 default:
@@ -229,10 +215,38 @@ namespace EBS.WinPos
             }
         }
 
+        /// <summary>
+        /// 按ESC 取消订单
+        /// </summary>
+        public void Cancel()
+        {
+            if (OrderId == 0)
+            {
+                SaveOrder(0);
+            }
+            _saleOrderService.CancelOrder(this.OrderId, ContextService.CurrentAccount.Id);
+            this.ClearAll();
+            // 打印作废小票
+        }
+        /// <summary>
+        /// 减数量
+        /// </summary>
         public void MinusQuantity()
         {
-            DeleteQuantity();
+            int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
+            if (lastIndex > -1)
+            {
+                var preRow = this.dgvData.Rows[lastIndex];
+                if (preRow.Cells["ProductId"].Value != null)
+                {
+                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value - 1;
+                    preRow.Selected = true;
+                }
+            }
+            // 如果数量为 0，删除该行
+            ShowOrderInfo();
         }
+
 
         public void PlusQuantity()
         {
@@ -247,7 +261,6 @@ namespace EBS.WinPos
                     preRow.Selected = true;
                 }
             }
-            // 如果数量为 0，删除该行
             ShowOrderInfo();
         }
 
@@ -260,9 +273,9 @@ namespace EBS.WinPos
 
         public void SetVipCard(string code)
         {
-            this.VipCustomer = _vipService.GetByCode(code);
-            this.lblDiscount.Text = this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();
             this.ClearAll();
+            this.VipCustomer = _vipService.GetByCode(code);
+            this.lblDiscount.Text = this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
             this.txtBarCode.Focus();
         }
 
@@ -272,11 +285,11 @@ namespace EBS.WinPos
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.CurrentAccount.StoreId;
             // this.lblStoreId.Text = "门店："
+            lblKeys.Text = "快捷键：F1 加数量 F2 减数量 esc 作废订单 F3 折扣";
             this.txtBarCode.Focus();
 
+
         }
-
-
 
         private void dgvData_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {

@@ -29,6 +29,14 @@ namespace EBS.WinPos.Service
             return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.EndBy == 0 && n.PosId == posId).OrderByDescending(n=>n.Id).FirstOrDefault();           
         }
 
+        public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy)
+        {
+            var data = _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId && n.CreatedBy == CreatedBy).OrderByDescending(n => n.Id).ToList();
+            var result= data.Where(n => n.StartDate.Date <= date && n.EndDate.Value.Date >= date).ToList();
+            return result;
+           // return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId&& n.CreatedBy == CreatedBy && n.StartDate<= date && n.EndDate >= date).OrderByDescending(n => n.Id).ToList();   
+        }
+
         public void BeginWork(Account account,int posId)
         {
             WorkSchedule model = new WorkSchedule();

@@ -79,6 +79,12 @@
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmMy.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMy.Designer.cs">
+      <DependentUpon>frmMy.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPay.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,6 +113,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmMy.resx">
+      <DependentUpon>frmMy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmPay.resx">
       <DependentUpon>frmPay.cs</DependentUpon>
@@ -155,6 +164,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="picture\1day.png" />
+    <Content Include="picture\my.png" />
+    <Content Include="picture\exit.png" />
+    <Content Include="picture\work.png" />
+    <Content Include="PosBillTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="SQLite.Interop.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

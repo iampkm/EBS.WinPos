@@ -107,6 +107,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmWork";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "交接班";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmWork_FormClosing);
             this.Load += new System.EventHandler(this.frmWork_Load);

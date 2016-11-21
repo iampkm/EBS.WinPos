@@ -14,7 +14,6 @@ namespace EBS.WinPos.Domain.Entity
             this.CreatedOn = DateTime.Now;
             this.UpdatedOn = DateTime.Now;
             this.Status = SaleOrderStatus.Create;
-            this.Discount = 1m;
         }
         public string Code { get; set; }
 
@@ -22,7 +21,6 @@ namespace EBS.WinPos.Domain.Entity
         /// <summary>
         /// 支付方式
         /// </summary>
-
         public PaymentWay PaymentWay { get; set; }
         /// <summary>
         /// 支付日期
@@ -32,14 +30,6 @@ namespace EBS.WinPos.Domain.Entity
         /// 订单金额 = 实际价格RealAmount * 数量
         /// </summary>
         public decimal OrderAmount { get; private set; }
-        /// <summary>
-        /// 实际销售金额 = 订单金额 * 折扣
-        /// </summary>
-        public decimal RealAmount { get; private set; }
-        /// <summary>
-        /// 订单折扣(整单折扣,默认为1,即 不打折)
-        /// </summary>
-        public decimal Discount { get; set; }
         /// <summary>
         /// 客户支付金额
         /// </summary>
@@ -83,9 +73,7 @@ namespace EBS.WinPos.Domain.Entity
             }
             this.Items.Add(item);
             // 计算订单总金额
-            this.OrderAmount += item.SalePrice * quantity;
-            //计算订单折后金额（实收金额）
-            this.RealAmount += item.RealPrice * quantity;
+            this.OrderAmount += item.RealPrice * quantity;
         }
 
         public void GenerateNewCode()
@@ -131,15 +119,26 @@ namespace EBS.WinPos.Domain.Entity
             this.UpdatedOn = DateTime.Now;
         }
 
-        public void FinishPaid(PaymentWay payWay = PaymentWay.Cash)
+        public void FinishPaid(decimal payAmount,PaymentWay payWay = PaymentWay.Cash)
         {
             if (this.Status != SaleOrderStatus.Create) { throw new Exception("订单非待支付状态"); }
             this.Status = SaleOrderStatus.Paid;
             this.UpdatedOn = DateTime.Now;
             this.PaidDate = DateTime.Now;
             this.PaymentWay = payWay;
+            this.PayAmount = payAmount;
 
-        }       
+        }
+
+        public decimal GetChargeAmount()
+        {
+            return this.PayAmount - this.OrderAmount;
+        }
+
+        public int GetQuantityTotal()
+        {
+            return this.Items.Sum(n => n.Quantity);
+        }
     }
 
 

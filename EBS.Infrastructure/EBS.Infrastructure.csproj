@@ -58,6 +58,7 @@
     <Compile Include="Extension\MD5Extension.cs" />
     <Compile Include="Extension\stringExtension.cs" />
     <Compile Include="Helper\EncryptHelpler.cs" />
+    <Compile Include="Helper\FileHelper.cs" />
     <Compile Include="Helper\HttpHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
     <Compile Include="Log\ILogger.cs" />

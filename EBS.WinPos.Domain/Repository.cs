@@ -18,6 +18,8 @@ namespace EBS.WinPos.Domain
 
         public DbSet<PaidHistory> PaidHistorys { get; set; }
         public DbSet<VipCard> VipCards { get; set; }
+
+        public DbSet<Store> Stores { get; set; }
         
 
 

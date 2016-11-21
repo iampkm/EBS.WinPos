@@ -83,5 +83,13 @@ namespace EBS.WinPos
                 wrokForm.Show();
             }
         }
+
+        private void toolStripButton4_Click(object sender, EventArgs e)
+        {
+            // 我的班次
+            frmMy myWork = new frmMy();
+            myWork.MdiParent = this;
+            myWork.Show();
+        }
     }
 }
