@@ -51,7 +51,7 @@ namespace EBS.WinPos
            var posForm= ContextService.GetFrom(typeof(frmPos));
             if (posForm == null)
             {
-                posForm = new frmWork();
+                posForm = new frmPos();
                 ContextService.AddFrom(posForm);
                 posForm.MdiParent = ContextService.ParentForm;
                 posForm.Show();
@@ -63,9 +63,7 @@ namespace EBS.WinPos
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
-            ContextService.SignOut();
-            _loginFrom.ShowDialog();
-
+            Application.Restart();
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -90,6 +88,13 @@ namespace EBS.WinPos
             frmMy myWork = new frmMy();
             myWork.MdiParent = this;
             myWork.Show();
+        }
+
+        private void toolStripButton5_Click(object sender, EventArgs e)
+        {
+            frmQuery query = new frmQuery();
+            query.MdiParent = this;
+            query.Show();
         }
     }
 }

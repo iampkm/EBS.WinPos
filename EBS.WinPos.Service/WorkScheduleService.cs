@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Data.SQLite;
 using EBS.WinPos.Service.Dto;
 using EBS.WinPos.Domain.ValueObject;
+using EBS.Infrastructure;
 
 namespace EBS.WinPos.Service
 {
@@ -32,9 +33,19 @@ namespace EBS.WinPos.Service
         public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy)
         {
             var data = _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId && n.CreatedBy == CreatedBy).OrderByDescending(n => n.Id).ToList();
-            var result= data.Where(n => n.StartDate.Date <= date && n.EndDate.Value.Date >= date).ToList();
-            return result;
-           // return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId&& n.CreatedBy == CreatedBy && n.StartDate<= date && n.EndDate >= date).OrderByDescending(n => n.Id).ToList();   
+            var result= data.Where(n => n.StartDate.Date <= date && CheckEndDate(n.EndDate,date)).ToList();
+            return result;          
+        }
+
+        private bool CheckEndDate(DateTime? endDate,DateTime date)
+        {
+            if (endDate.HasValue)
+            {
+                return endDate.Value.Date > date;
+            }
+            else {
+                return true;
+            }
         }
 
         public void BeginWork(Account account,int posId)
@@ -53,7 +64,7 @@ namespace EBS.WinPos.Service
             var work = _db.WorkSchedules.Where(n => n.StoreId == account.StoreId && n.EndBy == 0 && n.PosId == posId).OrderByDescending(n => n.Id).FirstOrDefault();
             if (work == null)
             {
-                throw new Exception("当前机器没有人上班");
+                throw new AppException("当前机器没有人上班");
             }
             work.EndWork(account);
             _db.SaveChanges();

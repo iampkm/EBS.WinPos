@@ -26,9 +26,7 @@ create table SaleOrder
    Code                 varchar(20),
    StoreId              INTEGER ,
    OrderAmount          decimal(8,2),
-   RealAmount        decimal(8,2),
    PayAmount            decimal(8,2),
-   Discount                decimal(8,2),
    PaymentWay           INTEGER,
    PaidDate                 datetime ,  
    Status                   INTEGER ,
@@ -132,6 +130,12 @@ CREATE TABLE VipCard (
     Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
     Code   VARCHAR (50), 
     Discount     decimal(8,2)
+);
+
+CREATE TABLE VipProduct (
+    Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    ProductId   INTEGER, 
+    SalePrice   decimal(8,2)
 );
 
 

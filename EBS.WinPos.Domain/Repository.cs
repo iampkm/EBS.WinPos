@@ -20,8 +20,8 @@ namespace EBS.WinPos.Domain
         public DbSet<VipCard> VipCards { get; set; }
 
         public DbSet<Store> Stores { get; set; }
+        public DbSet<VipProduct> VipProducts { get; set; }
         
-
 
         public Repository()
             : base("SqliteTest")

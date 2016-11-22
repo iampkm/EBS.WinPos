@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EBS.WinPos.Domain.ValueObject;
+using EBS.Infrastructure;
 namespace EBS.WinPos.Domain.Entity
 {
     public class SaleOrder:BaseEntity
@@ -112,16 +113,16 @@ namespace EBS.WinPos.Domain.Entity
         public void Cancel(int editor)
         {
             if(this.Status!= SaleOrderStatus.Create){
-              throw new Exception("新建订单才能作废");
+              throw new AppException("新建订单才能作废");
             }
-            this.Status = SaleOrderStatus.Create;
+            this.Status = SaleOrderStatus.Cancel;
             this.UpdatedBy = editor;
             this.UpdatedOn = DateTime.Now;
         }
 
         public void FinishPaid(decimal payAmount,PaymentWay payWay = PaymentWay.Cash)
         {
-            if (this.Status != SaleOrderStatus.Create) { throw new Exception("订单非待支付状态"); }
+            if (this.Status != SaleOrderStatus.Create) { throw new AppException("订单非待支付状态"); }
             this.Status = SaleOrderStatus.Paid;
             this.UpdatedOn = DateTime.Now;
             this.PaidDate = DateTime.Now;

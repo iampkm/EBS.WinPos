@@ -1,0 +1,2 @@
+﻿1 确定目标机器是64位操作系统还是32位操作系统
+  如果是32位系统，把SQLite.Interop_X86.dll 文件 修改为SQLite.Interop.dll 替换目录内的同名文件

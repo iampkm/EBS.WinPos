@@ -120,7 +120,7 @@ namespace EBS.WinPos
             try
             {
                 _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
-              
+                PosForm.ShowPreOrderInfo(CurrentOrder);
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
                 // 打印作废小票
@@ -140,6 +140,7 @@ namespace EBS.WinPos
             try
             {
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode);
+                PosForm.ShowPreOrderInfo(CurrentOrder);
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
             }
@@ -155,6 +156,7 @@ namespace EBS.WinPos
             try
             {
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode);
+                PosForm.ShowPreOrderInfo(CurrentOrder);
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 ClosePayForm();
             }

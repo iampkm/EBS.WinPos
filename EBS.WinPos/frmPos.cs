@@ -10,6 +10,7 @@ using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Service;
 using EBS.WinPos.Service.Dto;
+using EBS.Infrastructure;
 namespace EBS.WinPos
 {
     public partial class frmPos : Form
@@ -19,6 +20,7 @@ namespace EBS.WinPos
         SaleOrderService _saleOrderService;
         ProductService _productService;
         VipCardService _vipService;
+        VipProductService _vipProductService;
         ShopCart _currentShopCat;
 
         public int OrderId { get; set; }
@@ -32,6 +34,7 @@ namespace EBS.WinPos
             _saleOrderService = new SaleOrderService();
             _productService = new ProductService();
             _vipService = new VipCardService();
+            _vipProductService = new VipProductService();
         }
 
         frmPay _payForm;
@@ -60,15 +63,21 @@ namespace EBS.WinPos
 
             //查询会员折扣
             var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
-
+            var vipProduct=_vipProductService.GetByProductId(model.Id);
+            //真正的销售价
+            var realPrice = model.SalePrice;
+            if(this.VipCustomer!=null)
+            {
+                realPrice = vipProduct == null ? model.SalePrice * discount : vipProduct.SalePrice;
+            }           
             int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
             if (lastIndex > -1)
             {
                 //前一行商品如果与扫码的商品一样，就直接累加数量
                 var preRow = this.dgvData.Rows[lastIndex];
-                if (preRow.Cells["ProductId"].Value != null && (int)preRow.Cells["ProductId"].Value == model.Id)
+                if (preRow.Cells["ProductId"].Value != null && Convert.ToInt32(preRow.Cells["ProductId"].Value) == model.Id)
                 {
-                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value + 1;
+                    preRow.Cells["Quantity"].Value = Convert.ToInt32(preRow.Cells["Quantity"].Value) + 1;
                     preRow.Selected = true;
                     this.txtBarCode.Text = "";
                     ShowOrderInfo();
@@ -84,9 +93,9 @@ namespace EBS.WinPos
             row.Cells["ProductName"].Value = model.Name;
             row.Cells["Specification"].Value = model.Specification;
             row.Cells["SalePrice"].Value = model.SalePrice;
-            row.Cells["RealPrice"].Value = model.SalePrice * discount;
+            row.Cells["RealPrice"].Value = realPrice;
             row.Cells["Quantity"].Value = 1;
-            row.Cells["Amount"].Value = model.SalePrice * discount * 1;
+            row.Cells["Amount"].Value = realPrice * 1;
             row.Selected = true;
             this.txtBarCode.Text = "";
             ShowOrderInfo();
@@ -101,13 +110,20 @@ namespace EBS.WinPos
                 if (row.Cells["ProductId"].Value != null)
                 {
                     var price = (decimal)row.Cells["RealPrice"].Value;
-                    var quantity = (int)row.Cells["Quantity"].Value;
+                    var quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
                     total += price * quantity;
                     quantityTotal += quantity;
                 }
             }
-            this.lblOrderTotal.Text = total.ToString();
-            this.lblQuantityTotal.Text = quantityTotal.ToString();
+            this.lblOrderTotal.Text ="￥" + total.ToString();
+            this.lblQuantityTotal.Text ="数量：" + quantityTotal.ToString();
+        }
+
+        public void ShowPreOrderInfo(OrderInfo model)
+        {
+            this.lblPreOrderCode.Text ="上一单：" + model.OrderCode;
+            this.lblPreOrderAmount.Text = "金额：￥" + model.OrderAmount.ToString();
+            this.lblPreChargeAmount.Text = "找零：￥" + model.ChargeAmount.ToString();
         }
 
         public void CreateOrder(string money)
@@ -164,11 +180,11 @@ namespace EBS.WinPos
                 Product product = new Product();
                 if (row.Cells["ProductId"].Value != null)
                 {
-                    product.Id = (int)row.Cells["ProductId"].Value;
-                    product.Name = (string)row.Cells["ProductName"].Value.ToString();
-                    product.SalePrice = (decimal)row.Cells["SalePrice"].Value;
+                    product.Id = Convert.ToInt32(row.Cells["ProductId"].Value);
+                    product.Name = row.Cells["ProductName"].Value.ToString();
+                    product.SalePrice = Convert.ToDecimal(row.Cells["SalePrice"].Value);
                     product.Code = row.Cells["ProductCode"].Value.ToString();
-                    int quantity = (int)row.Cells["Quantity"].Value;
+                    int quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
                     _currentShopCat.Items.Add(new ShopCartItem(product, quantity, discount));
                 }
             }
@@ -183,12 +199,13 @@ namespace EBS.WinPos
         public void ClearAll()
         {
             this.dgvData.Rows.Clear();
-            this.lblOrderTotal.Text = "0";
-            this.lblQuantityTotal.Text = "0";
-            this.lblOrderCode.Text = "";
-            this.lblDiscount.Text = "";
+            this.lblOrderTotal.Text = "￥0";
+            this.lblQuantityTotal.Text = "数量：0";
+            this.lblOrderCode.Text = "单号：";
+            this.lblDiscount.Text = "折扣：";
             this.VipCustomer = null;
             this._currentShopCat = null;
+            this.OrderId = 0;
         }
 
         private void txtBarCode_KeyDown(object sender, KeyEventArgs e)
@@ -202,14 +219,13 @@ namespace EBS.WinPos
                     Cancel();
                     break;
                 case Keys.F1:  // +
-                    PlusQuantity();
+                    ModifyQuantity();
                     break;
                 case Keys.F2:  // - 
-                    MinusQuantity();
-                    break;
-                case Keys.F3:  // 折扣
+                   // MinusQuantity();
                     inputCustomer();
                     break;
+               
                 default:
                     break;
             }
@@ -220,49 +236,38 @@ namespace EBS.WinPos
         /// </summary>
         public void Cancel()
         {
-            if (OrderId == 0)
+            try
             {
-                SaveOrder(0);
+                if (this.OrderId == 0)
+                {
+                    SaveOrder(0);
+                }
+                _saleOrderService.CancelOrder(this.OrderId, ContextService.CurrentAccount.Id);
+                MessageBox.Show("作废成功!");
+                this.ClearAll();
             }
-            _saleOrderService.CancelOrder(this.OrderId, ContextService.CurrentAccount.Id);
-            this.ClearAll();
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+          
             // 打印作废小票
         }
-        /// <summary>
-        /// 减数量
-        /// </summary>
-        public void MinusQuantity()
+
+        public void ModifyQuantity()
         {
             int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
-            if (lastIndex > -1)
-            {
-                var preRow = this.dgvData.Rows[lastIndex];
-                if (preRow.Cells["ProductId"].Value != null)
-                {
-                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value - 1;
-                    preRow.Selected = true;
-                }
+            if (lastIndex < 0) {
+                throw new AppException("请选择要修改数量的商品");
             }
-            // 如果数量为 0，删除该行
-            ShowOrderInfo();
+            //设置焦点
+            this.dgvData.Focus();
+            this.dgvData.CurrentCell = this.dgvData.Rows[lastIndex].Cells["Quantity"];
+            this.dgvData.BeginEdit(true);
+
         }
 
-
-        public void PlusQuantity()
-        {
-            int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
-            if (lastIndex > -1)
-            {
-                //前一行商品如果与扫码的商品一样，就直接累加数量
-                var preRow = this.dgvData.Rows[lastIndex];
-                if (preRow.Cells["ProductId"].Value != null)
-                {
-                    preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value + 1;
-                    preRow.Selected = true;
-                }
-            }
-            ShowOrderInfo();
-        }
+       
 
         public void inputCustomer()
         {
@@ -275,7 +280,7 @@ namespace EBS.WinPos
         {
             this.ClearAll();
             this.VipCustomer = _vipService.GetByCode(code);
-            this.lblDiscount.Text = this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
+            this.lblDiscount.Text ="折扣："+ this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
             this.txtBarCode.Focus();
         }
 
@@ -285,7 +290,7 @@ namespace EBS.WinPos
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.CurrentAccount.StoreId;
             // this.lblStoreId.Text = "门店："
-            lblKeys.Text = "快捷键：F1 加数量 F2 减数量 esc 作废订单 F3 折扣";
+            lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
             this.txtBarCode.Focus();
 
 
@@ -312,6 +317,52 @@ namespace EBS.WinPos
 
         //dgvData.RowHeadersDefaultCellStyle.ForeColor
 
+        private void TextBoxDec_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           
+           if (!Char.IsDigit(e.KeyChar) && e.KeyChar != 8) //&& e.KeyChar != '.' e.KeyChar != 8 &&
+            {
+                e.Handled = true;
+            }            
+          
+        }
+
+        private void dgvData_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            if (this.dgvData.CurrentCell.ColumnIndex == 7)  //数量列
+            {
+                e.Control.KeyPress += new KeyPressEventHandler(TextBoxDec_KeyPress);
+
+                //DataGridViewTextBoxColumn
+                if (e.Control.GetType().Name == "DataGridViewTextBoxEditingControl")
+                {
+                    var qtyBox = e.Control as DataGridViewTextBoxEditingControl;
+                    //添加事件
+                    qtyBox.TextChanged += qtyBox_TextChanged;
+                }
+            }
+        }
+
+        void qtyBox_TextChanged(object sender, EventArgs e)
+        {
+            int column = dgvData.CurrentCellAddress.X;
+            int row = dgvData.CurrentCellAddress.Y;
+            var qtyBox = (DataGridViewTextBoxEditingControl)sender;
+            this.dgvData[column, row].Value = qtyBox.Text;
+            ShowOrderInfo();
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter)
+            {
+                //this.OnKeyPress(new KeyPressEventArgs('r'));
+                //return true;
+                txtBarCode.Focus();
+            }
+           
+             return base.ProcessCmdKey(ref msg, keyData);
+        }
 
     }
 }

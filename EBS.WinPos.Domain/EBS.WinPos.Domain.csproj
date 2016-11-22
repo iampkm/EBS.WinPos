@@ -73,6 +73,7 @@
     <Compile Include="Entity\SaleOrderItem.cs" />
     <Compile Include="Entity\Store.cs" />
     <Compile Include="Entity\VipCard.cs" />
+    <Compile Include="Entity\VipProduct.cs" />
     <Compile Include="Entity\WorkSchedule.cs" />
     <Compile Include="Event\FinishOrderEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

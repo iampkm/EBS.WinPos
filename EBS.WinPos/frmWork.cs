@@ -29,10 +29,11 @@ namespace EBS.WinPos
            }
            else {
               this.btnBegin.Enabled = false;
-              this.lblCreatedBy.Text = "当班人：" + worker.CreatedByName;
-              this.lblTime.Text = worker.StartDate.ToShortDateString();
+              this.lblCreatedBy.Text = worker.CreatedByName + "正在上班" ;
+              this.lblTime.Text ="上班时间：" + worker.StartDate.ToString("yyyy-MM-dd HH:mm:ss");
               this.btnEnd.Text = worker.CreatedBy == ContextService.CurrentAccount.Id ? "下 班" : "交 班";
             }
+           this.gbUserBegin.Text = "上 班     当前账号：" + ContextService.CurrentAccount.NickName;
            
           
         }

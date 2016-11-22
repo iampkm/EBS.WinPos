@@ -18,6 +18,7 @@ namespace EBS.WinPos
        public static void SignOut()
        {
            CurrentAccount = null;
+           _fromDic.Clear();
        }
 
        public static void AddFrom(Form form)

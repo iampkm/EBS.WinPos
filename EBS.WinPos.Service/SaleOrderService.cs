@@ -11,6 +11,7 @@ using EBS.WinPos.Service.Dto;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure.Helper;
 using EBS.Infrastructure.Extension;
+using EBS.Infrastructure;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
@@ -49,7 +50,7 @@ namespace EBS.WinPos.Service
         public void CancelOrder(int orderId, int editor)
         {
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
-            if (model == null) { throw new Exception("订单不存在"); }
+            if (model == null) { throw new AppException("订单不存在"); }
             model.Cancel(editor);
             _db.SaveChanges();
         }
@@ -57,10 +58,10 @@ namespace EBS.WinPos.Service
         public void CashPay(int orderId, decimal payAmount)
         {
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
-            if (model == null) { throw new Exception("订单不存在"); }
+            if (model == null) { throw new AppException("订单不存在"); }
             if (payAmount < model.OrderAmount)
             {
-                throw new Exception("支付金额低于订单金额");
+                throw new AppException("支付金额低于订单金额");
             }
 
             model.FinishPaid(payAmount);
@@ -73,10 +74,10 @@ namespace EBS.WinPos.Service
 
         public void WechatPay(int orderId, string payBarCode)
         {
-            if (string.IsNullOrEmpty(payBarCode)) { throw new Exception("请录入微信付款码"); }
+            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入微信付款码"); }
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
-            if (model == null) { throw new Exception("订单不存在"); }
-            if (model.OrderAmount <= 0) { throw new Exception("订单金额不能为0"); }
+            if (model == null) { throw new AppException("订单不存在"); }
+            if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
             // 发起微信支付
             string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OrderAmount.ToString("F2"), systemId = "2" });
             string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
@@ -88,7 +89,7 @@ namespace EBS.WinPos.Service
                 _db.SaveChanges();
             }
             else {
-                throw new Exception("支付失败，请稍后重试");
+                throw new AppException("支付失败，请稍后重试");
             }
 
 
@@ -105,7 +106,7 @@ namespace EBS.WinPos.Service
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             //打印模板
             string posTemplate = FileHelper.ReadText("PosBillTemplate.txt");
-            if (string.IsNullOrEmpty(posTemplate)) { throw new Exception("小票模板为空"); }
+            if (string.IsNullOrEmpty(posTemplate)) { throw new AppException("小票模板为空"); }
             var lineLocation =posTemplate.LastIndexOf("##item##");
             //分离商品item模板
             string billTemplate = posTemplate.ToLower().Substring(0, posTemplate.Length - lineLocation);          

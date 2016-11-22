@@ -29,20 +29,21 @@
         private void InitializeComponent()
         {
             this.plTop = new System.Windows.Forms.Panel();
+            this.btnQuery = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.plBody = new System.Windows.Forms.Panel();
             this.dgvData = new System.Windows.Forms.DataGridView();
-            this.plBottom = new System.Windows.Forms.Panel();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtCashAmount = new System.Windows.Forms.TextBox();
-            this.btnQuery = new System.Windows.Forms.Button();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CreatedByName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.StartDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EndDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CashAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.plBottom = new System.Windows.Forms.Panel();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtCashAmount = new System.Windows.Forms.TextBox();
+            this.btnBack = new System.Windows.Forms.Button();
             this.plTop.SuspendLayout();
             this.plBody.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
@@ -51,6 +52,7 @@
             // 
             // plTop
             // 
+            this.plTop.Controls.Add(this.btnBack);
             this.plTop.Controls.Add(this.btnQuery);
             this.plTop.Controls.Add(this.label2);
             this.plTop.Controls.Add(this.dtpDate);
@@ -59,6 +61,16 @@
             this.plTop.Name = "plTop";
             this.plTop.Size = new System.Drawing.Size(660, 100);
             this.plTop.TabIndex = 0;
+            // 
+            // btnQuery
+            // 
+            this.btnQuery.Location = new System.Drawing.Point(381, 23);
+            this.btnQuery.Name = "btnQuery";
+            this.btnQuery.Size = new System.Drawing.Size(75, 31);
+            this.btnQuery.TabIndex = 2;
+            this.btnQuery.Text = "查 询";
+            this.btnQuery.UseVisualStyleBackColor = true;
+            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
             // 
             // label2
             // 
@@ -105,6 +117,44 @@
             this.dgvData.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvData_CellClick);
             this.dgvData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvData_RowPostPaint);
             // 
+            // Id
+            // 
+            this.Id.DataPropertyName = "Id";
+            this.Id.HeaderText = "编号";
+            this.Id.Name = "Id";
+            this.Id.ReadOnly = true;
+            this.Id.Visible = false;
+            // 
+            // CreatedByName
+            // 
+            this.CreatedByName.DataPropertyName = "CreatedByName";
+            this.CreatedByName.HeaderText = "员工";
+            this.CreatedByName.Name = "CreatedByName";
+            this.CreatedByName.ReadOnly = true;
+            // 
+            // StartDate
+            // 
+            this.StartDate.DataPropertyName = "StartDate";
+            this.StartDate.HeaderText = "上班时间";
+            this.StartDate.Name = "StartDate";
+            this.StartDate.ReadOnly = true;
+            this.StartDate.Width = 200;
+            // 
+            // EndDate
+            // 
+            this.EndDate.DataPropertyName = "EndDate";
+            this.EndDate.HeaderText = "下班时间";
+            this.EndDate.Name = "EndDate";
+            this.EndDate.ReadOnly = true;
+            this.EndDate.Width = 200;
+            // 
+            // CashAmount
+            // 
+            this.CashAmount.DataPropertyName = "CashAmount";
+            this.CashAmount.HeaderText = "收现金额";
+            this.CashAmount.Name = "CashAmount";
+            this.CashAmount.ReadOnly = true;
+            // 
             // plBottom
             // 
             this.plBottom.Controls.Add(this.btnSave);
@@ -143,53 +193,15 @@
             this.txtCashAmount.TabIndex = 0;
             this.txtCashAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCashAmount_KeyDown);
             // 
-            // btnQuery
+            // btnBack
             // 
-            this.btnQuery.Location = new System.Drawing.Point(381, 23);
-            this.btnQuery.Name = "btnQuery";
-            this.btnQuery.Size = new System.Drawing.Size(75, 31);
-            this.btnQuery.TabIndex = 2;
-            this.btnQuery.Text = "查 询";
-            this.btnQuery.UseVisualStyleBackColor = true;
-            this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
-            // 
-            // Id
-            // 
-            this.Id.DataPropertyName = "Id";
-            this.Id.HeaderText = "编号";
-            this.Id.Name = "Id";
-            this.Id.ReadOnly = true;
-            this.Id.Visible = false;
-            // 
-            // CreatedByName
-            // 
-            this.CreatedByName.DataPropertyName = "CreatedByName";
-            this.CreatedByName.HeaderText = "员工";
-            this.CreatedByName.Name = "CreatedByName";
-            this.CreatedByName.ReadOnly = true;
-            // 
-            // StartDate
-            // 
-            this.StartDate.DataPropertyName = "StartDate";
-            this.StartDate.HeaderText = "上班时间";
-            this.StartDate.Name = "StartDate";
-            this.StartDate.ReadOnly = true;
-            this.StartDate.Width = 200;
-            // 
-            // EndDate
-            // 
-            this.EndDate.DataPropertyName = "EndDate";
-            this.EndDate.HeaderText = "下班时间";
-            this.EndDate.Name = "EndDate";
-            this.EndDate.ReadOnly = true;
-            this.EndDate.Width = 200;
-            // 
-            // CashAmount
-            // 
-            this.CashAmount.DataPropertyName = "CashAmount";
-            this.CashAmount.HeaderText = "收现金额";
-            this.CashAmount.Name = "CashAmount";
-            this.CashAmount.ReadOnly = true;
+            this.btnBack.Location = new System.Drawing.Point(481, 23);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(74, 31);
+            this.btnBack.TabIndex = 2;
+            this.btnBack.Text = "返 回";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.button1_Click);
             // 
             // frmMy
             // 
@@ -232,5 +244,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn StartDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn EndDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn CashAmount;
+        private System.Windows.Forms.Button btnBack;
     }
 }

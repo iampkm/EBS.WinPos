@@ -86,6 +86,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.txtCode);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmCustomerId";
             this.Text = "会员卡号录入";
             this.Load += new System.EventHandler(this.frmDiscount_Load);
