@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<updateFiles>
+  <!--<file path="EBS.WinPos.exe" url="http://up.test.cn/EBS.WinPos.exe" lastver="1.0.0.1" size="1" needRestart="True" />
+  <file path="EBS.WinPos.Service.dll" url="http://up.test.cn/EBS.WinPos.Service.dll" lastver="1.0.0.1" size="1" needRestart="false" />
+  <file path="EBS.WinPos.Domain.dll" url="http://up.test.cn/EBS.WinPos.Domain.dll" lastver="1.0.0.1" size="1" needRestart="false" />
+  <file path="EBS.Infrastructure.dll" url="http://up.test.cn/EBS.Infrastructure.dll" lastver="1.0.0.1" size="1" needRestart="false" />
+  <file path="EBS.WinPos.exe.config" url="http://up.test.cn/EBS.WinPos.exe.config" lastver="1.0.0.1" size="1" needRestart="True" />-->
+  <file path="update.txt" url="http://up.test.cn/update.txt" lastver="1.0.0.1" size="1" needRestart="True" />
+</updateFiles>

@@ -150,6 +150,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="App.config" />
+    <None Include="Autoupdater.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -167,6 +170,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\EBS.AutoUpdater\EBS.AutoUpdater.csproj">
+      <Project>{5092df23-55a7-494a-8df8-a8941ea873b9}</Project>
+      <Name>EBS.AutoUpdater</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EBS.Infrastructure\EBS.Infrastructure.csproj">
       <Project>{07672811-e40d-4990-b96e-9c8d26b1e867}</Project>
       <Name>EBS.Infrastructure</Name>

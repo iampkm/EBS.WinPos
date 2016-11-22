@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5092DF23-55A7-494A-8DF8-A8941EA873B9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EBS.AutoUpdater</RootNamespace>
+    <AssemblyName>EBS.AutoUpdater</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoUpdateHelper\AutoUpdater.cs" />
+    <Compile Include="AutoUpdateHelper\CommonUnitity.cs" />
+    <Compile Include="AutoUpdateHelper\Config.cs" />
+    <Compile Include="AutoUpdateHelper\ConstFile.cs" />
+    <Compile Include="AutoUpdateHelper\DownloadFileInfo.cs" />
+    <Compile Include="AutoUpdateHelper\IAutoUpdater.cs" />
+    <Compile Include="AutoUpdateHelper\LocalFile.cs" />
+    <Compile Include="AutoUpdateHelper\RemoteFile.cs" />
+    <Compile Include="AutoUpdateHelper\UpdateFileList.cs" />
+    <Compile Include="AutoUpdateService.cs" />
+    <Compile Include="DownloadConfirm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadConfirm.designer.cs">
+      <DependentUpon>DownloadConfirm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DownloadProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadProgress.designer.cs">
+      <DependentUpon>DownloadProgress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AutoUpdateHelper\.svn\all-wcprops" />
+    <None Include="AutoUpdateHelper\.svn\entries" />
+    <None Include="AutoUpdateHelper\.svn\prop-base\AutoUpdater.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\AutoUpdater.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\CommonUnitity.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\Config.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\ConstFile.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\DownloadFileInfo.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\IAutoUpdater.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\LocalFile.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\RemoteFile.cs.svn-base" />
+    <None Include="AutoUpdateHelper\.svn\text-base\UpdateFileList.cs.svn-base" />
+    <None Include="Autoupdater.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AutoupdateService.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DownloadConfirm.resx">
+      <DependentUpon>DownloadConfirm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DownloadProgress.resx">
+      <DependentUpon>DownloadProgress.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AutoUpdateHelper\.svn\props\" />
+    <Folder Include="AutoUpdateHelper\.svn\tmp\prop-base\" />
+    <Folder Include="AutoUpdateHelper\.svn\tmp\props\" />
+    <Folder Include="AutoUpdateHelper\.svn\tmp\text-base\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
