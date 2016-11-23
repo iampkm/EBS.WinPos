@@ -8,6 +8,19 @@ namespace EBS.WinPos.Domain
    public class Config
     {
         /// <summary>
+        ///sqlite 数据库连接字符串
+        /// </summary>
+        public static string ConnectionString
+        {
+            get
+            {
+                string configKey = "SqliteTest";
+                return ConfigurationManager.ConnectionStrings[configKey].ConnectionString;
+
+            }
+        }
+
+        /// <summary>
         /// 支付服务器
         /// </summary>
         public static string PayServer

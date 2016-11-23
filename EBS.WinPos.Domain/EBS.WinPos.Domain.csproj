@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="BaseEntity.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="DapperContext.cs" />
     <Compile Include="Entity\Account.cs" />
     <Compile Include="Entity\PaidHistory.cs" />
     <Compile Include="Entity\Product.cs" />

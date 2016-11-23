@@ -22,10 +22,6 @@ namespace EBS.WinPos
                 //处理非UI线程异常   
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 
-                // 开启自动更新
-                EBS.AutoUpdater.AutoUpdateService updateService = new AutoUpdater.AutoUpdateService();
-                updateService.CheckUpdate();
-
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new frmMain());
