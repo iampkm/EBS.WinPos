@@ -33,9 +33,8 @@
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.0.0\lib\net40\EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\EBS\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountService.cs" />
+    <Compile Include="Dto\InputCashAmount.cs" />
     <Compile Include="Dto\OrerInfo.cs" />
     <Compile Include="Dto\ShopCart.cs" />
     <Compile Include="Dto\ShopCartItem.cs" />
@@ -63,7 +63,9 @@
     <Compile Include="ProductService.cs" />
     <Compile Include="SaleOrderService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Task\HttpService.cs" />
+    <Compile Include="Task\OrderSyncTask.cs" />
+    <Compile Include="Task\SyncService.cs" />
+    <Compile Include="Task\WorkScheduleSyncTask.cs" />
     <Compile Include="VipCardService.cs" />
     <Compile Include="VipProductService.cs" />
     <Compile Include="WorkScheduleService.cs" />

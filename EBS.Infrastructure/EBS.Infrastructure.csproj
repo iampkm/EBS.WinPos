@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppContext.cs" />
     <Compile Include="AppException.cs" />
     <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="Events\EventPublisher.cs" />

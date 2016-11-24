@@ -10,9 +10,11 @@ namespace EBS.WinPos.Service
    public class AccountService
     {
        Repository _db;
+       DapperContext _query;
        public AccountService()
        {
            _db = new Repository();
+           _query = new DapperContext();
        }
 
        public Account Login(string userName, string passwrod)
@@ -21,7 +23,8 @@ namespace EBS.WinPos.Service
            if (passwrod == "") { throw new AppException("密码为空"); }
            int userId = 0;
            int.TryParse(userName, out userId);       
-           var model = _db.Accounts.FirstOrDefault(n => n.Id == userId || n.UserName == userName);
+          // var model = _db.Accounts.FirstOrDefault(n => n.Id == userId || n.UserName == userName);
+           var model = _query.First<Account>("select * from Account where Id=@Id or UserName=@UserName", new { Id = userId, UserName = userName });
          
            if(model==null||!model.VerifyPassword(passwrod))
            {

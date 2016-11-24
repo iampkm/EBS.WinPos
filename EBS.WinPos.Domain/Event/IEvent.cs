@@ -5,8 +5,7 @@ using System.Text;
 
 namespace EBS.WinPos.Domain.Event
 {
-   public class FinishOrderEvent : IEvent
+   public interface IEvent
     {
-        
     }
 }

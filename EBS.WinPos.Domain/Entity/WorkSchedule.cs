@@ -31,6 +31,14 @@ namespace EBS.WinPos.Domain.Entity
        /// </summary>
        public int EndBy { get; set; }
        public string EndByName { get; set; }
+       /// <summary>
+       /// 是否同步记录
+       /// </summary>
+       public int IsSync { get; set; }
+       /// <summary>
+       /// 是否同步金额
+       /// </summary>
+       public int IsSyncAmount { get; set; }
 
        public void EndWork(Account account)
        {

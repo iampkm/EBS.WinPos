@@ -19,7 +19,18 @@ namespace EBS.WinPos.Domain
 
             }
         }
+        /// <summary>
+        /// EBS 后台服务地址
+        /// </summary>
+        public static string ApiService
+        {
+            get
+            {
+                string configKey = "ApiService";
+                return ConfigurationManager.AppSettings[configKey].ToString();
 
+            }
+        }
         /// <summary>
         /// 支付服务器
         /// </summary>

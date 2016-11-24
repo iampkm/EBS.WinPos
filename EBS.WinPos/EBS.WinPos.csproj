@@ -64,7 +64,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppContext.cs" />
     <Compile Include="ContextService.cs" />
     <Compile Include="frmCustomer.cs">
       <SubType>Form</SubType>

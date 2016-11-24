@@ -2,7 +2,7 @@
 DROP TABLE Product;
 
 CREATE TABLE Product (
-    Id            INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
+    Id            INTEGER    NOT NULL  PRIMARY KEY ,
     Code          VARCHAR (20),
     Name          VARCHAR (50),
     BarCode       VARCHAR (50),
@@ -28,12 +28,11 @@ create table SaleOrder
    OrderAmount          decimal(8,2),
    PayAmount            decimal(8,2),
    PaymentWay           INTEGER,
-   PaidDate                 datetime ,  
-   Status                   INTEGER ,
+   PaidDate             datetime ,  
+   Status               INTEGER ,
    CreatedOn            datetime ,
-   CreatedBy            INTEGER,
-   UpdatedOn            datetime ,
-   UpdatedBy            INTEGER 
+   CreatedBy            INTEGER
+   IsSync		INTEGER
 );
 CREATE UNIQUE INDEX idx_SaleOrder_code ON SaleOrder (
     Code
@@ -79,14 +78,7 @@ create table PaidHistory
    CreatedOn            datetime
 );
 
-DROP TABLE UploadFailedOrder;
-create table UploadFailedOrder
-(
-   Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
-   SaleOrderId          INTEGER,
-   CreatedOn            datetime
-);
-
+drop table WorkSchedule;
 create table WorkSchedule
 (
    Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
@@ -98,7 +90,9 @@ create table WorkSchedule
    StartDate            datetime,
    EndDate              datetime,
    EndBy                INTEGER,
-   EndByName            varchar(50)
+   EndByName            varchar(50),
+   IsSync		INTEGER,
+   IsSyncAmount         INTEGER
 );
 
 create table Store
@@ -127,13 +121,13 @@ CREATE TABLE Setting (
 );
 
 CREATE TABLE VipCard (
-    Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    Id       INTEGER      PRIMARY KEY ,
     Code   VARCHAR (50), 
     Discount     decimal(8,2)
 );
 
 CREATE TABLE VipProduct (
-    Id       INTEGER      PRIMARY KEY AUTOINCREMENT,
+    Id       INTEGER      PRIMARY KEY ,
     ProductId   INTEGER, 
     SalePrice   decimal(8,2)
 );

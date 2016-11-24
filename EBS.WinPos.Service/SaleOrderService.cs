@@ -12,16 +12,19 @@ using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure.Helper;
 using EBS.Infrastructure.Extension;
 using EBS.Infrastructure;
+using EBS.WinPos.Service.Task;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
     {
         Repository _db;
         PrinterService _printService;
+        SyncService _syncService;
         public SaleOrderService()
         {
             _db = new Repository();
             _printService = new PrinterService();
+            _syncService = new SyncService(AppContext.Log);
         }
         public OrderInfo CreateOrder(ShopCart cat)
         {
@@ -53,6 +56,8 @@ namespace EBS.WinPos.Service
             if (model == null) { throw new AppException("订单不存在"); }
             model.Cancel(editor);
             _db.SaveChanges();
+            //同步到服务器
+            _syncService.Send(model);
         }
 
         public void CashPay(int orderId, decimal payAmount)
@@ -68,8 +73,8 @@ namespace EBS.WinPos.Service
             //保存交易记录
             _db.SaveChanges();
 
-            //触发订单支付完成事件，推送到服务器
-
+            //同步到服务器
+            _syncService.Send(model);
         }
 
         public void WechatPay(int orderId, string payBarCode)
@@ -87,6 +92,8 @@ namespace EBS.WinPos.Service
                 //支付成功
                 model.FinishPaid(model.OrderAmount, PaymentWay.WechatPay);
                 _db.SaveChanges();
+                //同步到服务器
+                _syncService.Send(model);
             }
             else {
                 throw new AppException("支付失败，请稍后重试");

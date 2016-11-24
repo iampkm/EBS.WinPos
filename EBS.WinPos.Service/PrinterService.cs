@@ -4,7 +4,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Net;
-using System.Net.Sockets;  
+using System.Net.Sockets;
+using EBS.Infrastructure;  
 namespace EBS.WinPos.Service
 {
    public class PrinterService
@@ -134,5 +135,36 @@ namespace EBS.WinPos.Service
             soc.Send(b);  
             soc.Close();  
         }  
+
+
+        // 打印
+        //打印文字（端口号 字符）
+        public  void PrintString(int Port, string val)
+        {
+            System.IO.Ports.SerialPort sp = new System.IO.Ports.SerialPort();
+            sp.PortName = "COM" + Port.ToString();
+            try
+            {
+                sp.Open();
+            }
+            catch
+            {
+                throw new AppException("端口被占用");
+            }
+            List<byte> data = new List<byte>();
+            string[] lines = val.Split('\n');
+            for (int i = 0; i < lines.Length; i++)
+            {
+                byte[] content = System.Text.Encoding.Default.GetBytes(lines[i].Replace("\r", ""));
+                byte[] wapbt = { 0x0a };
+                data.AddRange(content);
+                data.AddRange(wapbt);
+            }
+            byte[] cutbt = { 0x1d, 0x56, 0x42, 0x11 };
+            data.AddRange(cutbt);
+            byte[] databt = data.ToArray();
+            sp.Write(databt, 0, databt.Length);
+            sp.Close();
+        }
     }
 }

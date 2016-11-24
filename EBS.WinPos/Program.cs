@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using EBS.Infrastructure;
+using EBS.WinPos.Service.Task;
 namespace EBS.WinPos
 {
     static class Program
@@ -21,6 +22,16 @@ namespace EBS.WinPos
                 Application.ThreadException += new System.Threading.ThreadExceptionEventHandler(Application_ThreadException);
                 //处理非UI线程异常   
                 AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+
+                // 程序安装时初始化数据
+                // 开启自动更新
+              //  EBS.AutoUpdater.AutoUpdateService updateService = new AutoUpdater.AutoUpdateService();
+               // updateService.CheckUpdate();
+
+                //开启后台任务
+                AppContext.StartTask();
+
+             
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

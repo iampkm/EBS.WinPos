@@ -76,7 +76,9 @@
     <Compile Include="Entity\VipCard.cs" />
     <Compile Include="Entity\VipProduct.cs" />
     <Compile Include="Entity\WorkSchedule.cs" />
+    <Compile Include="Event\EventHander.cs" />
     <Compile Include="Event\FinishOrderEvent.cs" />
+    <Compile Include="Event\IEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="ValueObject\SaleOrderPaidStatus.cs" />

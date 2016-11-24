@@ -9,15 +9,18 @@ using System.Data.SQLite;
 using EBS.WinPos.Service.Dto;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure;
+using EBS.WinPos.Service.Task;
 
 namespace EBS.WinPos.Service
 {
    public class WorkScheduleService
     {
         Repository _db;
+        SyncService _syncService;
         public WorkScheduleService()
         {
             _db = new Repository();
+            _syncService = new SyncService(AppContext.Log);
         }
         
         /// <summary>
@@ -75,6 +78,8 @@ namespace EBS.WinPos.Service
             var work = _db.WorkSchedules.Where(n => n.Id == id).FirstOrDefault();
             work.CashAmount = cashAmount;
             _db.SaveChanges();
+            // 同步收现金额到服务器
+            _syncService.Send(work);
         }
     }
 }

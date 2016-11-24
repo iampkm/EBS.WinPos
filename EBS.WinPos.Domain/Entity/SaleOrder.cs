@@ -49,6 +49,8 @@ namespace EBS.WinPos.Domain.Entity
 
         public DateTime UpdatedOn { get; set; }
 
+        public int IsSync { get; set; }
+
         public virtual List<SaleOrderItem> Items { get; set; }
 
 

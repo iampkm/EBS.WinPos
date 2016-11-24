@@ -14,25 +14,25 @@ namespace EBS.WinPos.Domain
             return new SQLiteConnection(Config.ConnectionString);
         }
 
-        public T First<T>(string sql)
+        public T First<T>(string sql, object param)
         {
             var result = default(T);
             using (IDbConnection conn = GetConnection())
             {
                 conn.Open();
-                result= conn.Query<T>(sql).FirstOrDefault();
+                result= conn.Query<T>(sql,param).FirstOrDefault();
                 conn.Close();
             }
             return result;
         }
 
-        public IEnumerable<T> Query<T>(string sql)
+        public IEnumerable<T> Query<T>(string sql,object param)
         {
             var result = default(IEnumerable<T>);
             using (IDbConnection conn = GetConnection())
             {
                 conn.Open();
-                result = conn.Query<T>(sql);
+                result = conn.Query<T>(sql,param);
                 conn.Close();
             }
             return result;
