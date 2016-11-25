@@ -32,7 +32,7 @@ namespace EBS.WinPos.Service.Task
                 }
                 if (model.IsSyncAmount==0)
                 {
-                    _syncService.Send(new InputCashAmount(model.Id, model.CashAmount));
+                    _syncService.Send(new InputCashAmount(model.Id, model.CashAmount,model.PosId,model.StoreId));
                 }
             }
         }

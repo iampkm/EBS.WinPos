@@ -211,7 +211,7 @@ namespace EBS.WinPos.Service.Task
             try
             {
 
-                string url = string.Format("{0}/PosSync/Hander");
+                string url = string.Format("{0}/PosSync/Hander", _serverUrl);
                 string body = JsonConvert.SerializeObject(model);
                 string eventName = "CreatedWorkSchedule";
                 string param = string.Format("body={0}&eventName={1}", body, eventName);
@@ -235,7 +235,7 @@ namespace EBS.WinPos.Service.Task
             try
             {
 
-                string url = string.Format("{0}/PosSync/Hander");
+                string url = string.Format("{0}/PosSync/Hander", _serverUrl);
                 string body = JsonConvert.SerializeObject(model);
                 string eventName = "CreatedWorkSchedule";
                 string param = string.Format("body={0}&eventName={1}", body, eventName);
@@ -260,11 +260,9 @@ namespace EBS.WinPos.Service.Task
              var model = data as SaleOrder;
             try
             {
-               
-                string url = string.Format("{0}/PosSync/Hander");
+                string url = string.Format("{0}/PosSync/SaleOrderSync",_serverUrl);
                 string body = JsonConvert.SerializeObject(model);
-                string eventName ="PaidSaleOrder";
-                string param = string.Format("body={0}&eventName={1}", body, eventName);
+                string param = string.Format("body=", body);
                 string result = HttpHelper.HttpPost(url, param);
                 if(result=="1")
                 {

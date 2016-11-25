@@ -29,7 +29,7 @@ namespace EBS.WinPos
                // updateService.CheckUpdate();
 
                 //开启后台任务
-                AppContext.StartTask();
+              //  AppContext.StartTask();
 
              
 
