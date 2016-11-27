@@ -7,6 +7,7 @@ CREATE TABLE Product (
     Name          VARCHAR (50),
     BarCode       VARCHAR (50),
     Specification VARCHAR (200),
+    Unit               varchar(50),
     SalePrice     DECIMAL (8,2),
     UpdatedOn     DATETIME
 );
@@ -129,6 +130,20 @@ CREATE TABLE VipCard (
 CREATE TABLE VipProduct (
     Id       INTEGER      PRIMARY KEY ,
     ProductId   INTEGER, 
+    SalePrice   decimal(8,2)
+);
+
+CREATE TABLE ProductAreaPrice (
+    Id       INTEGER      PRIMARY KEY ,
+    ProductId   INTEGER, 
+    AreaId         varchar(6), 
+    SalePrice    decimal(8,2)
+);
+
+CREATE TABLE ProductStorePrice (
+    Id       INTEGER      PRIMARY KEY ,
+    ProductId   INTEGER, 
+    StoreId     INTEGER, 
     SalePrice   decimal(8,2)
 );
 

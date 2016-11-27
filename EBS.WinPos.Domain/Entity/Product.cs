@@ -18,6 +18,8 @@ namespace EBS.WinPos.Domain.Entity
         public string Name { get; set; }
 
         public string Specification { get; set; }
+
+        public string Unit { get; set; }
         public decimal SalePrice { get; set; }
 
         public DateTime UpdatedOn { get; set; }

@@ -64,8 +64,11 @@ namespace EBS.WinPos
             {
                 posForm = new frmPos();
                 ContextService.AddFrom(posForm);
-                posForm.MdiParent = ContextService.ParentForm;
+                // posForm.MdiParent = ContextService.ParentForm;
+                posForm.TopLevel = true;
                 posForm.Show();
+               
+                
             }
             else
             {

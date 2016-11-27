@@ -77,7 +77,10 @@ namespace EBS.WinPos
                 var preRow = this.dgvData.Rows[lastIndex];
                 if (preRow.Cells["ProductId"].Value != null && Convert.ToInt32(preRow.Cells["ProductId"].Value) == model.Id)
                 {
-                    preRow.Cells["Quantity"].Value = Convert.ToInt32(preRow.Cells["Quantity"].Value) + 1;
+                    var qty = Convert.ToInt32(preRow.Cells["Quantity"].Value) + 1;
+                    preRow.Cells["Quantity"].Value = qty;
+                    preRow.Cells["DiscountAmount"].Value = (model.SalePrice - realPrice) * qty;
+                    preRow.Cells["Amount"].Value = realPrice * qty;
                     preRow.Selected = true;
                     this.txtBarCode.Text = "";
                     ShowOrderInfo();
@@ -92,38 +95,46 @@ namespace EBS.WinPos
             row.Cells["BarCode"].Value = model.BarCode;
             row.Cells["ProductName"].Value = model.Name;
             row.Cells["Specification"].Value = model.Specification;
+            row.Cells["Unit"].Value = model.Unit;
             row.Cells["SalePrice"].Value = model.SalePrice;
             row.Cells["RealPrice"].Value = realPrice;
             row.Cells["Quantity"].Value = 1;
+            row.Cells["DiscountAmount"].Value = (model.SalePrice- realPrice) * 1;
             row.Cells["Amount"].Value = realPrice * 1;
             row.Selected = true;
             this.txtBarCode.Text = "";
             ShowOrderInfo();
+
+           
         }
 
         public void ShowOrderInfo()
         {
             var total = 0m;
             var quantityTotal = 0;
+            var discountAmount = 0m;
             foreach (DataGridViewRow row in this.dgvData.Rows)
             {
                 if (row.Cells["ProductId"].Value != null)
                 {
+                    var salePrice = (decimal)row.Cells["SalePrice"].Value;
                     var price = (decimal)row.Cells["RealPrice"].Value;
                     var quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
                     total += price * quantity;
                     quantityTotal += quantity;
+                    discountAmount += (salePrice - price) * quantity;
                 }
             }
-            this.lblOrderTotal.Text ="￥" + total.ToString();
-            this.lblQuantityTotal.Text ="数量：" + quantityTotal.ToString();
+            this.lblOrderTotal.Text ="总金额：" + total.ToString("C");
+            this.lblQuantityTotal.Text ="总件数：" + quantityTotal.ToString();
+            this.lblDiscount.Text ="总优惠：" +　discountAmount.ToString("C");
         }
 
         public void ShowPreOrderInfo(OrderInfo model)
         {
             this.lblPreOrderCode.Text ="上一单：" + model.OrderCode;
-            this.lblPreOrderAmount.Text = "金额：￥" + model.OrderAmount.ToString();
-            this.lblPreChargeAmount.Text = "找零：￥" + model.ChargeAmount.ToString();
+            this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("C");
+            this.lblPreChargeAmount.Text = "找零:" + model.ChargeAmount.ToString("C");
         }
 
         public void CreateOrder(string money)
@@ -199,10 +210,10 @@ namespace EBS.WinPos
         public void ClearAll()
         {
             this.dgvData.Rows.Clear();
-            this.lblOrderTotal.Text = "￥0";
-            this.lblQuantityTotal.Text = "数量：0";
-            this.lblOrderCode.Text = "单号：";
-            this.lblDiscount.Text = "折扣：";
+            this.lblOrderTotal.Text = "总金额:￥0.00";
+            this.lblQuantityTotal.Text = "总件数：0";
+            this.lblOrderCode.Text = "订单号：";
+            this.lblDiscount.Text = "总优惠:";
             this.VipCustomer = null;
             this._currentShopCat = null;
             this.OrderId = 0;
@@ -238,6 +249,11 @@ namespace EBS.WinPos
         {
             try
             {
+                DialogResult result = MessageBox.Show("你确定作废订单？", "系统信息", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (result == DialogResult.No)
+                {
+                    return;
+                }
                 if (this.OrderId == 0)
                 {
                     SaveOrder(0);
@@ -280,7 +296,7 @@ namespace EBS.WinPos
         {
             this.ClearAll();
             this.VipCustomer = _vipService.GetByCode(code);
-            this.lblDiscount.Text ="折扣："+ this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
+           // this.lblDiscount.Text ="折扣："+ this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
             this.txtBarCode.Focus();
         }
 
@@ -363,6 +379,5 @@ namespace EBS.WinPos
            
              return base.ProcessCmdKey(ref msg, keyData);
         }
-
     }
 }

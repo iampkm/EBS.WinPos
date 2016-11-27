@@ -46,7 +46,8 @@ namespace EBS.WinPos
                 //收银前台
                 frmPos posForm = new frmPos();
                 ContextService.AddFrom(posForm);
-                posForm.MdiParent = ContextService.ParentForm;
+                // posForm.MdiParent = ContextService.ParentForm;
+                posForm.TopLevel = true;
                 posForm.Show();
             }
             catch (Exception ex)

@@ -79,7 +79,7 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<List<Product>>(result);
                         //入库                      
-                        string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@SalePrice,@UpdatedOn)";
+                        string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
                         _db.ExecuteSql(sql, rows.ToArray());
                         count = rows.Count();
                     }
