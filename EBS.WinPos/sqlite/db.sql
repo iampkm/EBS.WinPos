@@ -23,16 +23,20 @@ CREATE INDEX idx_product_barcode ON Product (
 DROP TABLE SaleOrder;
 create table SaleOrder
 (
-   Id                    INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
    Code                 varchar(20),
    StoreId              INTEGER ,
+   OrderType            INTEGER,
    OrderAmount          decimal(8,2),
    PayAmount            decimal(8,2),
+   OnlinePayAmount      decimal(8,2),
    PaymentWay           INTEGER,
    PaidDate             datetime ,  
    Status               INTEGER ,
    CreatedOn            datetime ,
-   CreatedBy            INTEGER
+   CreatedBy            INTEGER,
+   UpdatedOn            datetime,
+   UpdatedBy            INTEGER
    IsSync		INTEGER
 );
 CREATE UNIQUE INDEX idx_SaleOrder_code ON SaleOrder (
@@ -51,7 +55,6 @@ create table SaleOrderItem
    ProductCode          varchar(20),
    ProductName          varchar(50),
    SalePrice            decimal(8,2),
-   Discount             DECIMAL (8, 2),
    RealPrice         DECIMAL (8, 2),
    Quantity             INTEGER
 );

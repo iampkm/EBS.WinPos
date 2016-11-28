@@ -43,6 +43,10 @@ namespace EBS.WinPos
             {
                 SaveCode();
             }
+            else if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
         }
     }
 }

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
+using EBS.WinPos.Domain.Entity;
 namespace EBS.WinPos.Service.Dto
 {
     public class ShopCart
     {
-        public ShopCart()
+        public ShopCart(int storeId,int editor)
         {
             Items = new List<ShopCartItem>();
         }
@@ -27,15 +27,22 @@ namespace EBS.WinPos.Service.Dto
         {
             get
             {
-                return this.Items.Sum(n => n.Product.SalePrice * n.Discount * n.Quantity);
+                return this.Items.Sum(n => n.RealPrice  * n.Quantity);
             }
         }
 
-        public int QuantityTotal
+        public int TotalQuantity
         {
             get
             {
                 return this.Items.Sum(n => n.Quantity);
+            }
+        }
+
+        public decimal TotalDiscountAmount
+        {
+            get {
+                return this.Items.Sum(n => n.SalePrice - n.RealPrice); 
             }
         }
 
@@ -50,6 +57,33 @@ namespace EBS.WinPos.Service.Dto
         public bool CheckCanPay()
         {
             return !this.Items.Exists(n => n.Quantity == 0);
+        }
+
+        public void AddShopCart(ShopCartItem item)
+        {
+            var lastItem = this.Items.LastOrDefault();
+            if (lastItem == null)
+            {
+                this.Items.Add(item);
+            }
+            else {
+                if (lastItem.ProductId == item.ProductId)
+                {
+                    lastItem.Quantity += 1;
+                }
+                else {
+                    this.Items.Add(item);
+                }
+            }           
+        }
+
+        public void ChangeQuantity(int productId, int quantity)
+        {
+            var item = this.Items.FirstOrDefault(n => n.ProductId == productId);
+            if (item != null)
+            {
+                item.Quantity = quantity;
+            }           
         }
 
     }

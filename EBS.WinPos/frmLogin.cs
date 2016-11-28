@@ -30,8 +30,8 @@ namespace EBS.WinPos
 
             var user = _accountService.Login(this.txtUserName.Text, this.txtPasswrod.Text);
             ContextService.SetCurrentAccount(user);
-            var worker = _wrokService.GetWorking(ContextService.CurrentAccount.StoreId, Config.PosId);
-            if (worker == null)
+           var worker = _wrokService.GetWorking(ContextService.CurrentAccount.StoreId, Config.PosId);
+            if (worker == null)  
             {
                 ShowWrokForm();
             }
@@ -51,6 +51,10 @@ namespace EBS.WinPos
 
         public void ShowWrokForm()
         {
+            frmMain main = new frmMain();
+            ContextService.AddFrom(main);
+            main.Show();
+
             frmWork workForm = new frmWork();
             ContextService.AddFrom(workForm);
             workForm.MdiParent = ContextService.ParentForm;
@@ -67,8 +71,6 @@ namespace EBS.WinPos
                 // posForm.MdiParent = ContextService.ParentForm;
                 posForm.TopLevel = true;
                 posForm.Show();
-               
-                
             }
             else
             {

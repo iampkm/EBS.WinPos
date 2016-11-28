@@ -68,6 +68,8 @@
     <Compile Include="Entity\Account.cs" />
     <Compile Include="Entity\PaidHistory.cs" />
     <Compile Include="Entity\Product.cs" />
+    <Compile Include="Entity\ProductAreaPrice.cs" />
+    <Compile Include="Entity\ProductStorePrice.cs" />
     <Compile Include="Entity\SaleBackOrder.cs" />
     <Compile Include="Entity\SaleBackOrderItem.cs" />
     <Compile Include="Entity\SaleOrder.cs" />

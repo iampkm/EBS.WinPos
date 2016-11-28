@@ -35,7 +35,7 @@ namespace EBS.WinPos
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new frmMain());
+                Application.Run(new frmLogin());
             }
             catch (Exception e)
             {

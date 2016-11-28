@@ -16,14 +16,19 @@ namespace EBS.WinPos.Domain.Entity
         /// </summary>
        public decimal SalePrice { get; set; }
         /// <summary>
-        /// 折扣
-        /// </summary>
-        public decimal Discount { get; set; }
-        /// <summary>
         /// 实际折后价
         /// </summary>
         public decimal RealPrice { get; set; }
         public int Quantity { get; set; }    
        public virtual int SaleOrderId { get; set; }
+
+       /// <summary>
+       /// 优惠金额
+       /// </summary>
+       /// <returns></returns>
+       public decimal GetDiscountAmount()
+       {
+           return this.SalePrice - RealPrice;
+       }
     }
 }

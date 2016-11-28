@@ -10,10 +10,10 @@
 {{Items}}
 ********************************
 应收金额：{{OrderAmount}} 总件数：{{QuantityTotal}}
-折   扣：{{Discount}}
-实收金额：{{PayAmount}} 找  零：{{ChargeAmount}}
+实收金额：{{PayAmount}}  在线支付：{{OnlinePayAmount}}
+找  零：{{ChargeAmount}} 优惠金额：{{DiscountAmount}}
 ********************************
-支付方式：{{PaymentWay}}
+支付方式：{{PaymentWay}} 
 ********************************
 公司投诉电话：400-100-1006
 

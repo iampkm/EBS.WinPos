@@ -49,6 +49,7 @@
             this.txtCode.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtCode.Location = new System.Drawing.Point(101, 25);
             this.txtCode.Name = "txtCode";
+            this.txtCode.PasswordChar = '*';
             this.txtCode.Size = new System.Drawing.Size(227, 29);
             this.txtCode.TabIndex = 1;
             this.txtCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCode_KeyDown);

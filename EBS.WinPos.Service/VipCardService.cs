@@ -8,15 +8,19 @@ namespace EBS.WinPos.Service
 {
    public class VipCardService
     {
-        Repository _db;
+       // Repository _db;
+       DapperContext _query;
         public VipCardService()
         {
-            _db = new Repository();
+          //  _db = new Repository();
+            _query = new DapperContext();
         }
 
         public VipCard GetByCode(string code)
         {
-            return  _db.VipCards.FirstOrDefault<VipCard>(n => n.Code == code);
+            string sql = "select * from VipCard where Code=@Code";
+            return _query.First<VipCard>(sql, new { Code = code });
+           // return  _db.VipCards.FirstOrDefault<VipCard>(n => n.Code == code);
         }
     }
 }

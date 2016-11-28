@@ -10,17 +10,18 @@ using EBS.WinPos.Service.Dto;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure;
 using EBS.WinPos.Service.Task;
-
 namespace EBS.WinPos.Service
 {
    public class WorkScheduleService
     {
         Repository _db;
         SyncService _syncService;
+        DapperContext _query;
         public WorkScheduleService()
         {
             _db = new Repository();
             _syncService = new SyncService(AppContext.Log);
+            _query = new DapperContext();
         }
         
         /// <summary>
@@ -30,7 +31,9 @@ namespace EBS.WinPos.Service
         /// <returns></returns>
         public WorkSchedule GetWorking(int storeId,int posId)
         {
-            return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.EndBy == 0 && n.PosId == posId).OrderByDescending(n=>n.Id).FirstOrDefault();           
+           // return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.EndBy == 0 && n.PosId == posId).FirstOrDefault();   
+            string sql = "select * from WorkSchedule where StoreId = @StoreId and EndBy = 0 and PosId = @PostId order by Id desc";
+            return _query.First<WorkSchedule>(sql, new { StoreId= storeId,PostId =posId});
         }
 
         public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy)

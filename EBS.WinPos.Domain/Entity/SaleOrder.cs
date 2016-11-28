@@ -7,7 +7,7 @@ using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure;
 namespace EBS.WinPos.Domain.Entity
 {
-    public class SaleOrder:BaseEntity
+    public class SaleOrder : BaseEntity
     {
         public SaleOrder()
         {
@@ -19,6 +19,12 @@ namespace EBS.WinPos.Domain.Entity
         public string Code { get; set; }
 
         public int StoreId { get; set; }
+        /// <summary>
+        /// 订单类型：销售单，销售退单
+        /// </summary>
+        public int OrderType { get; set; }
+
+
         /// <summary>
         /// 支付方式
         /// </summary>
@@ -32,9 +38,14 @@ namespace EBS.WinPos.Domain.Entity
         /// </summary>
         public decimal OrderAmount { get; private set; }
         /// <summary>
-        /// 客户支付金额
+        /// 现金支付金额
         /// </summary>
         public decimal PayAmount { get; set; }
+        /// <summary>
+        /// 刷卡支付，微信支付，阿里支付等在线支付金额
+        /// </summary>
+        public decimal OnlinePayAmount { get; set; }
+
         /// <summary>
         /// 销售单状态
         /// </summary>
@@ -54,14 +65,15 @@ namespace EBS.WinPos.Domain.Entity
         public virtual List<SaleOrderItem> Items { get; set; }
 
 
-        public void AddOrderItem(Product product, int quantity,decimal discount)
+        public void AddOrderItem(Product product, int quantity, decimal realPrice)
         {
             var item = this.Items.Where(n => n.ProductId == product.Id).FirstOrDefault();
             if (item != null)
             {
                 item.Quantity += quantity;
             }
-            else {
+            else
+            {
                 item = new SaleOrderItem()
                 {
                     ProductId = product.Id,
@@ -70,8 +82,7 @@ namespace EBS.WinPos.Domain.Entity
                     Quantity = quantity,
                     ProductCode = product.Code,
                     SaleOrderId = this.Id,
-                    Discount = discount,
-                    RealPrice = product.SalePrice * discount
+                    RealPrice = realPrice,
                 };
             }
             this.Items.Add(item);
@@ -81,48 +92,40 @@ namespace EBS.WinPos.Domain.Entity
 
         public void GenerateNewCode()
         {
-
-            // 0161120 86400 001 15
-            string billType = "15";
+             //账号ID + 8 为日期+ 5 时间秒+2位随机数
+            // 1+2014010100001
+            var orderCodeMinLength = 16;
             string createdBy = this.CreatedBy.ToString();
             var code = Math.Abs(Guid.NewGuid().GetHashCode());
             var hashcode = code.ToString();
             StringBuilder sb = new StringBuilder();
-            sb.Append(billType);
+            var date = this.CreatedOn;
+            var ts = date - date.Date;
+            var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(5, '0');  // 5位
+            // 账号1~N+日期8+时间数字5 
             sb.Append(createdBy);
-            // hascode  取 8位，超过3位自增,2位类型订单
-            // 订单长度
-            var orderCodeLength = 13;
-            if (createdBy.Length > 3)
-            {
-                hashcode = hashcode.Substring(0, 8);  // hashCode 固定取8位
-                sb.Append(hashcode);
-            }
-            else {
-                var hashcodeLength = orderCodeLength - billType.Length - createdBy.Length;
-                var lastNumber = hashcode.Length > hashcodeLength ? hashcode.Substring(0, hashcodeLength) : hashcode.PadLeft(hashcodeLength, '0');
-                sb.Append(lastNumber);
-            }
+            sb.Append(date.ToString("yyyyMMdd"));
+            sb.Append(seconds);
+            code = Math.Abs(Guid.NewGuid().GetHashCode());
+            hashcode = code.ToString().Substring(0, orderCodeMinLength - sb.Length);
+            sb.Append(hashcode);
             this.Code = sb.ToString();
-
-            //ts.TotalSeconds;
-            //var date = this.CreatedOn;
-            //var ts = date - DateTime.Parse("2016-01-01");
-            //var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(6, '0');  // 5位
-            //return string.Format("{0}{1}{2}{3}", (int)BillIdentity.SaleOrder, createdBy, orderYear.ToString().PadLeft(3, '0'), seconds);
         }
+
+
 
         public void Cancel(int editor)
         {
-            if(this.Status!= SaleOrderStatus.Create){
-              throw new AppException("新建订单才能作废");
+            if (this.Status != SaleOrderStatus.Create)
+            {
+                throw new AppException("新建订单才能作废");
             }
             this.Status = SaleOrderStatus.Cancel;
             this.UpdatedBy = editor;
             this.UpdatedOn = DateTime.Now;
         }
 
-        public void FinishPaid(decimal payAmount,PaymentWay payWay = PaymentWay.Cash)
+        public void FinishPaid(decimal payAmount, PaymentWay payWay = PaymentWay.Cash)
         {
             if (this.Status != SaleOrderStatus.Create) { throw new AppException("订单非待支付状态"); }
             this.Status = SaleOrderStatus.Paid;
@@ -134,8 +137,16 @@ namespace EBS.WinPos.Domain.Entity
         }
 
         public decimal GetChargeAmount()
+        {          
+            return this.PayAmount + this.OnlinePayAmount - this.OrderAmount;
+        }
+        /// <summary>
+        /// 总优惠金额
+        /// </summary>
+        /// <returns></returns>
+        public decimal GetTotalDiscountAmount()
         {
-            return this.PayAmount - this.OrderAmount;
+            return this.Items.Sum(n => n.SalePrice - n.RealPrice);
         }
 
         public int GetQuantityTotal()

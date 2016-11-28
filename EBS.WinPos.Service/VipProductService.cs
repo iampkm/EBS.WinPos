@@ -8,15 +8,18 @@ namespace EBS.WinPos.Service
 {
     public class VipProductService
     {
-        Repository _db;
+       // Repository _db;
+        DapperContext _query;
         public VipProductService()
         {
-            _db = new Repository();
+          //  _db = new Repository();
+            _query = new DapperContext();
         }
 
         public VipProduct GetByProductId(int id)
         {
-           return  _db.VipProducts.FirstOrDefault(n => n.ProductId == id);
+            string sql = "select * from VipProduct where ProductId= @ProductId";
+            return _query.First<VipProduct>(sql, new { ProductId = id });
         }
     }
 }

@@ -60,7 +60,7 @@ namespace EBS.WinPos
                 this.txtBarCode.Text = ""; 
                 return;
             }
-
+            this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.CurrentAccount.StoreId, ContextService.CurrentAccount.Id);
             //查询会员折扣
             var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
             var vipProduct=_vipProductService.GetByProductId(model.Id);
@@ -69,65 +69,64 @@ namespace EBS.WinPos
             if(this.VipCustomer!=null)
             {
                 realPrice = vipProduct == null ? model.SalePrice * discount : vipProduct.SalePrice;
-            }           
-            int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
-            if (lastIndex > -1)
-            {
-                //前一行商品如果与扫码的商品一样，就直接累加数量
-                var preRow = this.dgvData.Rows[lastIndex];
-                if (preRow.Cells["ProductId"].Value != null && Convert.ToInt32(preRow.Cells["ProductId"].Value) == model.Id)
-                {
-                    var qty = Convert.ToInt32(preRow.Cells["Quantity"].Value) + 1;
-                    preRow.Cells["Quantity"].Value = qty;
-                    preRow.Cells["DiscountAmount"].Value = (model.SalePrice - realPrice) * qty;
-                    preRow.Cells["Amount"].Value = realPrice * qty;
-                    preRow.Selected = true;
-                    this.txtBarCode.Text = "";
-                    ShowOrderInfo();
-                    return;
-                }
             }
 
-            int index = this.dgvData.Rows.Add();
-            var row = this.dgvData.Rows[index];
-            row.Cells["ProductId"].Value = model.Id;
-            row.Cells["ProductCode"].Value = model.Code;
-            row.Cells["BarCode"].Value = model.BarCode;
-            row.Cells["ProductName"].Value = model.Name;
-            row.Cells["Specification"].Value = model.Specification;
-            row.Cells["Unit"].Value = model.Unit;
-            row.Cells["SalePrice"].Value = model.SalePrice;
-            row.Cells["RealPrice"].Value = realPrice;
-            row.Cells["Quantity"].Value = 1;
-            row.Cells["DiscountAmount"].Value = (model.SalePrice- realPrice) * 1;
-            row.Cells["Amount"].Value = realPrice * 1;
-            row.Selected = true;
-            this.txtBarCode.Text = "";
-            ShowOrderInfo();
-
+          
+            //加入购物车
+            this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));
            
+
+            //int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
+            //if (lastIndex > -1)
+            //{
+            //    //前一行商品如果与扫码的商品一样，就直接累加数量
+            //    var preRow = this.dgvData.Rows[lastIndex];
+            //    if (preRow.Cells["ProductId"].Value != null && Convert.ToInt32(preRow.Cells["ProductId"].Value) == model.Id)
+            //    {
+            //        var qty = Convert.ToInt32(preRow.Cells["Quantity"].Value) + 1;
+            //        preRow.Cells["Quantity"].Value = qty;
+            //        preRow.Cells["DiscountAmount"].Value = (model.SalePrice - realPrice) * qty;
+            //        preRow.Cells["Amount"].Value = realPrice * qty;
+            //        preRow.Selected = true;
+            //        this.txtBarCode.Text = "";
+            //        ShowOrderInfo();
+            //        return;
+            //    }
+            //}
+
+            //int index = this.dgvData.Rows.Add();
+            //var row = this.dgvData.Rows[index];
+            //row.Cells["ProductId"].Value = model.Id;
+            //row.Cells["ProductCode"].Value = model.Code;
+            //row.Cells["BarCode"].Value = model.BarCode;
+            //row.Cells["ProductName"].Value = model.Name;
+            //row.Cells["Specification"].Value = model.Specification;
+            //row.Cells["Unit"].Value = model.Unit;
+            //row.Cells["SalePrice"].Value = model.SalePrice;
+            //row.Cells["RealPrice"].Value = realPrice;
+            //row.Cells["Quantity"].Value = 1;
+            //row.Cells["DiscountAmount"].Value = (model.SalePrice- realPrice) * 1;
+            //row.Cells["Amount"].Value = realPrice * 1;
+            //row.Selected = true;
+            //this.txtBarCode.Text = "";
+            ShowOrderInfo();
+            this.txtBarCode.Text = "";
+            var lastIndex = this.dgvData.Rows.Count - 1;
+            this.dgvData.Rows[lastIndex].Selected = true;
+            this.dgvData.Refresh();
         }
 
         public void ShowOrderInfo()
         {
-            var total = 0m;
-            var quantityTotal = 0;
-            var discountAmount = 0m;
-            foreach (DataGridViewRow row in this.dgvData.Rows)
-            {
-                if (row.Cells["ProductId"].Value != null)
-                {
-                    var salePrice = (decimal)row.Cells["SalePrice"].Value;
-                    var price = (decimal)row.Cells["RealPrice"].Value;
-                    var quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
-                    total += price * quantity;
-                    quantityTotal += quantity;
-                    discountAmount += (salePrice - price) * quantity;
-                }
-            }
-            this.lblOrderTotal.Text ="总金额：" + total.ToString("C");
-            this.lblQuantityTotal.Text ="总件数：" + quantityTotal.ToString();
-            this.lblDiscount.Text ="总优惠：" +　discountAmount.ToString("C");
+            this.lblOrderTotal.Text = "总金额：" + _currentShopCat.OrderAmount.ToString("C");
+            this.lblQuantityTotal.Text = "总件数：" + _currentShopCat.TotalQuantity.ToString();
+            this.lblDiscount.Text = "总优惠：" + _currentShopCat.TotalDiscountAmount.ToString("C");
+            //刷新gridview
+            this.dgvData.AutoGenerateColumns = false;
+            this.dgvData.DataSource =new List<ShopCartItem>();
+            this.dgvData.DataSource = this._currentShopCat.Items;
+            this.dgvData.ClearSelection();
+
         }
 
         public void ShowPreOrderInfo(OrderInfo model)
@@ -176,29 +175,37 @@ namespace EBS.WinPos
             {
                 return null;
             }
-            //查询会员折扣
-            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
-
-            _currentShopCat = new ShopCart()
+            //判断订单是销售单，还是退单
+            if (this._currentShopCat.OrderAmount < 0)
             {
-                StoreId = ContextService.CurrentAccount.StoreId,
-                Editor = ContextService.CurrentAccount.Id,
-                PayAmount = inputAmount
-            };
-            // 明细
-            foreach (DataGridViewRow row in this.dgvData.Rows)
-            {
-                Product product = new Product();
-                if (row.Cells["ProductId"].Value != null)
-                {
-                    product.Id = Convert.ToInt32(row.Cells["ProductId"].Value);
-                    product.Name = row.Cells["ProductName"].Value.ToString();
-                    product.SalePrice = Convert.ToDecimal(row.Cells["SalePrice"].Value);
-                    product.Code = row.Cells["ProductCode"].Value.ToString();
-                    int quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
-                    _currentShopCat.Items.Add(new ShopCartItem(product, quantity, discount));
-                }
+                // 退单
             }
+            else
+            { 
+                
+            }
+            //var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
+
+            //_currentShopCat = new ShopCart()
+            //{
+            //    StoreId = ContextService.CurrentAccount.StoreId,
+            //    Editor = ContextService.CurrentAccount.Id,
+            //    PayAmount = inputAmount
+            //};
+            //// 明细
+            //foreach (DataGridViewRow row in this.dgvData.Rows)
+            //{
+            //    Product product = new Product();
+            //    if (row.Cells["ProductId"].Value != null)
+            //    {
+            //        product.Id = Convert.ToInt32(row.Cells["ProductId"].Value);
+            //        product.Name = row.Cells["ProductName"].Value.ToString();
+            //        product.SalePrice = Convert.ToDecimal(row.Cells["SalePrice"].Value);
+            //        product.Code = row.Cells["ProductCode"].Value.ToString();
+            //        int quantity = Convert.ToInt32(row.Cells["Quantity"].Value);
+            //        _currentShopCat.Items.Add(new ShopCartItem(product, quantity, discount));
+            //    }
+            //}
             var newOrder = _saleOrderService.CreateOrder(_currentShopCat);
             return newOrder;
         }
@@ -294,9 +301,27 @@ namespace EBS.WinPos
 
         public void SetVipCard(string code)
         {
-            this.ClearAll();
             this.VipCustomer = _vipService.GetByCode(code);
-           // this.lblDiscount.Text ="折扣："+ this.VipCustomer == null ? "" : this.VipCustomer.Discount.ToString();  
+            //刷新当前购物车折扣  
+            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
+            this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.CurrentAccount.StoreId,ContextService.CurrentAccount.Id);
+            foreach (var item in this._currentShopCat.Items)
+            {
+                var vipProduct = _vipProductService.GetByProductId(item.ProductId);
+                //真正的销售价
+                var realPrice = item.SalePrice;
+                if (this.VipCustomer != null)
+                {
+                    realPrice = vipProduct == null ? item.SalePrice * discount : vipProduct.SalePrice;
+                }
+                item.ChangeRealPrice(realPrice);
+            }
+            // 重新绑定
+            this.ShowOrderInfo();
+            if (this.dgvData.CurrentCell != null)
+            {
+                this.dgvData.CurrentCell.Selected = true;
+            }
             this.txtBarCode.Focus();
         }
 
@@ -308,6 +333,7 @@ namespace EBS.WinPos
             // this.lblStoreId.Text = "门店："
             lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
             this.txtBarCode.Focus();
+            this.dgvData.ClearSelection();
 
 
         }
@@ -335,48 +361,65 @@ namespace EBS.WinPos
 
         private void TextBoxDec_KeyPress(object sender, KeyPressEventArgs e)
         {
-           
-           if (!Char.IsDigit(e.KeyChar) && e.KeyChar != 8) //&& e.KeyChar != '.' e.KeyChar != 8 &&
+            // 45  - 号
+            if (!Char.IsDigit(e.KeyChar) && e.KeyChar != 8 && e.KeyChar != 45) //&& e.KeyChar != '.' e.KeyChar != 8 &&
             {
                 e.Handled = true;
-            }            
-          
+            }
         }
 
         private void dgvData_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            if (this.dgvData.CurrentCell.ColumnIndex == 7)  //数量列
+            if (this.dgvData.CurrentCell.ColumnIndex == 8)  //数量列
             {
                 e.Control.KeyPress += new KeyPressEventHandler(TextBoxDec_KeyPress);
 
                 //DataGridViewTextBoxColumn
-                if (e.Control.GetType().Name == "DataGridViewTextBoxEditingControl")
-                {
-                    var qtyBox = e.Control as DataGridViewTextBoxEditingControl;
-                    //添加事件
-                    qtyBox.TextChanged += qtyBox_TextChanged;
-                }
+                //if (e.Control.GetType().Name == "DataGridViewTextBoxEditingControl")
+                //{
+                //    var qtyBox = e.Control as DataGridViewTextBoxEditingControl;
+                //    //添加事件
+                //    qtyBox.TextChanged += qtyBox_TextChanged;
+                //}
             }
         }
 
         void qtyBox_TextChanged(object sender, EventArgs e)
-        {
-            int column = dgvData.CurrentCellAddress.X;
-            int row = dgvData.CurrentCellAddress.Y;
-            var qtyBox = (DataGridViewTextBoxEditingControl)sender;
-            this.dgvData[column, row].Value = qtyBox.Text;
-            ShowOrderInfo();
+        {           
+            //int column = dgvData.CurrentCellAddress.X;
+            //int row = dgvData.CurrentCellAddress.Y;
+            //var qtyBox = (DataGridViewTextBoxEditingControl)sender;
+            //if (string.IsNullOrEmpty(qtyBox.Text))
+            //{
+            //    return;
+            //}
+            //var quantity = Convert.ToInt32(qtyBox.Text);
+            //var pid = this.dgvData.Rows[row].Cells["ProductId"].Value.ToString();
+            //var productId = Convert.ToInt32(pid);
+            //this._currentShopCat.ChangeQuantity(productId,quantity);
+
+            //this.dgvData[column, row].Value = qtyBox.Text;
+            //this.lblOrderTotal.Text = "总金额：" + _currentShopCat.OrderAmount.ToString("C");
+            //this.lblQuantityTotal.Text = "总件数：" + _currentShopCat.TotalQuantity.ToString();
+            //this.lblDiscount.Text = "总优惠：" + _currentShopCat.TotalDiscountAmount.ToString("C");
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == Keys.Enter)
             {
-                //this.OnKeyPress(new KeyPressEventArgs('r'));
-                //return true;
-                txtBarCode.Focus();
-            }
-           
+                if (this.dgvData.IsCurrentCellInEditMode)   //如果当前单元格处于编辑模式   
+                {
+                    var index = this.dgvData.CurrentCell.RowIndex;
+                    var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());
+                    var pid = this.dgvData.Rows[index].Cells["ProductId"].Value.ToString();
+                    var productId = Convert.ToInt32(pid);
+                    this._currentShopCat.ChangeQuantity(productId, quantity);
+                    this.ShowOrderInfo(); //重新刷新                  
+                    this.dgvData.Rows[index].Selected = true;
+                    txtBarCode.Focus();
+                }               
+            }           
              return base.ProcessCmdKey(ref msg, keyData);
         }
     }

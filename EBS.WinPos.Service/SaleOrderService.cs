@@ -37,7 +37,7 @@ namespace EBS.WinPos.Service
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)
             {
-                order.AddOrderItem(item.Product, item.Quantity, item.Discount);
+                order.AddOrderItem(item.Product, item.Quantity, item.RealPrice);
             }
             this._db.Orders.Add(order);
             this._db.SaveChanges();
@@ -138,13 +138,14 @@ namespace EBS.WinPos.Service
             }
             billTemplate = billTemplate.Replace("{{item}}", productItems);
             //应收应付
-            billTemplate = billTemplate.Replace("{{orderamount}}", model.OrderAmount.ToString());
+            billTemplate = billTemplate.Replace("{{orderamount}}", model.OrderAmount.ToString("C"));
             billTemplate = billTemplate.Replace("{{quantitytotal}}", model.GetQuantityTotal().ToString());
-            billTemplate = billTemplate.Replace("{{discount}}", model.Items[0].Discount.ToString());
-            billTemplate = billTemplate.Replace("{{payamount}}", model.PayAmount.ToString());
-            billTemplate = billTemplate.Replace("{{chargeamount}}", model.GetChargeAmount().ToString() );
+            billTemplate = billTemplate.Replace("{{discountamount}}", model.GetTotalDiscountAmount().ToString("C"));
+            billTemplate = billTemplate.Replace("{{payamount}}", model.PayAmount.ToString("C"));
+            billTemplate = billTemplate.Replace("{{chargeamount}}", model.GetChargeAmount().ToString("C") );
             billTemplate = billTemplate.Replace("{{paymentway}}", model.PaymentWay.Description());
-
+            billTemplate = billTemplate.Replace("{{onlinepayamount}}", model.OnlinePayAmount.ToString("C"));
+            
             _printService.PrintLine(billTemplate);
         }
     }
