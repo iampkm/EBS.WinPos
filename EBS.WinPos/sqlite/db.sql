@@ -36,7 +36,7 @@ create table SaleOrder
    CreatedOn            datetime ,
    CreatedBy            INTEGER,
    UpdatedOn            datetime,
-   UpdatedBy            INTEGER
+   UpdatedBy            INTEGER,
    IsSync		INTEGER
 );
 CREATE UNIQUE INDEX idx_SaleOrder_code ON SaleOrder (
