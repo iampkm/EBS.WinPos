@@ -15,7 +15,7 @@ namespace EBS.WinPos
 {
     public partial class frmPay : Form
     {
-        public OrderInfo CurrentOrder { get; set; }
+        public ShopCart CurrentOrder { get; set; }
         public frmPos PosForm { get; set; }
 
         public SaleOrderService _orderService;
@@ -42,14 +42,12 @@ namespace EBS.WinPos
 
         private void frmPay_Load(object sender, EventArgs e)
         {
-            if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试!"); return; }
+            if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
 
-            this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString();
-            this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();
-            this.lblChargeAmount.Text = CurrentOrder.ChargeAmount.ToString();
+            this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString("C");
+            this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();      
 
             // 显示支付方式
-
             var paymentWays = typeof(PaymentWay).GetValueToDescription();
             this.lstPaymentWay.DataSource = new BindingSource(paymentWays, null); ;
             this.lstPaymentWay.DisplayMember = "Value";
@@ -58,7 +56,6 @@ namespace EBS.WinPos
 
             //默认现金支付方式
             this.btnSave.Focus();
-
             //隐藏支付条码
             this.lblPayBarCode.Hide();
             this.txtPayBarCode.Hide();
@@ -71,126 +68,21 @@ namespace EBS.WinPos
             {
                 this.lblPayBarCode.Hide();
                 this.txtPayBarCode.Hide();
-                this.txtPayAmount.Enabled = true;
+                this.txtPayBarCode.Text = "";
             }
             else
             {
                 this.lblPayBarCode.Show();
                 this.txtPayBarCode.Show();
-                this.txtPayAmount.Enabled = false;
             }
         }
 
-        private void txtPayBarCode_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                BeginPay();               
-            }
-        }
-
-        public void BeginPay()
-        {            
-            var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
-            switch (selectedPaymentWay)
-            {
-                case PaymentWay.Cash:
-                    CashPay();
-                    break;
-                case PaymentWay.AliPay:
-                    AliPay(this.txtPayBarCode.Text);
-                    break;
-                case PaymentWay.WechatPay:
-                    WechatPay(this.txtPayBarCode.Text);
-                    break;
-                default:
-                    MessageBox.Show("选择支付方式");
-                    break;
-            }           
-        }
-
-        public void ClosePayForm()
-        {
-            this.Close();
-            this.PosForm.ClearAll();
-        }
-
-        public void CashPay()
-        {           
-            try
-            {
-                _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
-                PosForm.ShowPreOrderInfo(CurrentOrder);
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                ClosePayForm();
-                // 打印作废小票
-               
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-          
-        }
-
-        public void AliPay(string payBarCode)
-        {
-           
-            if (string.IsNullOrEmpty(payBarCode)) { return; }
-            try
-            {
-                _orderService.AliPay(CurrentOrder.OrderId, payBarCode);
-                PosForm.ShowPreOrderInfo(CurrentOrder);
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                ClosePayForm();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        public void WechatPay(string payBarCode)
-        {
-            if (string.IsNullOrEmpty(payBarCode)) { return; }
-            try
-            {
-                _orderService.WechatPay(CurrentOrder.OrderId, payBarCode);
-                PosForm.ShowPreOrderInfo(CurrentOrder);
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                ClosePayForm();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void lstPaymentWay_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                if ((int)this.lstPaymentWay.SelectedValue == (int)PaymentWay.Cash)
-                {
-                    this.txtPayAmount.Focus();
-                }
-                if ((int)this.lstPaymentWay.SelectedValue == (int)PaymentWay.AliPay)
-                {
-                    this.txtPayBarCode.Focus();
-                }
-                if ((int)this.lstPaymentWay.SelectedValue == (int)PaymentWay.WechatPay)
-                {
-                    this.txtPayBarCode.Focus();
-                }
-            }
-        }
-
+      
         private void txtPayAmount_TextChanged(object sender, EventArgs e)
         {
             decimal amount = this.CurrentOrder.PayAmount;
-            decimal.TryParse(txtPayAmount.Text,out amount);
+            decimal.TryParse(txtPayAmount.Text, out amount);
             this.CurrentOrder.PayAmount = amount;
-            this.lblChargeAmount.Text = this.CurrentOrder.ChargeAmount.ToString();
         }
 
         private void txtPayAmount_KeyPress(object sender, KeyPressEventArgs e)
@@ -206,8 +98,120 @@ namespace EBS.WinPos
         {
             if (e.KeyCode == Keys.Enter)
             {
+                var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
+                if (selectedPaymentWay == PaymentWay.Cash)
+                {
+                    CashPay();  // 现金开始支付
+                }
+                else {
+                    this.txtPayBarCode.Focus();  //条码支付，转入条码输入
+                }               
+            }
+        }
+
+        private void txtPayBarCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
                 BeginPay();
             }
         }
+
+        public void BeginPay()
+        {            
+            var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
+            switch (selectedPaymentWay)
+            {              
+                case PaymentWay.AliPay:
+                  AliPay(this.txtPayBarCode.Text);
+                    break;
+                case PaymentWay.WechatPay:
+                    WechatPay(this.txtPayBarCode.Text);
+                    break;
+                default:
+                    MessageBox.Show("请选择支付方式", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    break;
+            }           
+        }
+
+        public void ClosePayForm()
+        {
+            this.Close();
+            this.PosForm.ClearAll();
+        }
+
+        public void CashPay()
+        {           
+            try
+            {
+                var payAmount = CurrentOrder.PayAmount;
+                decimal.TryParse(txtPayAmount.Text, out payAmount);
+                CurrentOrder.PayAmount = payAmount;
+                _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
+                PosForm.ShowPreOrderInfo();
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClosePayForm();
+                // 打印小票
+                _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+          
+        }
+
+        public void AliPay(string payBarCode)
+        {
+           
+            if (string.IsNullOrEmpty(payBarCode)) { return; }
+            try
+            {
+                var payAmount = CurrentOrder.PayAmount;
+                decimal.TryParse(txtPayAmount.Text, out payAmount);
+                CurrentOrder.PayAmount = payAmount;
+                _orderService.AliPay(CurrentOrder.OrderId, payBarCode,CurrentOrder.PayAmount);
+                PosForm.ShowPreOrderInfo();
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClosePayForm();
+                // 打印小票
+                _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        public void WechatPay(string payBarCode)
+        {
+            if (string.IsNullOrEmpty(payBarCode)) { return; }
+            try
+            {
+                var payAmount = CurrentOrder.PayAmount;
+                decimal.TryParse(txtPayAmount.Text, out payAmount);
+                CurrentOrder.PayAmount = payAmount;
+                _orderService.WechatPay(CurrentOrder.OrderId, payBarCode,CurrentOrder.PayAmount);
+                PosForm.ShowPreOrderInfo();
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClosePayForm();
+                // 打印小票
+                _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void lstPaymentWay_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                this.txtPayAmount.Focus();
+            }
+        }
+
+        
     }
 }

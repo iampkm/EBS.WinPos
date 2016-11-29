@@ -44,7 +44,7 @@ namespace EBS.WinPos.Domain
             }
         }
         /// <summary>
-        /// 微信条码支付
+        /// 微信条码支付 地址
         /// </summary>
         public static string Api_Pay_WeChatBarcode
         {
@@ -64,6 +64,29 @@ namespace EBS.WinPos.Domain
                 return ConfigurationManager.AppSettings[configKey].ToString().Trim();               
             }
         }
+
+        /// <summary>
+        /// 支付宝条码支付 地址
+        /// </summary>
+        public static string Api_Pay_AliBarcode
+        {
+            get
+            {
+                return PayServer + "/Alipay/barcodepay";
+            }
+        }
+        /// <summary>
+        /// 支付宝密匙
+        /// </summary>
+        public static string SignKey_AliBarcode
+        {
+            get
+            {
+                string configKey = "SignKey_AliBarcode";
+                return ConfigurationManager.AppSettings[configKey].ToString().Trim();
+            }
+        }
+        
         /// <summary>
         /// Pos 机器号ID
         /// </summary>

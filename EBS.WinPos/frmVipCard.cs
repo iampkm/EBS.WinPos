@@ -8,10 +8,10 @@ using System.Text;
 using System.Windows.Forms;
 namespace EBS.WinPos
 {
-    public partial class frmCustomerId : Form
+    public partial class frmVipCard : Form
     {
         public frmPos PosFrom { get; set; }
-        public frmCustomerId()
+        public frmVipCard()
         {
             InitializeComponent();
         }

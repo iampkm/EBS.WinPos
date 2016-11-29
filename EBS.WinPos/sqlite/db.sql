@@ -63,25 +63,6 @@ CREATE INDEX idx_SaleOrderItem_SaleOrderId ON SaleOrderItem (
     SaleOrderId
 );
 
-/*==============================================================*/
-/* Table: SaleOrderItem                                         */
-/*==============================================================*/
-DROP TABLE PaidHistory;
-create table PaidHistory
-(
-   Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
-   SaleOrderId          INTEGER ,
-   SaleOrderCode        varchar(20),
-   PaymentWay           INTEGER,
-   PaidDate                 datetime ,
-   OrderAmount          decimal(8,2),
-   SellingAmount        decimal(8,2),
-   PayAmount            decimal(8,2),
-   Discount              decimal(8,2),
-   CreatedBy            INTEGER,
-   CreatedOn            datetime
-);
-
 drop table WorkSchedule;
 create table WorkSchedule
 (

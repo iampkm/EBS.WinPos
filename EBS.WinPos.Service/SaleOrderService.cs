@@ -26,7 +26,7 @@ namespace EBS.WinPos.Service
             _printService = new PrinterService();
             _syncService = new SyncService(AppContext.Log);
         }
-        public OrderInfo CreateOrder(ShopCart cat)
+        public void CreateOrder(ShopCart cat)
         {
             SaleOrder order = new SaleOrder()
             {
@@ -41,13 +41,9 @@ namespace EBS.WinPos.Service
             }
             this._db.Orders.Add(order);
             this._db.SaveChanges();
-            var orderInfo = new OrderInfo()
-            {
-                OrderId = order.Id,
-                OrderCode = order.Code,
-                OrderAmount = order.OrderAmount
-            };
-            return orderInfo;
+            //设置订单信息
+            cat.OrderId = order.Id;
+            cat.OrderCode = order.Code;
         }
 
         public void CancelOrder(int orderId, int editor)
@@ -72,54 +68,80 @@ namespace EBS.WinPos.Service
             model.FinishPaid(payAmount);
             //保存交易记录
             _db.SaveChanges();
-
             //同步到服务器
-            _syncService.Send(model);
+            _syncService.Send(model);            
         }
 
-        public void WechatPay(int orderId, string payBarCode)
+        public void WechatPay(int orderId, string payBarCode, decimal payAmount)
         {
-            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入微信付款码"); }
+            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫微信付款条码"); }
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
+            if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
-            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OrderAmount.ToString("F2"), systemId = "2" });
+            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
+            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2"), systemId = "2" });
             string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
             string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("sign={0}&data={1}", sign, data), timeOut: 90000);
             if (result == "1")
             {
                 //支付成功
-                model.FinishPaid(model.OrderAmount, PaymentWay.WechatPay);
+                model.FinishPaid(model.OrderAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
                 _db.SaveChanges();
                 //同步到服务器
-                _syncService.Send(model);
+                _syncService.Send(model);              
             }
-            else {
+            else
+            {
                 throw new AppException("支付失败，请稍后重试");
             }
-
-
         }
 
-        public void AliPay(int orderId, string payBarCode)
+        public void AliPay(int orderId, string payBarCode, decimal payAmount)
         {
-
+            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫支付宝付款条码"); }
+            var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+            if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
+            if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
+            // 发起微信支付
+            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
+            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2"), systemId = "2" });
+            string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_AliBarcode);
+            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_AliBarcode, param: string.Format("sign={0}&data={1}", sign, data), timeOut: 90000);
+            if (result == "1")
+            {
+                //支付成功
+                model.FinishPaid(model.OrderAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+                _db.SaveChanges();
+                //同步到服务器
+                _syncService.Send(model);               
+            }
+            else
+            {
+                throw new AppException("支付失败，请稍后重试");
+            }
         }
 
-        public void PrintBill(int orderId)
+        public void PrintTicket(int orderId)
         {
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+            PrintTicket(model);
+        }
+        public void PrintTicket(SaleOrder model)
+        {
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             //打印模板
             string posTemplate = FileHelper.ReadText("PosBillTemplate.txt");
             if (string.IsNullOrEmpty(posTemplate)) { throw new AppException("小票模板为空"); }
-            var lineLocation =posTemplate.LastIndexOf("##item##");
+            posTemplate = posTemplate.ToLower();
+            var lineLocation = posTemplate.LastIndexOf("##itemtemplate##");
             //分离商品item模板
-            string billTemplate = posTemplate.ToLower().Substring(0, posTemplate.Length - lineLocation);          
-            string itemTemplate = posTemplate.Substring(lineLocation);
+            string billTemplate = posTemplate.ToLower().Substring(0, lineLocation + 1);
+            string itemTemplate = posTemplate.Substring(lineLocation).Replace("##itemtemplate##", "");
             //开始替换
-            billTemplate = billTemplate.Replace("{{storename}}", store.Name);
+            billTemplate = billTemplate.Replace("{{storename}}", store == null ? " " : store.Name);
             billTemplate = billTemplate.Replace("{{createdate}}", model.CreatedOn.ToString("yyyy-MM-dd HH:mm:ss"));
             billTemplate = billTemplate.Replace("{{ordercode}}", model.Code);
             billTemplate = billTemplate.Replace("{{createdby}}", model.CreatedBy.ToString());
@@ -142,11 +164,13 @@ namespace EBS.WinPos.Service
             billTemplate = billTemplate.Replace("{{quantitytotal}}", model.GetQuantityTotal().ToString());
             billTemplate = billTemplate.Replace("{{discountamount}}", model.GetTotalDiscountAmount().ToString("C"));
             billTemplate = billTemplate.Replace("{{payamount}}", model.PayAmount.ToString("C"));
-            billTemplate = billTemplate.Replace("{{chargeamount}}", model.GetChargeAmount().ToString("C") );
+            billTemplate = billTemplate.Replace("{{chargeamount}}", model.GetChargeAmount().ToString("C"));
             billTemplate = billTemplate.Replace("{{paymentway}}", model.PaymentWay.Description());
             billTemplate = billTemplate.Replace("{{onlinepayamount}}", model.OnlinePayAmount.ToString("C"));
-            
+
             _printService.PrintLine(billTemplate);
         }
+
+
     }
 }

@@ -38,19 +38,8 @@
             this.lblAccountId = new System.Windows.Forms.Label();
             this.lblPreOrderAmount = new System.Windows.Forms.Label();
             this.lblPreOrderCode = new System.Windows.Forms.Label();
-            this.lblKeys = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.dgvData = new System.Windows.Forms.DataGridView();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.lblOrderCode = new System.Windows.Forms.Label();
-            this.lblDiscount = new System.Windows.Forms.Label();
-            this.lblQuantityTotal = new System.Windows.Forms.Label();
-            this.lblOrderTotal = new System.Windows.Forms.Label();
-            this.plBarCode = new System.Windows.Forms.Panel();
-            this.lblPreChargeAmount = new System.Windows.Forms.Label();
-            this.txtBarCode = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.ProductId = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ProductCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BarCode = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -62,12 +51,23 @@
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DiscountAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.plBarCode = new System.Windows.Forms.Panel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtBarCode = new System.Windows.Forms.TextBox();
+            this.lblPreChargeAmount = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.lblOrderTotal = new System.Windows.Forms.Label();
+            this.lblQuantityTotal = new System.Windows.Forms.Label();
+            this.lblDiscount = new System.Windows.Forms.Label();
+            this.lblOrderCode = new System.Windows.Forms.Label();
+            this.lblKeys = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
-            this.panel3.SuspendLayout();
-            this.panel5.SuspendLayout();
             this.plBarCode.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -123,17 +123,6 @@
             this.lblPreOrderCode.Size = new System.Drawing.Size(90, 21);
             this.lblPreOrderCode.TabIndex = 1;
             this.lblPreOrderCode.Text = "上一订单：";
-            // 
-            // lblKeys
-            // 
-            this.lblKeys.AutoSize = true;
-            this.lblKeys.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblKeys.ForeColor = System.Drawing.Color.Blue;
-            this.lblKeys.Location = new System.Drawing.Point(190, 137);
-            this.lblKeys.Name = "lblKeys";
-            this.lblKeys.Size = new System.Drawing.Size(247, 21);
-            this.lblKeys.TabIndex = 1;
-            this.lblKeys.Text = "F1 改数量,F2 会员,ESC 作废订单 ";
             // 
             // panel2
             // 
@@ -194,116 +183,11 @@
             this.dgvData.RowsDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvData.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dgvData.RowTemplate.Height = 23;
+            this.dgvData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvData.Size = new System.Drawing.Size(1362, 628);
-            this.dgvData.TabIndex = 1;
+            this.dgvData.TabIndex = 2;
             this.dgvData.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgvData_EditingControlShowing);
             this.dgvData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvData_RowPostPaint);
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.panel5);
-            this.panel3.Controls.Add(this.plBarCode);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 494);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(1362, 174);
-            this.panel3.TabIndex = 1;
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.lblKeys);
-            this.panel5.Controls.Add(this.lblOrderCode);
-            this.panel5.Controls.Add(this.lblDiscount);
-            this.panel5.Controls.Add(this.lblQuantityTotal);
-            this.panel5.Controls.Add(this.lblOrderTotal);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(409, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(953, 174);
-            this.panel5.TabIndex = 2;
-            // 
-            // lblOrderCode
-            // 
-            this.lblOrderCode.AutoSize = true;
-            this.lblOrderCode.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblOrderCode.Location = new System.Drawing.Point(189, 92);
-            this.lblOrderCode.Name = "lblOrderCode";
-            this.lblOrderCode.Size = new System.Drawing.Size(88, 25);
-            this.lblOrderCode.TabIndex = 1;
-            this.lblOrderCode.Text = "订单号：";
-            // 
-            // lblDiscount
-            // 
-            this.lblDiscount.AutoSize = true;
-            this.lblDiscount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblDiscount.Location = new System.Drawing.Point(4, 134);
-            this.lblDiscount.Name = "lblDiscount";
-            this.lblDiscount.Size = new System.Drawing.Size(88, 25);
-            this.lblDiscount.TabIndex = 1;
-            this.lblDiscount.Text = "总优惠：";
-            // 
-            // lblQuantityTotal
-            // 
-            this.lblQuantityTotal.AutoSize = true;
-            this.lblQuantityTotal.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblQuantityTotal.Location = new System.Drawing.Point(4, 92);
-            this.lblQuantityTotal.Name = "lblQuantityTotal";
-            this.lblQuantityTotal.Size = new System.Drawing.Size(99, 25);
-            this.lblQuantityTotal.TabIndex = 1;
-            this.lblQuantityTotal.Text = "总数量：0";
-            // 
-            // lblOrderTotal
-            // 
-            this.lblOrderTotal.AutoSize = true;
-            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 30F);
-            this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblOrderTotal.Location = new System.Drawing.Point(6, 9);
-            this.lblOrderTotal.Name = "lblOrderTotal";
-            this.lblOrderTotal.Size = new System.Drawing.Size(302, 52);
-            this.lblOrderTotal.TabIndex = 1;
-            this.lblOrderTotal.Text = "总金额：￥0.00";
-            // 
-            // plBarCode
-            // 
-            this.plBarCode.Controls.Add(this.lblPreChargeAmount);
-            this.plBarCode.Controls.Add(this.txtBarCode);
-            this.plBarCode.Controls.Add(this.label3);
-            this.plBarCode.Dock = System.Windows.Forms.DockStyle.Left;
-            this.plBarCode.Location = new System.Drawing.Point(0, 0);
-            this.plBarCode.Name = "plBarCode";
-            this.plBarCode.Size = new System.Drawing.Size(409, 174);
-            this.plBarCode.TabIndex = 2;
-            // 
-            // lblPreChargeAmount
-            // 
-            this.lblPreChargeAmount.AutoSize = true;
-            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblPreChargeAmount.ForeColor = System.Drawing.Color.Red;
-            this.lblPreChargeAmount.Location = new System.Drawing.Point(3, 9);
-            this.lblPreChargeAmount.Name = "lblPreChargeAmount";
-            this.lblPreChargeAmount.Size = new System.Drawing.Size(325, 75);
-            this.lblPreChargeAmount.TabIndex = 2;
-            this.lblPreChargeAmount.Text = "找零:￥0.00";
-            // 
-            // txtBarCode
-            // 
-            this.txtBarCode.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txtBarCode.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtBarCode.Location = new System.Drawing.Point(0, 120);
-            this.txtBarCode.Name = "txtBarCode";
-            this.txtBarCode.Size = new System.Drawing.Size(409, 54);
-            this.txtBarCode.TabIndex = 0;
-            this.txtBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarCode_KeyDown);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(3, 92);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(153, 25);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "扫码/录入金额：";
             // 
             // ProductId
             // 
@@ -394,6 +278,123 @@
             this.Amount.ReadOnly = true;
             this.Amount.Width = 80;
             // 
+            // plBarCode
+            // 
+            this.plBarCode.Controls.Add(this.lblPreChargeAmount);
+            this.plBarCode.Controls.Add(this.txtBarCode);
+            this.plBarCode.Controls.Add(this.label3);
+            this.plBarCode.Dock = System.Windows.Forms.DockStyle.Left;
+            this.plBarCode.Location = new System.Drawing.Point(0, 0);
+            this.plBarCode.Name = "plBarCode";
+            this.plBarCode.Size = new System.Drawing.Size(409, 174);
+            this.plBarCode.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(3, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(153, 25);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "扫码/录入金额：";
+            // 
+            // txtBarCode
+            // 
+            this.txtBarCode.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.txtBarCode.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtBarCode.Location = new System.Drawing.Point(0, 120);
+            this.txtBarCode.Name = "txtBarCode";
+            this.txtBarCode.Size = new System.Drawing.Size(409, 54);
+            this.txtBarCode.TabIndex = 0;
+            this.txtBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarCode_KeyDown);
+            // 
+            // lblPreChargeAmount
+            // 
+            this.lblPreChargeAmount.AutoSize = true;
+            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblPreChargeAmount.ForeColor = System.Drawing.Color.Red;
+            this.lblPreChargeAmount.Location = new System.Drawing.Point(3, 9);
+            this.lblPreChargeAmount.Name = "lblPreChargeAmount";
+            this.lblPreChargeAmount.Size = new System.Drawing.Size(325, 75);
+            this.lblPreChargeAmount.TabIndex = 2;
+            this.lblPreChargeAmount.Text = "找零:￥0.00";
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.lblKeys);
+            this.panel5.Controls.Add(this.lblOrderCode);
+            this.panel5.Controls.Add(this.lblDiscount);
+            this.panel5.Controls.Add(this.lblQuantityTotal);
+            this.panel5.Controls.Add(this.lblOrderTotal);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(409, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(953, 174);
+            this.panel5.TabIndex = 2;
+            // 
+            // lblOrderTotal
+            // 
+            this.lblOrderTotal.AutoSize = true;
+            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 30F);
+            this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblOrderTotal.Location = new System.Drawing.Point(6, 9);
+            this.lblOrderTotal.Name = "lblOrderTotal";
+            this.lblOrderTotal.Size = new System.Drawing.Size(302, 52);
+            this.lblOrderTotal.TabIndex = 1;
+            this.lblOrderTotal.Text = "总金额：￥0.00";
+            // 
+            // lblQuantityTotal
+            // 
+            this.lblQuantityTotal.AutoSize = true;
+            this.lblQuantityTotal.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblQuantityTotal.Location = new System.Drawing.Point(4, 92);
+            this.lblQuantityTotal.Name = "lblQuantityTotal";
+            this.lblQuantityTotal.Size = new System.Drawing.Size(99, 25);
+            this.lblQuantityTotal.TabIndex = 1;
+            this.lblQuantityTotal.Text = "总数量：0";
+            // 
+            // lblDiscount
+            // 
+            this.lblDiscount.AutoSize = true;
+            this.lblDiscount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblDiscount.Location = new System.Drawing.Point(4, 134);
+            this.lblDiscount.Name = "lblDiscount";
+            this.lblDiscount.Size = new System.Drawing.Size(88, 25);
+            this.lblDiscount.TabIndex = 1;
+            this.lblDiscount.Text = "总优惠：";
+            // 
+            // lblOrderCode
+            // 
+            this.lblOrderCode.AutoSize = true;
+            this.lblOrderCode.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblOrderCode.Location = new System.Drawing.Point(189, 92);
+            this.lblOrderCode.Name = "lblOrderCode";
+            this.lblOrderCode.Size = new System.Drawing.Size(88, 25);
+            this.lblOrderCode.TabIndex = 1;
+            this.lblOrderCode.Text = "订单号：";
+            // 
+            // lblKeys
+            // 
+            this.lblKeys.AutoSize = true;
+            this.lblKeys.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblKeys.ForeColor = System.Drawing.Color.Blue;
+            this.lblKeys.Location = new System.Drawing.Point(190, 137);
+            this.lblKeys.Name = "lblKeys";
+            this.lblKeys.Size = new System.Drawing.Size(247, 21);
+            this.lblKeys.TabIndex = 1;
+            this.lblKeys.Text = "F1 改数量,F2 会员,ESC 作废订单 ";
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.panel5);
+            this.panel3.Controls.Add(this.plBarCode);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 494);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(1362, 174);
+            this.panel3.TabIndex = 1;
+            // 
             // frmPos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -411,11 +412,11 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).EndInit();
-            this.panel3.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
             this.plBarCode.ResumeLayout(false);
             this.plBarCode.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel3.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -425,21 +426,10 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Label lblStoreId;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel5;
-        private System.Windows.Forms.Panel plBarCode;
-        private System.Windows.Forms.TextBox txtBarCode;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label lblOrderCode;
         private System.Windows.Forms.Label lblAccountId;
-        private System.Windows.Forms.Label lblQuantityTotal;
-        private System.Windows.Forms.Label lblOrderTotal;
         private System.Windows.Forms.Label lblPreOrderCode;
-        private System.Windows.Forms.Label lblDiscount;
         private System.Windows.Forms.Label lblPreOrderAmount;
-        private System.Windows.Forms.Label lblKeys;
         private System.Windows.Forms.DataGridView dgvData;
-        private System.Windows.Forms.Label lblPreChargeAmount;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductId;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductCode;
         private System.Windows.Forms.DataGridViewTextBoxColumn BarCode;
@@ -451,5 +441,16 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn DiscountAmount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
+        private System.Windows.Forms.Panel plBarCode;
+        private System.Windows.Forms.Label lblPreChargeAmount;
+        private System.Windows.Forms.TextBox txtBarCode;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label lblKeys;
+        private System.Windows.Forms.Label lblOrderCode;
+        private System.Windows.Forms.Label lblDiscount;
+        private System.Windows.Forms.Label lblQuantityTotal;
+        private System.Windows.Forms.Label lblOrderTotal;
+        private System.Windows.Forms.Panel panel3;
     }
 }

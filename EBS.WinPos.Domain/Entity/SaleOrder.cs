@@ -20,11 +20,9 @@ namespace EBS.WinPos.Domain.Entity
 
         public int StoreId { get; set; }
         /// <summary>
-        /// 订单类型：销售单，销售退单
+        /// 订单类型：销售单1，销售退单2
         /// </summary>
         public int OrderType { get; set; }
-
-
         /// <summary>
         /// 支付方式
         /// </summary>
@@ -49,7 +47,6 @@ namespace EBS.WinPos.Domain.Entity
         /// <summary>
         /// 销售单状态
         /// </summary>
-
         public SaleOrderStatus Status { get; set; }
 
         public DateTime CreatedOn { get; set; }
@@ -125,7 +122,7 @@ namespace EBS.WinPos.Domain.Entity
             this.UpdatedOn = DateTime.Now;
         }
 
-        public void FinishPaid(decimal payAmount, PaymentWay payWay = PaymentWay.Cash)
+        public void FinishPaid(decimal payAmount,decimal onlinePayAmount = 0m ,PaymentWay payWay = PaymentWay.Cash)
         {
             if (this.Status != SaleOrderStatus.Create) { throw new AppException("订单非待支付状态"); }
             this.Status = SaleOrderStatus.Paid;
@@ -133,6 +130,7 @@ namespace EBS.WinPos.Domain.Entity
             this.PaidDate = DateTime.Now;
             this.PaymentWay = payWay;
             this.PayAmount = payAmount;
+            this.OnlinePayAmount = onlinePayAmount;
 
         }
 

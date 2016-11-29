@@ -19,7 +19,15 @@ namespace EBS.WinPos.Service
         public PrinterService(string IpPort)  
         {  
             this.ipPort = IpPort;//打印机端口   
-        }  
+        }
+
+        public void PrintTest()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("******小票打印机连接测试******\r\n");
+            sb.Append("******打印成功！******\r\n");
+            PrintLine("str");
+        }
   
         ///   <summary>   
         ///   输出文字到打印机   
@@ -27,17 +35,22 @@ namespace EBS.WinPos.Service
         ///   <param   name= "str "> 要打印的内容 </param>   
         public void PrintLine(string str)  
         {  
-            //建立连接  
-            IPAddress ipa = IPAddress.Parse(ipPort);
-            IPEndPoint ipe = new IPEndPoint(ipa, _port);//9100为小票打印机指定端口  
-            Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);  
-            soc.Connect(ipe);  
-  
-            //string str= "hello,123456789,大家好! ";  
-  
-            byte[] b = System.Text.Encoding.GetEncoding("GB2312").GetBytes(str);  
-            soc.Send(b);  
-            soc.Close();  
+            //建立连接
+            try
+            {
+                IPAddress ipa = IPAddress.Parse(ipPort);
+                IPEndPoint ipe = new IPEndPoint(ipa, _port);//9100为小票打印机指定端口  
+                Socket soc = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                soc.Connect(ipe);
+                byte[] b = System.Text.Encoding.GetEncoding("GB2312").GetBytes(str);
+                soc.Send(b);
+                soc.Close();  
+            }
+            catch (Exception ex)
+            {
+               throw new AppException("小票打印失败，请检查打印机是否正常连接或联系管理员！", ex);
+            }
+           
         }  
   
   

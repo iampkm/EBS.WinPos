@@ -7,15 +7,25 @@ namespace EBS.WinPos.Service.Dto
 {
     public class ShopCart
     {
-        public ShopCart(int storeId,int editor)
+        public ShopCart(int storeId,int editor,int orderType = 1)
         {
             Items = new List<ShopCartItem>();
+            this.StoreId = storeId;
+            this.Editor = editor;
+            this.OrderType = orderType;
+
         }
         public int StoreId { get; set; }
 
         public int Editor { get; set; }
+        /// <summary>
+        /// 1  销售单，2 销售退单
+        /// </summary>
+        public int OrderType { get; set; }
 
         public List<ShopCartItem> Items { get; set; }
+
+        public string OrderCode { get; set; }
 
         public int OrderId { get; set; }
 

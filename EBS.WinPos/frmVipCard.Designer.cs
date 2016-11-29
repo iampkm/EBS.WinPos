@@ -1,6 +1,6 @@
 ﻿namespace EBS.WinPos
 {
-    partial class frmCustomerId
+    partial class frmVipCard
     {
         /// <summary>
         /// Required designer variable.

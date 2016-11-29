@@ -18,6 +18,6 @@
 公司投诉电话：400-100-1006
 
 ---------------------------------
-##Items##
+##ItemTemplate##
 {{ProductName}}		
 {{ProductCode}}		{{Price}}	{{Quantity}}	{{Amount}}
