@@ -53,7 +53,7 @@ namespace EBS.WinPos
             //        return;
             //    }
             //}
-
+            this.dgvData.Rows.Clear();
             int index = this.dgvData.Rows.Add();
             var row = this.dgvData.Rows[index];
             row.Cells["ProductId"].Value = model.Id;

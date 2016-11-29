@@ -46,6 +46,30 @@ namespace EBS.WinPos.Service
             cat.OrderCode = order.Code;
         }
 
+        public void CreateBackOrder(ShopCart cat)
+        {
+            SaleOrder order = new SaleOrder()
+            {
+                StoreId = cat.StoreId,
+                CreatedBy = cat.Editor,
+                UpdatedBy = cat.Editor,
+                 OrderType = 2,
+                 Status = SaleOrderStatus.Paid,
+                 PaidDate = DateTime.Now,
+            };
+            order.GenerateNewCode();
+            foreach (ShopCartItem item in cat.Items)
+            {
+                order.AddOrderItem(item.Product, item.Quantity, item.RealPrice);
+            }
+            this._db.Orders.Add(order);
+            this._db.SaveChanges();
+            //设置订单信息
+            cat.OrderId = order.Id;
+            cat.OrderCode = order.Code;
+        }
+
+
         public void CancelOrder(int orderId, int editor)
         {
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);

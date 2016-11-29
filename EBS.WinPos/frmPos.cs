@@ -151,6 +151,7 @@ namespace EBS.WinPos
             _currentShopCat.OrderType = 2; // 销售退单
             _saleOrderService.CreateOrder(_currentShopCat);
             ShowPreOrderInfo();
+            ClearAll();
             //打印小票
             _saleOrderService.PrintTicket(_currentShopCat.OrderId);
         }
@@ -215,10 +216,28 @@ namespace EBS.WinPos
                    // MinusQuantity();
                     inputCustomer();
                     break;
-               
+                case Keys.Q:
+                    Quit();
+                    break;               
                 default:
                     break;
             }
+        }
+
+        public void Quit()
+        { 
+             this.Close();
+             var mainForm = ContextService.ParentForm;
+             if (mainForm == null)
+             {
+                 mainForm = new frmMain();
+                 ContextService.AddFrom(mainForm);
+                 mainForm.Show();
+             }
+             else
+             {
+                 mainForm.Show();
+             }
         }
 
        
@@ -300,7 +319,7 @@ namespace EBS.WinPos
 
         private void frmPos_Resize(object sender, EventArgs e)
         {
-            // this.plBarCode.Width = this.Width / 2;
+           
         }
 
         //dgvData.RowHeadersDefaultCellStyle.ForeColor
@@ -368,5 +387,9 @@ namespace EBS.WinPos
             }           
              return base.ProcessCmdKey(ref msg, keyData);
         }
+
+        // this.panel1.Height = 36;
+        // this.panel3.Height = 180;
+        // this.panel2.Height = this.Height - this.panel1.Height - this.panel3.Height;
     }
 }

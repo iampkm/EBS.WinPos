@@ -26,10 +26,10 @@ namespace EBS.WinPos
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            _loginFrom = new frmLogin();
-            ContextService.AddFrom(this);
-            ContextService.AddFrom(_loginFrom);
-            _loginFrom.ShowDialog(this);
+            //_loginFrom = new frmLogin();
+            //ContextService.AddFrom(this);
+            //ContextService.AddFrom(_loginFrom);
+            //_loginFrom.ShowDialog(this);
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
