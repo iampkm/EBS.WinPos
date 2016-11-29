@@ -65,6 +65,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextService.cs" />
+    <Compile Include="frmRefund.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRefund.Designer.cs">
+      <DependentUpon>frmRefund.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmVipCard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -115,6 +121,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmRefund.resx">
+      <DependentUpon>frmRefund.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmVipCard.resx">
       <DependentUpon>frmVipCard.cs</DependentUpon>
     </EmbeddedResource>
