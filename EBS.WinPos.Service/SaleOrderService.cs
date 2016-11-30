@@ -18,12 +18,12 @@ namespace EBS.WinPos.Service
     public class SaleOrderService
     {
         Repository _db;
-        PrinterService _printService;
+        IPosPrinter _printService;
         SyncService _syncService;
         public SaleOrderService()
         {
             _db = new Repository();
-            _printService = new PrinterService();
+            _printService = new LptPrinterService();
             _syncService = new SyncService(AppContext.Log);
         }
         public void CreateOrder(ShopCart cat)
@@ -139,7 +139,7 @@ namespace EBS.WinPos.Service
             }
             else
             {
-                throw new AppException("支付失败，请稍后重试");
+                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
             }
         }
 
@@ -187,7 +187,7 @@ namespace EBS.WinPos.Service
             }
             else
             {
-                throw new AppException("支付失败，请稍后重试");
+                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
             }
         }
 
@@ -256,7 +256,7 @@ namespace EBS.WinPos.Service
             billTemplate = billTemplate.Replace("{{paymentway}}", model.PaymentWay.Description());
             billTemplate = billTemplate.Replace("{{onlinepayamount}}", model.OnlinePayAmount.ToString("C"));
 
-            _printService.PrintLine(billTemplate);
+            _printService.Print(billTemplate);
         }
 
 

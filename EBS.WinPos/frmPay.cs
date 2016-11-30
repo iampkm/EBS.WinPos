@@ -65,7 +65,7 @@ namespace EBS.WinPos
             if (select.Key == (int)PaymentWay.Cash)
             {
                 this.txtPayBarCode.Enabled = false;
-                this.txtPayAmount.Text = CurrentOrder.OrderAmount.ToString();
+                this.txtPayAmount.Text = "0";
                 this.txtPayBarCode.Text = "";
                 this.txtOnlinePayAmount.Text = "0";
                
@@ -85,7 +85,14 @@ namespace EBS.WinPos
             decimal amount = this.CurrentOrder.PayAmount;
             decimal.TryParse(txtPayAmount.Text, out amount);
             this.CurrentOrder.PayAmount = amount;
-            this.txtOnlinePayAmount.Text = (this.CurrentOrder.OrderAmount - this.CurrentOrder.PayAmount).ToString();
+            if (lstPaymentWay.SelectedItem != null)
+            {
+                var select = (KeyValuePair<int, string>)this.lstPaymentWay.SelectedItem;
+                if (select.Key != (int)PaymentWay.Cash)
+                {
+                    this.txtOnlinePayAmount.Text = (this.CurrentOrder.OrderAmount - this.CurrentOrder.PayAmount).ToString();
+                }
+            }
         }
 
         private void txtPayAmount_KeyPress(object sender, KeyPressEventArgs e)

@@ -39,15 +39,15 @@
             this.lblPreOrderAmount = new System.Windows.Forms.Label();
             this.lblPreOrderCode = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtBarCode = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.lblKeys = new System.Windows.Forms.Label();
             this.lblOrderCode = new System.Windows.Forms.Label();
             this.lblDiscount = new System.Windows.Forms.Label();
             this.lblQuantityTotal = new System.Windows.Forms.Label();
-            this.lblOrderTotal = new System.Windows.Forms.Label();
             this.plBarCode = new System.Windows.Forms.Panel();
             this.lblPreChargeAmount = new System.Windows.Forms.Label();
-            this.txtBarCode = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.lblOrderTotal = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.dgvData = new System.Windows.Forms.DataGridView();
             this.ProductId = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -138,6 +138,25 @@
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             // 
+            // txtBarCode
+            // 
+            this.txtBarCode.Font = new System.Drawing.Font("微软雅黑", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtBarCode.Location = new System.Drawing.Point(6, 131);
+            this.txtBarCode.Name = "txtBarCode";
+            this.txtBarCode.Size = new System.Drawing.Size(279, 50);
+            this.txtBarCode.TabIndex = 0;
+            this.txtBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarCode_KeyDown);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label3.Location = new System.Drawing.Point(1, 95);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(153, 25);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "扫码/录入金额：";
+            // 
             // lblKeys
             // 
             this.lblKeys.AutoSize = true;
@@ -179,17 +198,6 @@
             this.lblQuantityTotal.TabIndex = 15;
             this.lblQuantityTotal.Text = "总数量：0";
             // 
-            // lblOrderTotal
-            // 
-            this.lblOrderTotal.AutoSize = true;
-            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 30F);
-            this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblOrderTotal.Location = new System.Drawing.Point(370, 10);
-            this.lblOrderTotal.Name = "lblOrderTotal";
-            this.lblOrderTotal.Size = new System.Drawing.Size(302, 52);
-            this.lblOrderTotal.TabIndex = 16;
-            this.lblOrderTotal.Text = "总金额：￥0.00";
-            // 
             // plBarCode
             // 
             this.plBarCode.Controls.Add(this.lblPreChargeAmount);
@@ -211,24 +219,16 @@
             this.lblPreChargeAmount.TabIndex = 2;
             this.lblPreChargeAmount.Text = "找零:￥0.00";
             // 
-            // txtBarCode
+            // lblOrderTotal
             // 
-            this.txtBarCode.Font = new System.Drawing.Font("微软雅黑", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtBarCode.Location = new System.Drawing.Point(6, 131);
-            this.txtBarCode.Name = "txtBarCode";
-            this.txtBarCode.Size = new System.Drawing.Size(279, 50);
-            this.txtBarCode.TabIndex = 0;
-            this.txtBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarCode_KeyDown);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(1, 95);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(153, 25);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "扫码/录入金额：";
+            this.lblOrderTotal.AutoSize = true;
+            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 30F);
+            this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.lblOrderTotal.Location = new System.Drawing.Point(370, 10);
+            this.lblOrderTotal.Name = "lblOrderTotal";
+            this.lblOrderTotal.Size = new System.Drawing.Size(302, 52);
+            this.lblOrderTotal.TabIndex = 16;
+            this.lblOrderTotal.Text = "总金额：￥0.00";
             // 
             // panel2
             // 
@@ -333,7 +333,7 @@
             this.Specification.HeaderText = "规格";
             this.Specification.Name = "Specification";
             this.Specification.ReadOnly = true;
-            this.Specification.Width = 80;
+            this.Specification.Width = 70;
             // 
             // Unit
             // 
@@ -341,7 +341,7 @@
             this.Unit.HeaderText = "单位";
             this.Unit.Name = "Unit";
             this.Unit.ReadOnly = true;
-            this.Unit.Width = 70;
+            this.Unit.Width = 65;
             // 
             // SalePrice
             // 
@@ -357,7 +357,7 @@
             this.RealPrice.HeaderText = "优惠价";
             this.RealPrice.Name = "RealPrice";
             this.RealPrice.ReadOnly = true;
-            this.RealPrice.Width = 90;
+            this.RealPrice.Width = 85;
             // 
             // Quantity
             // 
@@ -367,7 +367,7 @@
             this.Quantity.DefaultCellStyle = dataGridViewCellStyle2;
             this.Quantity.HeaderText = "数量";
             this.Quantity.Name = "Quantity";
-            this.Quantity.Width = 70;
+            this.Quantity.Width = 65;
             // 
             // DiscountAmount
             // 
@@ -440,7 +440,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
         private System.Windows.Forms.DataGridViewTextBoxColumn DiscountAmount;
         private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
-
-
     }
 }

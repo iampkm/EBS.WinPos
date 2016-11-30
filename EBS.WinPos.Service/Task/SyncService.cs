@@ -111,7 +111,7 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<Store>>(result);
                         //入库                      
-                        string sql = "INSERT INTO Store (Id,Code,Name)VALUES (@Id,@Code,@Name)";
+                        string sql = "INSERT INTO Store (Id,Code,Name,LicenseCode)VALUES (@Id,@Code,@Name,@LicenseCode)";
                         _db.ExecuteSql(sql, rows.ToArray());
                         count = rows.Count();
                     }
