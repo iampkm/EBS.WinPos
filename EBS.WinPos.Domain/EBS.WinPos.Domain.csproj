@@ -70,8 +70,6 @@
     <Compile Include="Entity\Product.cs" />
     <Compile Include="Entity\ProductAreaPrice.cs" />
     <Compile Include="Entity\ProductStorePrice.cs" />
-    <Compile Include="Entity\SaleBackOrder.cs" />
-    <Compile Include="Entity\SaleBackOrderItem.cs" />
     <Compile Include="Entity\SaleOrder.cs" />
     <Compile Include="Entity\SaleOrderItem.cs" />
     <Compile Include="Entity\Store.cs" />

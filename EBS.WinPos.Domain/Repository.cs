@@ -23,7 +23,7 @@ namespace EBS.WinPos.Domain
         public DbSet<VipProduct> VipProducts { get; set; }
         public DbSet<ProductStorePrice> ProductStorePrices { get; set; }
         public DbSet<ProductAreaPrice> ProductAreaPrices { get; set; }
-        
+       
 
         public Repository()
             : base("SqliteTest")

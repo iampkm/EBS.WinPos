@@ -45,7 +45,9 @@ namespace EBS.WinPos
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
 
             this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString("C");
-            this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();      
+            this.txtPayAmount.Text = CurrentOrder.PayAmount.ToString();
+            this.txtOnlinePayAmount.Enabled = false;
+            this.txtPayBarCode.Enabled = false;
 
             // 显示支付方式
             var paymentWays = typeof(PaymentWay).GetValueToDescription();
@@ -54,11 +56,7 @@ namespace EBS.WinPos
             this.lstPaymentWay.ValueMember = "Key";
             this.lstPaymentWay.SelectedIndex = 0;
 
-            //默认现金支付方式
-            this.btnSave.Focus();
-            //隐藏支付条码
-            this.lblPayBarCode.Hide();
-            this.txtPayBarCode.Hide();
+
         }
 
         private void lstPaymentWay_SelectedValueChanged(object sender, EventArgs e)
@@ -66,14 +64,18 @@ namespace EBS.WinPos
             var select = (KeyValuePair<int, string>)this.lstPaymentWay.SelectedItem;
             if (select.Key == (int)PaymentWay.Cash)
             {
-                this.lblPayBarCode.Hide();
-                this.txtPayBarCode.Hide();
+                this.txtPayBarCode.Enabled = false;
+                this.txtPayAmount.Text = CurrentOrder.OrderAmount.ToString();
                 this.txtPayBarCode.Text = "";
+                this.txtOnlinePayAmount.Text = "0";
+               
             }
             else
             {
-                this.lblPayBarCode.Show();
-                this.txtPayBarCode.Show();
+                this.txtPayBarCode.Enabled = true;
+                this.txtPayAmount.Text = "0";
+                this.txtOnlinePayAmount.Text = CurrentOrder.OrderAmount.ToString();
+
             }
         }
 
@@ -83,6 +85,7 @@ namespace EBS.WinPos
             decimal amount = this.CurrentOrder.PayAmount;
             decimal.TryParse(txtPayAmount.Text, out amount);
             this.CurrentOrder.PayAmount = amount;
+            this.txtOnlinePayAmount.Text = (this.CurrentOrder.OrderAmount - this.CurrentOrder.PayAmount).ToString();
         }
 
         private void txtPayAmount_KeyPress(object sender, KeyPressEventArgs e)
@@ -170,6 +173,9 @@ namespace EBS.WinPos
                 var payAmount = CurrentOrder.PayAmount;
                 decimal.TryParse(txtPayAmount.Text, out payAmount);
                 CurrentOrder.PayAmount = payAmount;
+                var onlinePayAmount = 0m;
+                decimal.TryParse(txtOnlinePayAmount.Text, out onlinePayAmount);
+                CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode,CurrentOrder.PayAmount);
                 PosForm.ShowPreOrderInfo();
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -191,6 +197,9 @@ namespace EBS.WinPos
                 var payAmount = CurrentOrder.PayAmount;
                 decimal.TryParse(txtPayAmount.Text, out payAmount);
                 CurrentOrder.PayAmount = payAmount;
+                var onlinePayAmount = 0m;
+                decimal.TryParse(txtOnlinePayAmount.Text, out onlinePayAmount);
+                CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode,CurrentOrder.PayAmount);
                 PosForm.ShowPreOrderInfo();
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);

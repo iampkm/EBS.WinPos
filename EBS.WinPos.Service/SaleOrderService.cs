@@ -32,7 +32,7 @@ namespace EBS.WinPos.Service
             {
                 StoreId = cat.StoreId,
                 CreatedBy = cat.Editor,
-                UpdatedBy = cat.Editor
+                UpdatedBy = cat.Editor,
             };
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)
@@ -46,16 +46,15 @@ namespace EBS.WinPos.Service
             cat.OrderCode = order.Code;
         }
 
-        public void CreateBackOrder(ShopCart cat)
+        public void CreateSaleRefund(ShopCart cat)
         {
             SaleOrder order = new SaleOrder()
             {
                 StoreId = cat.StoreId,
                 CreatedBy = cat.Editor,
                 UpdatedBy = cat.Editor,
-                 OrderType = 2,
-                 Status = SaleOrderStatus.Paid,
-                 PaidDate = DateTime.Now,
+                OrderType = 2,
+                RefundAccount = cat.RefundAccount
             };
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)
@@ -93,7 +92,29 @@ namespace EBS.WinPos.Service
             //保存交易记录
             _db.SaveChanges();
             //同步到服务器
-            _syncService.Send(model);            
+            _syncService.Send(model);
+        }
+
+        public void CashRefund(int orderId, string licenseCode, decimal payAmount)
+        {
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+            if (model.StoreId > 0)
+            {
+                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
+            }
+            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount))
+            {
+                throw new AppException("退款金额不能大于订单金额");
+            }
+
+            model.FinishPaid(payAmount);
+            //保存交易记录
+            _db.SaveChanges();
+            //同步到服务器
+            _syncService.Send(model);
         }
 
         public void WechatPay(int orderId, string payBarCode, decimal payAmount)
@@ -111,15 +132,37 @@ namespace EBS.WinPos.Service
             if (result == "1")
             {
                 //支付成功
-                model.FinishPaid(model.OrderAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
                 _db.SaveChanges();
                 //同步到服务器
-                _syncService.Send(model);              
+                _syncService.Send(model);
             }
             else
             {
                 throw new AppException("支付失败，请稍后重试");
             }
+        }
+
+        public void WechatRefund(int orderId, string licenseCode, decimal payAmount, string refundAccount)
+        {
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+            if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
+            model.RefundAccount = refundAccount;
+            if (model.StoreId > 0)
+            {
+                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
+            }
+            if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
+            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
+            if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
+            // 发起微信支付
+            model.WaitRefund(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+            _db.SaveChanges();
+            //同步到服务器
+            _syncService.Send(model);
         }
 
         public void AliPay(int orderId, string payBarCode, decimal payAmount)
@@ -128,7 +171,7 @@ namespace EBS.WinPos.Service
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
-            if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
+            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
             string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2"), systemId = "2" });
@@ -137,15 +180,36 @@ namespace EBS.WinPos.Service
             if (result == "1")
             {
                 //支付成功
-                model.FinishPaid(model.OrderAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
                 _db.SaveChanges();
                 //同步到服务器
-                _syncService.Send(model);               
+                _syncService.Send(model);
             }
             else
             {
                 throw new AppException("支付失败，请稍后重试");
             }
+        }
+
+        public void AliRefund(int orderId, string licenseCode, decimal payAmount, string refundAccount)
+        {
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+            if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
+            model.RefundAccount = refundAccount;
+            if (model.StoreId > 0)
+            {
+                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
+            }
+            if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
+            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
+            if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
+            model.WaitRefund(model.PayAmount, model.OnlinePayAmount, PaymentWay.AliPay);
+            _db.SaveChanges();
+            //同步到服务器
+            _syncService.Send(model);
         }
 
         public void PrintTicket(int orderId)

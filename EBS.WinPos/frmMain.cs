@@ -96,5 +96,11 @@ namespace EBS.WinPos
             query.MdiParent = this;
             query.Show();
         }
+
+        private void toolStripButton6_Click(object sender, EventArgs e)
+        {
+            EBS.WinPos.Service.PrinterService service = new PrinterService();
+            service.PrintTest();
+        }
     }
 }

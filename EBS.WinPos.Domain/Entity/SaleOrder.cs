@@ -15,6 +15,7 @@ namespace EBS.WinPos.Domain.Entity
             this.CreatedOn = DateTime.Now;
             this.UpdatedOn = DateTime.Now;
             this.Status = SaleOrderStatus.Create;
+            this.OrderType = 1;
         }
         public string Code { get; set; }
 
@@ -28,9 +29,13 @@ namespace EBS.WinPos.Domain.Entity
         /// </summary>
         public PaymentWay PaymentWay { get; set; }
         /// <summary>
+        /// 退款账户
+        /// </summary>
+        public string RefundAccount { get; set; }
+        /// <summary>
         /// 支付日期
         /// </summary>
-        public DateTime PaidDate { get; set; }
+        public DateTime? PaidDate { get; set; }
         /// <summary>
         /// 订单金额 = 实际价格RealAmount * 数量
         /// </summary>
@@ -91,8 +96,9 @@ namespace EBS.WinPos.Domain.Entity
         {
              //账号ID + 8 为日期+ 5 时间秒+2位随机数
             // 1+2014010100001
-            var orderCodeMinLength = 16;
+            var orderCodeMinLength = 17;
             string createdBy = this.CreatedBy.ToString();
+            string orderType = this.OrderType.ToString();
             var code = Math.Abs(Guid.NewGuid().GetHashCode());
             var hashcode = code.ToString();
             StringBuilder sb = new StringBuilder();
@@ -100,6 +106,7 @@ namespace EBS.WinPos.Domain.Entity
             var ts = date - date.Date;
             var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(5, '0');  // 5位
             // 账号1~N+日期8+时间数字5 
+            sb.Append(orderType); //销售单据类型
             sb.Append(createdBy);
             sb.Append(date.ToString("yyyyMMdd"));
             sb.Append(seconds);
@@ -121,7 +128,12 @@ namespace EBS.WinPos.Domain.Entity
             this.UpdatedBy = editor;
             this.UpdatedOn = DateTime.Now;
         }
-
+        /// <summary>
+        /// 完成支付
+        /// </summary>
+        /// <param name="payAmount"></param>
+        /// <param name="onlinePayAmount"></param>
+        /// <param name="payWay"></param>
         public void FinishPaid(decimal payAmount,decimal onlinePayAmount = 0m ,PaymentWay payWay = PaymentWay.Cash)
         {
             if (this.Status != SaleOrderStatus.Create) { throw new AppException("订单非待支付状态"); }
@@ -132,6 +144,21 @@ namespace EBS.WinPos.Domain.Entity
             this.PayAmount = payAmount;
             this.OnlinePayAmount = onlinePayAmount;
 
+        }
+        /// <summary>
+        /// 待退款
+        /// </summary>
+        /// <param name="payAmount"></param>
+        /// <param name="onlinePayAmount"></param>
+        /// <param name="payWay"></param>
+        public void WaitRefund(decimal payAmount, decimal onlinePayAmount = 0m, PaymentWay payWay = PaymentWay.Cash)
+        {
+            if (this.Status != SaleOrderStatus.Create) { throw new AppException("订单非待支付状态"); }
+            this.Status = SaleOrderStatus.WaitPaid;
+            this.UpdatedOn = DateTime.Now;
+            this.PaymentWay = payWay;
+            this.PayAmount = payAmount;
+            this.OnlinePayAmount = onlinePayAmount;
         }
 
         public decimal GetChargeAmount()

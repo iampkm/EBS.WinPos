@@ -7,7 +7,7 @@ namespace EBS.WinPos.Service.Dto
 {
     public class ShopCart
     {
-        public ShopCart(int storeId,int editor,int orderType = 1)
+        public ShopCart(int storeId, int editor, int orderType = 1)
         {
             Items = new List<ShopCartItem>();
             this.StoreId = storeId;
@@ -22,6 +22,10 @@ namespace EBS.WinPos.Service.Dto
         /// 1  销售单，2 销售退单
         /// </summary>
         public int OrderType { get; set; }
+        /// <summary>
+        /// 退款账户
+        /// </summary>
+        public string RefundAccount { get; set; }
 
         public List<ShopCartItem> Items { get; set; }
 
@@ -30,14 +34,21 @@ namespace EBS.WinPos.Service.Dto
         public int OrderId { get; set; }
 
         /// <summary>
-        /// 客户支付金额
+        /// 现金支付金额
         /// </summary>
         public decimal PayAmount { get; set; }
+        /// <summary>
+        /// /在线支付金额
+        /// </summary>
+        public decimal OnlinePayAmount { get; set; }
+        /// <summary>
+        /// 订单金额
+        /// </summary>
         public decimal OrderAmount
         {
             get
             {
-                return this.Items.Sum(n => n.RealPrice  * n.Quantity);
+                return this.Items.Sum(n => n.RealPrice * n.Quantity);
             }
         }
 
@@ -51,8 +62,9 @@ namespace EBS.WinPos.Service.Dto
 
         public decimal TotalDiscountAmount
         {
-            get {
-                return this.Items.Sum(n => n.SalePrice - n.RealPrice); 
+            get
+            {
+                return this.Items.Sum(n => n.SalePrice - n.RealPrice);
             }
         }
 
@@ -60,7 +72,7 @@ namespace EBS.WinPos.Service.Dto
         {
             get
             {
-                return this.PayAmount - OrderAmount;
+                return this.PayAmount + this.OnlinePayAmount - OrderAmount;
             }
         }
 
@@ -76,15 +88,17 @@ namespace EBS.WinPos.Service.Dto
             {
                 this.Items.Add(item);
             }
-            else {
+            else
+            {
                 if (lastItem.ProductId == item.ProductId)
                 {
                     lastItem.Quantity += 1;
                 }
-                else {
+                else
+                {
                     this.Items.Add(item);
                 }
-            }           
+            }
         }
 
         public void ChangeQuantity(int productId, int quantity)
@@ -93,7 +107,7 @@ namespace EBS.WinPos.Service.Dto
             if (item != null)
             {
                 item.Quantity = quantity;
-            }           
+            }
         }
 
     }

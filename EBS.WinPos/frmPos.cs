@@ -43,16 +43,17 @@ namespace EBS.WinPos
         {
             var input = this.txtBarCode.Text;
             //商品编码固定8位，少于8位，即认为是输入的金额
+            this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.CurrentAccount.StoreId, ContextService.CurrentAccount.Id);
             if (input.Length <= 7)
             {
                 if (this._currentShopCat.OrderAmount > 0) {
                     CreateSaleOrder(input);
                 }
                 else if (this._currentShopCat.OrderAmount < 0){
-                    CreateBackOrder();
+                    CreateSaleRefund(input);
                 }
                 else {
-                    MessageBox.Show("订单金额不能为 0！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return;
+                    MessageBox.Show("请输入正确的商品条码或金额", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return;
                 }               
             }
             else
@@ -113,47 +114,58 @@ namespace EBS.WinPos
 
         public void CreateSaleOrder(string money)
         {
-            try
+            var inputAmount = 0m;
+            decimal.TryParse(money, out inputAmount) ;          
+             _currentShopCat.PayAmount = inputAmount;        
+            _saleOrderService.CreateOrder(_currentShopCat);            
+            this.lblOrderCode.Text ="订单号："+ _currentShopCat.OrderCode;
+            this.txtBarCode.Text = "";
+
+            // 显示支付窗体  
+            if (_currentShopCat.CheckCanPay())
+            {
+                _payForm = new frmPay();
+                _payForm.CurrentOrder = _currentShopCat;
+                _payForm.PosForm = this;
+                _payForm.ShowDialog(this);
+            }
+            else {
+                MessageBox.Show("有商品项数量为0,不能支付！请调整数量或ESC作废订单。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+          
+        }
+
+        public void CreateSaleRefund(string money)
+        {           
+            // 退单
+
+            if (string.IsNullOrEmpty(money))
+            {
+                _currentShopCat.PayAmount = _currentShopCat.OrderAmount; ;
+            }
+            else
             {
                 var inputAmount = 0m;
                 decimal.TryParse(money, out inputAmount);
                 _currentShopCat.PayAmount = inputAmount;
-                _saleOrderService.CreateOrder(_currentShopCat);            
-                this.lblOrderCode.Text ="订单号："+ _currentShopCat.OrderCode;
-                this.txtBarCode.Text = "";
-
-                // 显示支付窗体  
-                if (_currentShopCat.CheckCanPay())
-                {
-                    _payForm = new frmPay();
-                    _payForm.CurrentOrder = _currentShopCat;
-                    _payForm.PosForm = this;
-                    _payForm.ShowDialog(this);
-                }
-                else {
-                    MessageBox.Show("有商品项数量为0,不能支付！请调整数量或ESC作废订单。");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        public void CreateBackOrder()
-        {           
-            // 退单
-            DialogResult result = MessageBox.Show("你确定保存销售退单？", "系统信息", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (result == DialogResult.No)
-            {
-                return;
             }
             _currentShopCat.OrderType = 2; // 销售退单
-            _saleOrderService.CreateOrder(_currentShopCat);
-            ShowPreOrderInfo();
-            ClearAll();
-            //打印小票
-            _saleOrderService.PrintTicket(_currentShopCat.OrderId);
+            _saleOrderService.CreateSaleRefund(_currentShopCat);
+            this.lblOrderCode.Text = "订单号：" + _currentShopCat.OrderCode;
+            this.txtBarCode.Text = "";
+
+            if (_currentShopCat.OrderAmount < 0)
+            {
+                frmRefund refundFrom = new frmRefund();
+                refundFrom.CurrentOrder = _currentShopCat;
+                refundFrom.PosForm = this;
+                refundFrom.ShowDialog(this);
+            }
+            else
+            {
+                MessageBox.Show("退单金额必须小于 0", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+           
         }
         /// <summary>
         /// 按ESC 取消订单
@@ -169,12 +181,12 @@ namespace EBS.WinPos
                 }
                 if (this._currentShopCat.OrderId == 0)
                 {
+                    if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
                 _saleOrderService.CancelOrder(this.OrderId, ContextService.CurrentAccount.Id);
                 MessageBox.Show("订单作废成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //打印小票
-                _saleOrderService.PrintTicket(_currentShopCat.OrderId);
+                //打印小票              
                 ShowPreOrderInfo();
                 this.ClearAll();
             }
@@ -184,6 +196,7 @@ namespace EBS.WinPos
             }
 
             // 打印作废小票
+            _saleOrderService.PrintTicket(_currentShopCat.OrderId);
         }
 
 
@@ -295,7 +308,6 @@ namespace EBS.WinPos
             // 如果没有点上班，不显示该界面
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.CurrentAccount.StoreId;
-            // this.lblStoreId.Text = "门店："
             lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
             this.txtBarCode.Focus();
             this.dgvData.ClearSelection();
@@ -338,36 +350,9 @@ namespace EBS.WinPos
             if (this.dgvData.CurrentCell.ColumnIndex == 8)  //数量列
             {
                 e.Control.KeyPress += new KeyPressEventHandler(TextBoxDec_KeyPress);
-
-                //DataGridViewTextBoxColumn
-                //if (e.Control.GetType().Name == "DataGridViewTextBoxEditingControl")
-                //{
-                //    var qtyBox = e.Control as DataGridViewTextBoxEditingControl;
-                //    //添加事件
-                //    qtyBox.TextChanged += qtyBox_TextChanged;
-                //}
             }
         }
 
-        void qtyBox_TextChanged(object sender, EventArgs e)
-        {           
-            //int column = dgvData.CurrentCellAddress.X;
-            //int row = dgvData.CurrentCellAddress.Y;
-            //var qtyBox = (DataGridViewTextBoxEditingControl)sender;
-            //if (string.IsNullOrEmpty(qtyBox.Text))
-            //{
-            //    return;
-            //}
-            //var quantity = Convert.ToInt32(qtyBox.Text);
-            //var pid = this.dgvData.Rows[row].Cells["ProductId"].Value.ToString();
-            //var productId = Convert.ToInt32(pid);
-            //this._currentShopCat.ChangeQuantity(productId,quantity);
-
-            //this.dgvData[column, row].Value = qtyBox.Text;
-            //this.lblOrderTotal.Text = "总金额：" + _currentShopCat.OrderAmount.ToString("C");
-            //this.lblQuantityTotal.Text = "总件数：" + _currentShopCat.TotalQuantity.ToString();
-            //this.lblDiscount.Text = "总优惠：" + _currentShopCat.TotalDiscountAmount.ToString("C");
-        }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
@@ -388,6 +373,7 @@ namespace EBS.WinPos
              return base.ProcessCmdKey(ref msg, keyData);
         }
 
+      
         // this.panel1.Height = 36;
         // this.panel3.Height = 180;
         // this.panel2.Height = this.Height - this.panel1.Height - this.panel3.Height;

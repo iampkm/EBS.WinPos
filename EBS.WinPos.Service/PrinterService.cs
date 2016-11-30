@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
-using EBS.Infrastructure;  
+using EBS.Infrastructure;
+using EBS.WinPos.Domain.Entity;  
 namespace EBS.WinPos.Service
 {
    public class PrinterService

@@ -31,7 +31,8 @@ create table SaleOrder
    PayAmount            decimal(8,2),
    OnlinePayAmount      decimal(8,2),
    PaymentWay           INTEGER,
-   PaidDate             datetime ,  
+   PaidDate             datetime , 
+   RefundAccount        varchar(50),
    Status               INTEGER ,
    CreatedOn            datetime ,
    CreatedBy            INTEGER,
@@ -84,7 +85,8 @@ create table Store
 (
     Id                   INTEGER  NOT NULL  PRIMARY KEY,
     Code                 varchar(20),
-    Name                 varchar(50)
+    Name                 varchar(50),
+    LicenseCode         varchar(50)
 )
 
 
