@@ -15,22 +15,24 @@ namespace EBS.WinPos
     public partial class frmLogin : Form
     {
         AccountService _accountService;
-
         WorkScheduleService _wrokService;
+        SettingService _settingService;
         public frmLogin()
         {
             InitializeComponent();
 
             _accountService = new AccountService();
             _wrokService = new WorkScheduleService();
+            _settingService = new SettingService();
         }      
 
         private void btnLogin_Click(object sender, EventArgs e)
         {           
 
             var user = _accountService.Login(this.txtUserName.Text, this.txtPasswrod.Text);
-            ContextService.SetCurrentAccount(user);
-           var worker = _wrokService.GetWorking(ContextService.CurrentAccount.StoreId, Config.PosId);
+            var setting = _settingService.GetSettings();
+            ContextService.SetCurrentAccount(user,setting.StoreId,setting.PosId);
+            var worker = _wrokService.GetWorking(ContextService.StoreId, setting.PosId);
             if (worker == null)  
             {
                 ShowWrokForm();
@@ -46,7 +48,7 @@ namespace EBS.WinPos
                     ShowWrokForm();
                 }
             }
-            this.Hide();                  
+            this.Hide();   
         }
 
         public void ShowWrokForm()
@@ -57,29 +59,25 @@ namespace EBS.WinPos
 
             frmWork workForm = new frmWork();
             ContextService.AddFrom(workForm);
-            workForm.MdiParent = ContextService.ParentForm;
+            workForm.MdiParent = main;
             workForm.Show();
         }
 
         public void ShowPosForm()
         {
-            var posForm = ContextService.GetFrom(typeof(frmPos));
-            if (posForm == null)
-            {
-                posForm = new frmPos();
-                ContextService.AddFrom(posForm);
-                // posForm.MdiParent = ContextService.ParentForm;
-                posForm.TopLevel = true;
-                posForm.Show();
-            }
-            else
-            {
-                posForm.Show();
-            } 
+            frmPos posForm = new frmPos();
+            ContextService.AddFrom(posForm);
+            posForm.Show();
         }
 
         private void frmLogin_FormClosed(object sender, FormClosedEventArgs e)
         {
+            DialogResult result = MessageBox.Show("你确定关闭pos系统？", "系统信息", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+
             Application.Exit();
         }
 

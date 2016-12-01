@@ -262,7 +262,7 @@ namespace EBS.WinPos.Service.Task
             {
                 string url = string.Format("{0}/PosSync/SaleOrderSync",_serverUrl);
                 string body = JsonConvert.SerializeObject(model);
-                string param = string.Format("body=", body);
+                string param = string.Format("body={0}", body);
                 string result = HttpHelper.HttpPost(url, param);
                 if(result=="1")
                 {

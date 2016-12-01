@@ -25,13 +25,20 @@ namespace EBS.WinPos
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            if (ContextService.CurrentAccount.Id == 1)
+            {
+                toolStripButton6.Visible = true;
+            }
+            else {
+                toolStripButton6.Visible = false;
+            }
         }
 
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             //收银台
             // 检查当前班次收银员账户是否一致
-            var worker = _workService.GetWorking(ContextService.CurrentAccount.StoreId, Config.PosId);
+            var worker = _workService.GetWorking(ContextService.StoreId, Config.PosId);
             if (worker == null)
             {
                 MessageBox.Show("请先上班再开始销售", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -43,38 +50,25 @@ namespace EBS.WinPos
                 return;
             }
 
-           var posForm= ContextService.GetFrom(typeof(frmPos));
-            if (posForm == null)
-            {
-                posForm = new frmPos();
-                ContextService.AddFrom(posForm);
-                posForm.MdiParent = ContextService.ParentForm;
-                posForm.Show();
-            }
-            else {
-                posForm.Show();
-            } 
+            frmPos posForm = new frmPos();
+            posForm.Show();
+            this.Hide();
+           
         }
 
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
+            // 注销
             Application.Restart();
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            // 交接班
-            var wrokForm= ContextService.GetFrom(typeof(frmWork));
-            if (wrokForm == null)
-            {
-                frmWork workForm = new frmWork();
-                ContextService.AddFrom(workForm);
-                workForm.MdiParent = ContextService.ParentForm;
-                workForm.Show();
-            }
-            else {
-                wrokForm.Show();
-            }
+            // 交接班          
+            frmWork workForm = new frmWork();
+            workForm.MdiParent =this;
+            workForm.Show();
+           
         }
 
         private void toolStripButton4_Click(object sender, EventArgs e)
@@ -94,8 +88,20 @@ namespace EBS.WinPos
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
-            EBS.WinPos.Service.PrinterService service = new PrinterService();
-            service.PrintTest();
+            //设置
+            frmSetting setting = new frmSetting();
+            setting.MdiParent = this;
+            setting.Show();
+        }
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("你确定退出应用程序？", "系统信息", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+            System.Environment.Exit(Environment.ExitCode);
         }
     }
 }

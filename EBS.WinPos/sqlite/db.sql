@@ -26,6 +26,7 @@ create table SaleOrder
    Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
    Code                 varchar(20),
    StoreId              INTEGER ,
+   PosId,               INTEGER,
    OrderType            INTEGER,
    OrderAmount          decimal(8,2),
    PayAmount            decimal(8,2),
@@ -56,7 +57,7 @@ create table SaleOrderItem
    ProductCode          varchar(20),
    ProductName          varchar(50),
    SalePrice            decimal(8,2),
-   RealPrice         DECIMAL (8, 2),
+   RealPrice            DECIMAL (8, 2),
    Quantity             INTEGER
 );
 
@@ -106,6 +107,11 @@ CREATE TABLE Setting (
     Key    VARCHAR (100), 
     Value  VARCHAR (300) 
 );
+-- 设置数据
+INSERT INTO Setting ( Value,[Key], Name,Id)
+                    VALUES (1,'CommonSetting.Store.StoreId','当前门店',1),
+                    (1,'CommonSetting.Store.PosId','POS机编号',1);
+
 
 CREATE TABLE VipCard (
     Id       INTEGER      PRIMARY KEY ,

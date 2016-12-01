@@ -21,6 +21,10 @@ namespace EBS.WinPos.Domain.Entity
 
         public int StoreId { get; set; }
         /// <summary>
+        /// Pos 机ID
+        /// </summary>
+        public int PosId { get; set; }
+        /// <summary>
         /// 订单类型：销售单1，销售退单2
         /// </summary>
         public int OrderType { get; set; }

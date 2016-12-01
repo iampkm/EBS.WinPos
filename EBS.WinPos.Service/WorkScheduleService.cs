@@ -54,10 +54,10 @@ namespace EBS.WinPos.Service
             }
         }
 
-        public void BeginWork(Account account,int posId)
+        public void BeginWork(Account account,int storeId,int posId)
         {
             WorkSchedule model = new WorkSchedule();
-            model.StoreId = account.StoreId;
+            model.StoreId = storeId;
             model.CreatedBy = account.Id;
             model.CreatedByName = account.NickName;
             model.PosId = posId;
@@ -65,9 +65,9 @@ namespace EBS.WinPos.Service
             _db.SaveChanges();
         }
 
-        public void EndWork(Account account,int posId)
+        public void EndWork(Account account,int storeId,int posId)
         {
-            var work = _db.WorkSchedules.Where(n => n.StoreId == account.StoreId && n.EndBy == 0 && n.PosId == posId).OrderByDescending(n => n.Id).FirstOrDefault();
+            var work = _db.WorkSchedules.Where(n => n.StoreId == storeId && n.EndBy == 0 && n.PosId == posId).OrderByDescending(n => n.Id).FirstOrDefault();
             if (work == null)
             {
                 throw new AppException("当前机器没有人上班");

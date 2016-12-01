@@ -21,7 +21,7 @@ namespace EBS.WinPos
 
         private void frmWork_Load(object sender, EventArgs e)
         {
-           var worker=  _service.GetWorking(ContextService.CurrentAccount.StoreId,Config.PosId);
+            var worker = _service.GetWorking(ContextService.StoreId, ContextService.PosId);
            if (worker == null)
            {
                //没人上班
@@ -42,12 +42,10 @@ namespace EBS.WinPos
         {
             try
             {
-                _service.BeginWork(ContextService.CurrentAccount, Config.PosId);
+                _service.BeginWork(ContextService.CurrentAccount,ContextService.StoreId, ContextService.PosId);
                 //收银前台
                 frmPos posForm = new frmPos();
                 ContextService.AddFrom(posForm);
-                // posForm.MdiParent = ContextService.ParentForm;
-                posForm.TopLevel = true;
                 posForm.Show();
             }
             catch (Exception ex)
@@ -60,15 +58,15 @@ namespace EBS.WinPos
         {
             try
             {
-                _service.EndWork(ContextService.CurrentAccount, Config.PosId);
+                _service.EndWork(ContextService.CurrentAccount, ContextService.StoreId, ContextService.PosId);
                 //关闭收银台
                 var posForm= ContextService.GetFrom(typeof(frmPos));
                 if (posForm != null)
                 {
                     ContextService.RemoveFrom(typeof(frmPos));
-                    posForm.Close();
+                    posForm.Hide();
                 }
-                this.Close();
+                this.Hide();
               
             }
             catch (Exception ex)

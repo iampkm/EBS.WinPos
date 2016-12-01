@@ -7,7 +7,9 @@ namespace EBS.WinPos.Service
 {
     public interface IPosPrinter
     {
-        void Print(string content); 
+        void Print(string content);
+
+      //  void Print(List<string> lines);
 
     }
 }

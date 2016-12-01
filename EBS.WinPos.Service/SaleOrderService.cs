@@ -23,7 +23,8 @@ namespace EBS.WinPos.Service
         public SaleOrderService()
         {
             _db = new Repository();
-            _printService = new LptPrinterService();
+           // _printService = new LptPrinterService();
+            _printService = new DriverPrinterService();
             _syncService = new SyncService(AppContext.Log);
         }
         public void CreateOrder(ShopCart cat)
@@ -31,6 +32,7 @@ namespace EBS.WinPos.Service
             SaleOrder order = new SaleOrder()
             {
                 StoreId = cat.StoreId,
+                PosId = cat.PosId,
                 CreatedBy = cat.Editor,
                 UpdatedBy = cat.Editor,
             };
@@ -51,6 +53,7 @@ namespace EBS.WinPos.Service
             SaleOrder order = new SaleOrder()
             {
                 StoreId = cat.StoreId,
+                PosId = cat.PosId,
                 CreatedBy = cat.Editor,
                 UpdatedBy = cat.Editor,
                 OrderType = 2,
@@ -100,11 +103,8 @@ namespace EBS.WinPos.Service
             if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
-            if (model.StoreId > 0)
-            {
-                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
-                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            }
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
             if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount))
             {
                 throw new AppException("退款金额不能大于订单金额");
@@ -149,12 +149,9 @@ namespace EBS.WinPos.Service
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
-            model.RefundAccount = refundAccount;
-            if (model.StoreId > 0)
-            {
-                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
-                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            }
+            model.RefundAccount = refundAccount;           
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }           
             if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
             if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
@@ -197,12 +194,9 @@ namespace EBS.WinPos.Service
             var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
-            model.RefundAccount = refundAccount;
-            if (model.StoreId > 0)
-            {
-                var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
-                if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            }
+            model.RefundAccount = refundAccount;          
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }          
             if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
             if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
