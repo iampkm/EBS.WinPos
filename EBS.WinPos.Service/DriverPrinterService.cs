@@ -41,6 +41,9 @@ namespace EBS.WinPos.Service
         {
             _brush = new SolidBrush(Color.Black);
             _titleFont = new Font("宋体", 9);
+            PageSettings setting = new PageSettings();
+            setting.Margins = new Margins(50,100,50,100);
+            _printDocument.DefaultPageSettings = setting;
         }
       
 

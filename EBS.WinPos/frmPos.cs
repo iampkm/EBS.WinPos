@@ -23,9 +23,6 @@ namespace EBS.WinPos
         VipProductService _vipProductService;
         ShopCart _currentShopCat;
         ShopCart _preShopCat;
-
-        public int OrderId { get; set; }
-
         public VipCard VipCustomer { get; set; }
 
         public frmPos()
@@ -97,9 +94,11 @@ namespace EBS.WinPos
 
         public void ShowOrderInfo()
         {
-            this.lblOrderTotal.Text = "总金额：" + _currentShopCat.OrderAmount.ToString("C");
+            this.lblOrderTotal.Text = "总金额：" + _currentShopCat.OrderAmount.ToString("F2");
             this.lblQuantityTotal.Text = "总件数：" + _currentShopCat.TotalQuantity.ToString();
-            this.lblDiscount.Text = "总优惠：" + _currentShopCat.TotalDiscountAmount.ToString("C");
+            this.lblDiscount.Text = "总优惠：" + _currentShopCat.TotalDiscountAmount.ToString("F2");
+            this.lblOrderCode.Text = "订单号：" + _currentShopCat.OrderCode;
+            this.lblPreChargeAmount.Text = "找零：0.00";
             //刷新gridview
             this.dgvData.AutoGenerateColumns = false;
             this.dgvData.DataSource = new List<ShopCartItem>();
@@ -110,12 +109,43 @@ namespace EBS.WinPos
         }
 
         public void ShowPreOrderInfo()
-        {
+        {           
             var model = this._currentShopCat;
             _preShopCat = model;
             this.lblPreOrderCode.Text = "上一单：" + model.OrderCode;
-            this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("C");
-            this.lblPreChargeAmount.Text = "找零:" + model.ChargeAmount.ToString("C");
+            this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("F2");
+            this.lblPreChargeAmount.Text = "找零：" + model.ChargeAmount.ToString("F2");
+        }
+
+        public void ShowCancelOrderInfo()
+        {
+            var model = this._currentShopCat;
+            this._preShopCat = model;
+            this.lblPreOrderCode.Text = "上一单：" + model.OrderCode;
+            this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("F2");
+            this.lblPreChargeAmount.Text = "找零：0.00" ;
+        }
+
+        public void ClearAll()
+        {
+            this.dgvData.DataSource = new List<ShopCartItem>();
+            this.lblOrderTotal.Text = "总金额：0.00";
+            this.lblQuantityTotal.Text = "总件数：0";
+            this.lblOrderCode.Text = "订单号：";
+            this.lblDiscount.Text = "总优惠：0.00";
+            this.VipCustomer = null;
+            this._currentShopCat = null;
+        }
+
+        /// <summary>
+        /// 清空订单明细
+        /// </summary>
+        public void ClearItems()
+        {
+            ShowPreOrderInfo();
+            this.dgvData.DataSource = new List<ShopCartItem>();
+            this.VipCustomer = null;
+            this._currentShopCat = null;
         }
 
         public void CreateSaleOrder(string money)
@@ -192,10 +222,10 @@ namespace EBS.WinPos
                     if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
-                _saleOrderService.CancelOrder(this.OrderId, ContextService.CurrentAccount.Id);
+                _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);
                 MessageBox.Show("订单作废成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //打印小票              
-                ShowPreOrderInfo();
+                ShowCancelOrderInfo();
                 this.ClearAll();
             }
             catch (Exception ex)
@@ -204,22 +234,12 @@ namespace EBS.WinPos
             }
 
             // 打印作废小票
-            _saleOrderService.PrintTicket(_currentShopCat.OrderId);
+            _saleOrderService.PrintTicket(this._preShopCat.OrderId);
         }
 
 
 
-        public void ClearAll()
-        {
-            this.dgvData.DataSource = new List<ShopCartItem>();
-            this.lblOrderTotal.Text = "总金额:￥0.00";
-            this.lblQuantityTotal.Text = "总件数：0";
-            this.lblOrderCode.Text = "订单号：";
-            this.lblDiscount.Text = "总优惠:￥0.00";
-            this.VipCustomer = null;
-            this._currentShopCat = null;
-        }
-
+      
         private void txtBarCode_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -237,7 +257,7 @@ namespace EBS.WinPos
                     // MinusQuantity();
                     inputCustomer();
                     break;
-                case Keys.F5:
+                case Keys.F5: //主菜单
                     Quit();
                     break;
                 case Keys.F6:
@@ -257,9 +277,15 @@ namespace EBS.WinPos
 
         public void Quit()
         {
+            if (this._currentShopCat != null)
+            {
+                MessageBox.Show("收银台还有没完成的订单，请先完结订单。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             frmMain mainForm = new frmMain();
             mainForm.Show();
-            this.Hide();
+            this.Close();
         }
 
 

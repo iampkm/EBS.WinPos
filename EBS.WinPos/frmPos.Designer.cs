@@ -41,6 +41,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtBarCode = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.lblKeys2 = new System.Windows.Forms.Label();
             this.lblKeys = new System.Windows.Forms.Label();
             this.lblOrderCode = new System.Windows.Forms.Label();
             this.lblDiscount = new System.Windows.Forms.Label();
@@ -61,7 +62,6 @@
             this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DiscountAmount = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lblKeys2 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.plBarCode.SuspendLayout();
@@ -108,9 +108,9 @@
             this.lblPreOrderAmount.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lblPreOrderAmount.Location = new System.Drawing.Point(626, 8);
             this.lblPreOrderAmount.Name = "lblPreOrderAmount";
-            this.lblPreOrderAmount.Size = new System.Drawing.Size(105, 21);
+            this.lblPreOrderAmount.Size = new System.Drawing.Size(89, 21);
             this.lblPreOrderAmount.TabIndex = 4;
-            this.lblPreOrderAmount.Text = "金额：￥0.00";
+            this.lblPreOrderAmount.Text = "金额：0.00";
             // 
             // lblPreOrderCode
             // 
@@ -158,6 +158,17 @@
             this.label3.Size = new System.Drawing.Size(153, 25);
             this.label3.TabIndex = 1;
             this.label3.Text = "扫码/录入金额：";
+            // 
+            // lblKeys2
+            // 
+            this.lblKeys2.AutoSize = true;
+            this.lblKeys2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblKeys2.ForeColor = System.Drawing.Color.Blue;
+            this.lblKeys2.Location = new System.Drawing.Point(428, 160);
+            this.lblKeys2.Name = "lblKeys2";
+            this.lblKeys2.Size = new System.Drawing.Size(87, 21);
+            this.lblKeys2.TabIndex = 12;
+            this.lblKeys2.Text = "主菜单：Q";
             // 
             // lblKeys
             // 
@@ -213,24 +224,24 @@
             // lblPreChargeAmount
             // 
             this.lblPreChargeAmount.AutoSize = true;
-            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 30F);
+            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblPreChargeAmount.ForeColor = System.Drawing.Color.Red;
-            this.lblPreChargeAmount.Location = new System.Drawing.Point(9, 10);
+            this.lblPreChargeAmount.Location = new System.Drawing.Point(-1, -4);
             this.lblPreChargeAmount.Name = "lblPreChargeAmount";
-            this.lblPreChargeAmount.Size = new System.Drawing.Size(232, 52);
+            this.lblPreChargeAmount.Size = new System.Drawing.Size(312, 75);
             this.lblPreChargeAmount.TabIndex = 2;
-            this.lblPreChargeAmount.Text = "找零:￥0.00";
+            this.lblPreChargeAmount.Text = "找零：0.00";
             // 
             // lblOrderTotal
             // 
             this.lblOrderTotal.AutoSize = true;
-            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 30F);
+            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblOrderTotal.Location = new System.Drawing.Point(370, 10);
+            this.lblOrderTotal.Location = new System.Drawing.Point(373, -4);
             this.lblOrderTotal.Name = "lblOrderTotal";
-            this.lblOrderTotal.Size = new System.Drawing.Size(302, 52);
+            this.lblOrderTotal.Size = new System.Drawing.Size(368, 75);
             this.lblOrderTotal.TabIndex = 16;
-            this.lblOrderTotal.Text = "总金额：￥0.00";
+            this.lblOrderTotal.Text = "总金额：0.00";
             // 
             // panel2
             // 
@@ -386,17 +397,6 @@
             this.Amount.Name = "Amount";
             this.Amount.ReadOnly = true;
             this.Amount.Width = 80;
-            // 
-            // lblKeys2
-            // 
-            this.lblKeys2.AutoSize = true;
-            this.lblKeys2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblKeys2.ForeColor = System.Drawing.Color.Blue;
-            this.lblKeys2.Location = new System.Drawing.Point(428, 160);
-            this.lblKeys2.Name = "lblKeys2";
-            this.lblKeys2.Size = new System.Drawing.Size(87, 21);
-            this.lblKeys2.TabIndex = 12;
-            this.lblKeys2.Text = "主菜单：Q";
             // 
             // frmPos
             // 

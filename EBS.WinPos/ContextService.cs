@@ -14,7 +14,7 @@ namespace EBS.WinPos
         {
             CurrentAccount = account;
             StoreId = storeId;
-            PosId = PosId;
+            PosId = posId;
 
         }
         public static void SignOut()

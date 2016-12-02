@@ -131,7 +131,6 @@ namespace EBS.WinPos
         public void ClosePayForm()
         {
             this.Close();
-            this.PosForm.ClearAll();
         }
 
         public void CashPay()
@@ -143,7 +142,7 @@ namespace EBS.WinPos
                 CurrentOrder.PayAmount = -payAmount;
                 var lincenseCode = txtLicenseCode.Text;
                 _orderService.CashRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount);
-                PosForm.ShowPreOrderInfo();
+                PosForm.ClearItems();
                 MessageBox.Show("退款成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
                 // 打印小票
@@ -170,7 +169,7 @@ namespace EBS.WinPos
                 var lincenseCode = txtLicenseCode.Text;
                 CurrentOrder.RefundAccount = txtRefundAccount.Text;
                 _orderService.AliRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount, CurrentOrder.RefundAccount);
-                PosForm.ShowPreOrderInfo();
+                PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
                 // 打印小票
@@ -196,7 +195,7 @@ namespace EBS.WinPos
                 var lincenseCode = txtLicenseCode.Text;
                 CurrentOrder.RefundAccount = txtRefundAccount.Text;
                 _orderService.WechatRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount, CurrentOrder.RefundAccount);
-                PosForm.ShowPreOrderInfo();
+                PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
                 // 打印小票

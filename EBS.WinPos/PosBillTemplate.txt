@@ -1,21 +1,24 @@
-﻿********************************
-			欢迎光临
-*********谷谷香连锁超市"***********
+﻿-------------------------------
+       欢迎光临
+-------谷谷香连锁超市-------------
 门店名：{{StoreName}} 收银员：{{CreatedBy}}
-订单号：{{OrderCode}} 日期：{{CreateDate}}
-********************************
-商品名	单价		数量		金额
+订单号：{{OrderCode}} 
+日期：{{CreateDate}}
+状态：{{Status}}
+-------------------------------
+商品名   单价  数量   金额
 {{Items}}
-********************************
-应收金额：{{OrderAmount}} 总件数：{{QuantityTotal}}
-实收金额：{{PayAmount}}  在线支付：{{OnlinePayAmount}}
-找  零：{{ChargeAmount}} 优惠金额：{{DiscountAmount}}
-********************************
+-------------------------------
+应付：{{OrderAmount}} 数量：{{QuantityTotal}}
+实收：{{PayAmount}} 找零：{{ChargeAmount}} 
+优惠：{{DiscountAmount}}
+--------------------------------
 支付方式：{{PaymentWay}} 
+在线支付：{{OnlinePayAmount}}
 ********************************
 公司投诉电话：400-100-1006
 
 ---------------------------------
 ##ItemTemplate##
 {{ProductName}}		
-{{ProductCode}}		{{Price}}	{{Quantity}}	{{Amount}}
+{{ProductCode}}  {{Price}}  {{Quantity}}  {{Amount}}

@@ -9,6 +9,7 @@ using EBS.WinPos.Domain;
 using Newtonsoft.Json;
 using EBS.Infrastructure.Log;
 using EBS.WinPos.Service.Dto;
+using Newtonsoft.Json.Converters;
 namespace EBS.WinPos.Service.Task
 {
     public class SyncService
@@ -27,9 +28,13 @@ namespace EBS.WinPos.Service.Task
         public void DownloadData()
         {
             //启动线程池来进行多线程下载数据
-
-           // ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadAccount));
-          //  ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadAccount));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadStore));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipCard));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipProduct));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductAreaPrice));
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice));
           
            
         }
@@ -191,6 +196,70 @@ namespace EBS.WinPos.Service.Task
             }
         }
 
+        private void DownloadProductAreaPrice(object table)
+        {
+            try
+            {
+                int pageIndex = 1;
+                int count = 0;
+                do
+                {
+                    // 下载数据
+                    string url = string.Format("{0}/PosSync/ProductAreaPriceByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    var result = HttpHelper.HttpGet(url);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
+                        string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
+                        _db.ExecuteSql(sql, rows.ToArray());
+                        count = rows.Count();
+                    }
+                    else
+                    {
+                        count = 0;
+                    }
+                    pageIndex += 1;
+                }
+                while (count == pageSize);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+        }
+
+        private void DownloadProductStorePrice(object table)
+        {
+            try
+            {
+                int pageIndex = 1;
+                int count = 0;
+                do
+                {
+                    // 下载数据
+                    string url = string.Format("{0}/PosSync/ProductStorePriceByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    var result = HttpHelper.HttpGet(url);
+                    if (!string.IsNullOrEmpty(result))
+                    {
+                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
+                        string sql = "INSERT INTO ProductStorePrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
+                        _db.ExecuteSql(sql, rows.ToArray());
+                        count = rows.Count();
+                    }
+                    else
+                    {
+                        count = 0;
+                    }
+                    pageIndex += 1;
+                }
+                while (count == pageSize);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+            }
+        }
+
         public void Send(SaleOrder model)
         {
             ThreadPool.QueueUserWorkItem(new WaitCallback(SendSaleOrder), model);
@@ -261,7 +330,8 @@ namespace EBS.WinPos.Service.Task
             try
             {
                 string url = string.Format("{0}/PosSync/SaleOrderSync",_serverUrl);
-                string body = JsonConvert.SerializeObject(model);
+                var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                string body = JsonConvert.SerializeObject(model, dateTimeConverter);
                 string param = string.Format("body={0}", body);
                 string result = HttpHelper.HttpPost(url, param);
                 if(result=="1")
