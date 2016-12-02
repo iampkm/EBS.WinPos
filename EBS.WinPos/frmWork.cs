@@ -26,16 +26,16 @@ namespace EBS.WinPos
            {
                //没人上班
               this.btnEnd.Enabled = false;
+              this.lblCreatedBy.Text = " 员工：" + ContextService.CurrentAccount.NickName;
+              this.lblTime.Text = " 上班时间：" ;
            }
            else {
               this.btnBegin.Enabled = false;
-              this.lblCreatedBy.Text = worker.CreatedByName + "正在上班" ;
-              this.lblTime.Text ="上班时间：" + worker.StartDate.ToString("yyyy-MM-dd HH:mm:ss");
+              this.lblCreatedBy.Text =" 员工：" + worker.CreatedByName + ",正在上班" ;
+              this.lblTime.Text =" 上班时间：" + worker.StartDate.ToString("yyyy-MM-dd HH:mm:ss");
               this.btnEnd.Text = worker.CreatedBy == ContextService.CurrentAccount.Id ? "下 班" : "交 班";
             }
-           this.gbUserBegin.Text = "上 班     当前账号：" + ContextService.CurrentAccount.NickName;
-           
-          
+           this.gbUserBegin.Text = "上 班  [当前登录员工：" + ContextService.CurrentAccount.NickName + " 工号：" + ContextService.CurrentAccount.UserName +"]";
         }
 
         private void btnBegin_Click(object sender, EventArgs e)

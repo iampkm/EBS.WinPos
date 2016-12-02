@@ -79,7 +79,7 @@ namespace EBS.WinPos.Service
         public void InputCashAmount(int id,decimal cashAmount)
         {
             var work = _db.WorkSchedules.Where(n => n.Id == id).FirstOrDefault();
-            work.CashAmount = cashAmount;
+            work.InputCashAmount(cashAmount);
             _db.SaveChanges();
             // 同步收现金额到服务器
             _syncService.Send(work);

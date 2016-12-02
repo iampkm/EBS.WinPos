@@ -56,11 +56,11 @@
             // 
             this.lblTime.AutoSize = true;
             this.lblTime.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblTime.Location = new System.Drawing.Point(48, 66);
+            this.lblTime.Location = new System.Drawing.Point(32, 65);
             this.lblTime.Name = "lblTime";
-            this.lblTime.Size = new System.Drawing.Size(74, 21);
+            this.lblTime.Size = new System.Drawing.Size(90, 21);
             this.lblTime.TabIndex = 2;
-            this.lblTime.Text = "上班时间";
+            this.lblTime.Text = "上班时间：";
             // 
             // btnBegin
             // 
@@ -77,11 +77,11 @@
             // 
             this.lblCreatedBy.AutoSize = true;
             this.lblCreatedBy.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblCreatedBy.Location = new System.Drawing.Point(48, 29);
+            this.lblCreatedBy.Location = new System.Drawing.Point(62, 29);
             this.lblCreatedBy.Name = "lblCreatedBy";
-            this.lblCreatedBy.Size = new System.Drawing.Size(74, 21);
+            this.lblCreatedBy.Size = new System.Drawing.Size(58, 21);
             this.lblCreatedBy.TabIndex = 0;
-            this.lblCreatedBy.Text = "上班人：";
+            this.lblCreatedBy.Text = "员工：";
             // 
             // groupBox2
             // 

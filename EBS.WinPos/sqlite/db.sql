@@ -69,6 +69,7 @@ drop table WorkSchedule;
 create table WorkSchedule
 (
    Id                   INTEGER    NOT NULL  PRIMARY KEY AUTOINCREMENT,
+   Code                 varchar(50),
    StoreId              INTEGER , 
    PosId                INTEGER , 
    CashAmount           decimal(8,2),
