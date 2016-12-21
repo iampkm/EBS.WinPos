@@ -9,17 +9,21 @@ using System.Windows.Forms;
 using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Service;
-
+using EBS.WinPos.Service.Dto;
 namespace EBS.WinPos
 {
     public partial class frmMain : Form
     {
         WorkScheduleService _workService;
+        SettingService _settingService;
+        PosSettings _setting;
         public frmMain()
         {
             InitializeComponent();
 
             _workService = new WorkScheduleService();
+            _settingService = new SettingService();
+            _setting = _settingService.GetSettings();
         }
              
 
@@ -38,7 +42,7 @@ namespace EBS.WinPos
         {
             //收银台
             // 检查当前班次收银员账户是否一致
-            var worker = _workService.GetWorking(ContextService.StoreId, Config.PosId);
+            var worker = _workService.GetWorking(ContextService.StoreId, _setting.PosId);
             if (worker == null)
             {
                 MessageBox.Show("请先上班再开始销售", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
