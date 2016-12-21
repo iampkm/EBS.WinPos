@@ -38,14 +38,14 @@ namespace EBS.WinPos.Domain
             return result;
         }
 
-        public T ExecuteScalar<T>(string sql)
+        public T ExecuteScalar<T>(string sql, object param)
         {
             var result = default(T);
             using (IDbConnection conn = GetConnection())
             {
                 conn.Open();
                 var tran = conn.BeginTransaction();      
-                result = conn.ExecuteScalar<T>(sql);
+                result = conn.ExecuteScalar<T>(sql, param);
                 if (result== null)
                 {
                     tran.Commit();

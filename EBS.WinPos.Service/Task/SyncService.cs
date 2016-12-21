@@ -16,7 +16,7 @@ namespace EBS.WinPos.Service.Task
     {
         string _serverUrl;
         ILogger _log;
-        int pageSize = 1000;
+        int pageSize = 3000;
         DapperContext _db ;
 
         public SyncService(ILogger log)
@@ -52,9 +52,19 @@ namespace EBS.WinPos.Service.Task
                     if (!string.IsNullOrEmpty(result))
                     {
                         var rows = JsonConvert.DeserializeObject<List<Account>>(result);
-                        //入库                     
-                        string sql = "INSERT INTO Account (Id,UserName,Password,StoreId,Status,RoleId,NickName)VALUES (@Id,@UserName,@Password,@StoreId,@Status,@RoleId,@NickName)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var sql = "INSERT INTO Account (Id,UserName,Password,StoreId,Status,RoleId,NickName)VALUES (@Id,@UserName,@Password,@StoreId,@Status,@RoleId,@NickName)";
+                        var usql = "update Account set UserName=@UserName,Password=@Password,StoreId=@StoreId,Status=@Status,RoleId=@RoleId,NickName=@NickName where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from Account where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
+                        //入库
                         count = rows.Count();
                     }
                     else {
@@ -85,7 +95,17 @@ namespace EBS.WinPos.Service.Task
                         var rows = JsonConvert.DeserializeObject<List<Product>>(result);
                         //入库                      
                         string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update Product set Code=@Code,Name=@Name,BarCode=@BarCode,Specification=@Specification,Unit=@Unit,SalePrice=@SalePrice,UpdatedOn=@UpdatedOn where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from Product where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else
@@ -117,7 +137,17 @@ namespace EBS.WinPos.Service.Task
                         var rows = JsonConvert.DeserializeObject<IEnumerable<Store>>(result);
                         //入库                      
                         string sql = "INSERT INTO Store (Id,Code,Name,LicenseCode)VALUES (@Id,@Code,@Name,@LicenseCode)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update Store set Code=@Code,Name=@Name,LicenseCode=@LicenseCode where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from Store where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else
@@ -148,7 +178,17 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipCard>>(result);  //入库                     
                         string sql = "INSERT INTO VipCard (Id,Code,Discount)VALUES (@Id,@Code,@Discount)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update VipCard set Code=@Code,Discount=@Discount where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from VipCard where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else
@@ -179,7 +219,17 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
                         string sql = "INSERT INTO VipProduct (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update VipProduct set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from VipProduct where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else
@@ -211,7 +261,17 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
                         string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update ProductAreaPrice set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from ProductAreaPrice where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else
@@ -243,7 +303,17 @@ namespace EBS.WinPos.Service.Task
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
                         string sql = "INSERT INTO ProductStorePrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                        _db.ExecuteSql(sql, rows.ToArray());
+                        var usql = "update ProductStorePrice set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
+                        foreach (var entity in rows)
+                        {
+                            if (_db.ExecuteScalar<int>("select count(*) from ProductStorePrice where Id=@Id", new { Id = entity.Id }) > 0)
+                            {
+                                _db.ExecuteSql(usql, entity);
+                            }
+                            else {
+                                _db.ExecuteSql(sql, entity);
+                            }
+                        }
                         count = rows.Count();
                     }
                     else

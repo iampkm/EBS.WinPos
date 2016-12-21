@@ -25,13 +25,13 @@ namespace EBS.WinPos
 
                 // 程序安装时初始化数据
                 // 开启自动更新
-              //  EBS.AutoUpdater.AutoUpdateService updateService = new AutoUpdater.AutoUpdateService();
-               // updateService.CheckUpdate();
+                //  EBS.AutoUpdater.AutoUpdateService updateService = new AutoUpdater.AutoUpdateService();
+                // updateService.CheckUpdate();
 
                 //开启后台任务
-              //  AppContext.StartTask();
-
-             
+                //  AppContext.StartTask();
+                SyncService syncService = new SyncService(AppContext.Log);
+                syncService.DownloadData();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
