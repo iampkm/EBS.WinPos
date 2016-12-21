@@ -9,18 +9,22 @@ using System.Windows.Forms;
 using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Service;
+using EBS.WinPos.Service.Dto;
 namespace EBS.WinPos
 {
     public partial class frmMy : Form
     {
         WorkScheduleService _workService;
-
+        PosSettings _setting;
+        SettingService _settingService;
         int _curentWrokId = 0;
         public frmMy()
         {
             InitializeComponent();
 
             _workService = new WorkScheduleService();
+            _settingService = new SettingService();
+            _setting = _settingService.GetSettings();
         }
 
         private void frmMy_Load(object sender, EventArgs e)
@@ -34,7 +38,7 @@ namespace EBS.WinPos
         public void InitData(DateTime selectDate)
         {
             //默认查询当天的
-            var data = _workService.GetWorkList(selectDate, ContextService.CurrentAccount.StoreId, Config.PosId, ContextService.CurrentAccount.Id);
+            var data = _workService.GetWorkList(selectDate, ContextService.CurrentAccount.StoreId, _setting.PosId, ContextService.CurrentAccount.Id);
             this.dgvData.AutoGenerateColumns = false;
            // this.dgvData.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvData.DataSource = data;

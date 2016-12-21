@@ -85,18 +85,7 @@ namespace EBS.WinPos.Domain
                 string configKey = "SignKey_AliBarcode";
                 return ConfigurationManager.AppSettings[configKey].ToString().Trim();
             }
-        }
-        
-        /// <summary>
-        /// Pos 机器号ID
-        /// </summary>
-        public static int PosId
-        {
-            get
-            {
-                string configKey = "PosId";
-                return Convert.ToInt32(ConfigurationManager.AppSettings[configKey]);
-            }
-        }
+        }        
+       
     }
 }
