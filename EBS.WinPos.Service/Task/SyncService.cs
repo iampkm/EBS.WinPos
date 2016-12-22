@@ -18,12 +18,16 @@ namespace EBS.WinPos.Service.Task
         ILogger _log;
         int pageSize = 3000;
         DapperContext _db ;
+        SettingService _settingService;
+        PosSettings _setting;
 
         public SyncService(ILogger log)
         {
             _serverUrl = Config.ApiService;
             this._log = log;
             _db = new DapperContext();
+            _settingService = new SettingService();
+            _setting = _settingService.GetSettings();
         }
         public void DownloadData()
         {
@@ -86,8 +90,8 @@ namespace EBS.WinPos.Service.Task
                 int pageIndex = 1;
                 int count = 0;
                 do
-                {                   
-                    string url = string.Format("{0}/PosSync/ProductByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                {
+                    string url = string.Format("{0}/PosSync/ProductByPage?pageSize={1}&pageIndex={2}&storeId={3}", _serverUrl, pageSize, pageIndex, _setting.StoreId);
                     // 下载数据
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
@@ -260,8 +264,8 @@ namespace EBS.WinPos.Service.Task
                     if (!string.IsNullOrEmpty(result))
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
-                        string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                        var usql = "update ProductAreaPrice set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
+                        string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,AreaId,SalePrice)VALUES (@Id,@ProductId,@AreaId,@SalePrice)";
+                        var usql = "update ProductAreaPrice set ProductId=@ProductId,SalePrice=@SalePrice,AreaId=@AreaId where Id=@Id";
                         foreach (var entity in rows)
                         {
                             if (_db.ExecuteScalar<int>("select count(*) from ProductAreaPrice where Id=@Id", new { Id = entity.Id }) > 0)
@@ -302,8 +306,8 @@ namespace EBS.WinPos.Service.Task
                     if (!string.IsNullOrEmpty(result))
                     {
                         var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
-                        string sql = "INSERT INTO ProductStorePrice (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                        var usql = "update ProductStorePrice set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
+                        string sql = "INSERT INTO ProductStorePrice (Id,ProductId,StoreId,SalePrice)VALUES (@Id,@ProductId,@StoreId,@SalePrice)";
+                        var usql = "update ProductStorePrice set ProductId=@ProductId,StoreId=@StoreId,SalePrice=@SalePrice where Id=@Id";
                         foreach (var entity in rows)
                         {
                             if (_db.ExecuteScalar<int>("select count(*) from ProductStorePrice where Id=@Id", new { Id = entity.Id }) > 0)
@@ -339,50 +343,25 @@ namespace EBS.WinPos.Service.Task
             ThreadPool.QueueUserWorkItem(new WaitCallback(SendWorkSchedule), model);
         }
 
-        public void Send(InputCashAmount  model)
-        {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(SendInputCashAmount), model);
-        }
-
-        private void SendInputCashAmount(object data)
-        {
-            var model = data as InputCashAmount;
-            try
-            {
-
-                string url = string.Format("{0}/PosSync/Hander", _serverUrl);
-                string body = JsonConvert.SerializeObject(model);
-                string eventName = "CreatedWorkSchedule";
-                string param = string.Format("body={0}&eventName={1}", body, eventName);
-                string result = HttpHelper.HttpPost(url, param);
-                if (result == "1")
-                {
-                    string sql = @"Update WorkSchedule set IsSyncAmount=1 where @Id=@Id";
-                    _db.ExecuteSql(sql, new { Id = model.Id });
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex);
-
-            }
-        }
-
         private void SendWorkSchedule(object data)
         {
             var model = data as WorkSchedule;
             try
             {
 
-                string url = string.Format("{0}/PosSync/Hander", _serverUrl);
-                string body = JsonConvert.SerializeObject(model);
-                string eventName = "CreatedWorkSchedule";
-                string param = string.Format("body={0}&eventName={1}", body, eventName);
+                string url = string.Format("{0}/PosSync/WorkScheduleSync", _serverUrl);
+                var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                string body = JsonConvert.SerializeObject(model, dateTimeConverter);
+                string param = string.Format("body={0}", body);
                 string result = HttpHelper.HttpPost(url, param);
                 if (result == "1")
                 {
                     string sql = @"Update WorkSchedule set IsSync=1 where @Id=@Id";
                     _db.ExecuteSql(sql, new { Id = model.Id });
+                }
+                else
+                {
+                    _log.Info("班次{0},同步失败",model.Code);
                 }
             }
             catch (Exception ex)
@@ -408,6 +387,10 @@ namespace EBS.WinPos.Service.Task
                 {
                     string sql = @"Update SaleOrder set IsSync=1 where @Id=@Id";
                     _db.ExecuteSql(sql, new { Id = model.Id});
+                }
+                else
+                {
+                    _log.Info("销售单{0},同步失败", model.Code);
                 }
             }
             catch (Exception ex)

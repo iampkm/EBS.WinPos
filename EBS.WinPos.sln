@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBS.WinPos", "EBS.WinPos\EBS.WinPos.csproj", "{1A73AB90-3C94-421B-8C5D-1658ACF8F500}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBS.Infrastructure", "EBS.Infrastructure\EBS.Infrastructure.csproj", "{07672811-E40D-4990-B96E-9C8D26B1E867}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBS.AutoUpdater", "EBS.AutoUpdater\EBS.AutoUpdater.csproj", "{5092DF23-55A7-494A-8DF8-A8941EA873B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EBS.WinPos.Test", "EBS.WinPos.Test\EBS.WinPos.Test.csproj", "{D28789EF-2A57-4E0F-BFA8-344318143455}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5092DF23-55A7-494A-8DF8-A8941EA873B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5092DF23-55A7-494A-8DF8-A8941EA873B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5092DF23-55A7-494A-8DF8-A8941EA873B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D28789EF-2A57-4E0F-BFA8-344318143455}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D28789EF-2A57-4E0F-BFA8-344318143455}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D28789EF-2A57-4E0F-BFA8-344318143455}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D28789EF-2A57-4E0F-BFA8-344318143455}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

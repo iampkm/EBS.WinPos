@@ -30,8 +30,10 @@ namespace EBS.WinPos
 
                 //开启后台任务
                 //  AppContext.StartTask();
-                SyncService syncService = new SyncService(AppContext.Log);
-                syncService.DownloadData();
+
+                // 开启同步任务
+               // SyncService syncService = new SyncService(AppContext.Log);
+               // syncService.DownloadData();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

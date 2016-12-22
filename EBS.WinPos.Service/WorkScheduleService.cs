@@ -63,6 +63,8 @@ namespace EBS.WinPos.Service
             model.PosId = posId;
             _db.WorkSchedules.Add(model);
             _db.SaveChanges();
+            // 同步到服务器
+            _syncService.Send(model);
         }
 
         public void EndWork(Account account,int storeId,int posId)
@@ -74,6 +76,7 @@ namespace EBS.WinPos.Service
             }
             work.EndWork(account);
             _db.SaveChanges();
+            _syncService.Send(work);
         }
 
         public void InputCashAmount(int id,decimal cashAmount)

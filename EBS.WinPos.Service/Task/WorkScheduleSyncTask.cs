@@ -22,18 +22,11 @@ namespace EBS.WinPos.Service.Task
         }
         public void Execute()
         {
-            string sql = "select * from WorkSchedule Where IsSync = @IsSync or IsSyncAmount=@IsSyncAmount)";
-            var result = _db.Query<WorkSchedule>(sql, new { IsSync = 0,IsSyncAmount= 0});
+            string sql = "select * from WorkSchedule Where IsSync = @IsSync)";
+            var result = _db.Query<WorkSchedule>(sql, new { IsSync = 0});
             foreach (var model in result)
             {
-                if (model.IsSync == 0)
-                {
-                    _syncService.Send(model);
-                }
-                if (model.IsSyncAmount==0)
-                {
-                    _syncService.Send(new InputCashAmount(model.Id, model.CashAmount,model.PosId,model.StoreId));
-                }
+                _syncService.Send(model);
             }
         }
     }
