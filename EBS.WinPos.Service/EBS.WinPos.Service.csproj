@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingService.cs" />
     <Compile Include="StoreService.cs" />
+    <Compile Include="Task\AllDataSyncTask.cs" />
     <Compile Include="Task\OrderSyncTask.cs" />
     <Compile Include="Task\SyncService.cs" />
     <Compile Include="Task\WorkScheduleSyncTask.cs" />

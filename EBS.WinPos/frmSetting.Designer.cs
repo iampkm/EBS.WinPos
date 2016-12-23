@@ -29,14 +29,15 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSavePosId = new System.Windows.Forms.Button();
+            this.btnSaveStoreID = new System.Windows.Forms.Button();
             this.txtPosId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.cbbStores = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
-            this.btnSaveStoreID = new System.Windows.Forms.Button();
-            this.btnSavePosId = new System.Windows.Forms.Button();
+            this.btnDownload = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -56,6 +57,26 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "门店设置";
+            // 
+            // btnSavePosId
+            // 
+            this.btnSavePosId.Location = new System.Drawing.Point(357, 84);
+            this.btnSavePosId.Name = "btnSavePosId";
+            this.btnSavePosId.Size = new System.Drawing.Size(75, 35);
+            this.btnSavePosId.TabIndex = 3;
+            this.btnSavePosId.Text = "保存";
+            this.btnSavePosId.UseVisualStyleBackColor = true;
+            this.btnSavePosId.Click += new System.EventHandler(this.btnSavePosId_Click);
+            // 
+            // btnSaveStoreID
+            // 
+            this.btnSaveStoreID.Location = new System.Drawing.Point(357, 41);
+            this.btnSaveStoreID.Name = "btnSaveStoreID";
+            this.btnSaveStoreID.Size = new System.Drawing.Size(75, 35);
+            this.btnSaveStoreID.TabIndex = 3;
+            this.btnSaveStoreID.Text = "保存";
+            this.btnSaveStoreID.UseVisualStyleBackColor = true;
+            this.btnSaveStoreID.Click += new System.EventHandler(this.btnSaveStoreID_Click);
             // 
             // txtPosId
             // 
@@ -111,31 +132,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // btnSaveStoreID
+            // btnDownload
             // 
-            this.btnSaveStoreID.Location = new System.Drawing.Point(357, 41);
-            this.btnSaveStoreID.Name = "btnSaveStoreID";
-            this.btnSaveStoreID.Size = new System.Drawing.Size(75, 35);
-            this.btnSaveStoreID.TabIndex = 3;
-            this.btnSaveStoreID.Text = "保存";
-            this.btnSaveStoreID.UseVisualStyleBackColor = true;
-            this.btnSaveStoreID.Click += new System.EventHandler(this.btnSaveStoreID_Click);
-            // 
-            // btnSavePosId
-            // 
-            this.btnSavePosId.Location = new System.Drawing.Point(357, 84);
-            this.btnSavePosId.Name = "btnSavePosId";
-            this.btnSavePosId.Size = new System.Drawing.Size(75, 35);
-            this.btnSavePosId.TabIndex = 3;
-            this.btnSavePosId.Text = "保存";
-            this.btnSavePosId.UseVisualStyleBackColor = true;
-            this.btnSavePosId.Click += new System.EventHandler(this.btnSavePosId_Click);
+            this.btnDownload.Location = new System.Drawing.Point(35, 266);
+            this.btnDownload.Name = "btnDownload";
+            this.btnDownload.Size = new System.Drawing.Size(128, 39);
+            this.btnDownload.TabIndex = 2;
+            this.btnDownload.Text = "下载数据";
+            this.btnDownload.UseVisualStyleBackColor = true;
+            this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
             // frmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 421);
+            this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
@@ -161,5 +173,6 @@
         private System.Windows.Forms.ComboBox cbbStores;
         private System.Windows.Forms.Button btnSavePosId;
         private System.Windows.Forms.Button btnSaveStoreID;
+        private System.Windows.Forms.Button btnDownload;
     }
 }

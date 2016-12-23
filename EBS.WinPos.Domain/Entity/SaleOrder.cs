@@ -65,6 +65,10 @@ namespace EBS.WinPos.Domain.Entity
         public int UpdatedBy { get; set; }
 
         public DateTime UpdatedOn { get; set; }
+        /// <summary>
+        /// 班次代码
+        /// </summary>
+        public string WorkScheduleCode { get; set; }
 
         public int IsSync { get; set; }
 

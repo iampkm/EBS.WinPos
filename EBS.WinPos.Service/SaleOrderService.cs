@@ -35,6 +35,7 @@ namespace EBS.WinPos.Service
                 PosId = cat.PosId,
                 CreatedBy = cat.Editor,
                 UpdatedBy = cat.Editor,
+                WorkScheduleCode = cat.WorkScheduleCode,
             };
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)
@@ -57,7 +58,8 @@ namespace EBS.WinPos.Service
                 CreatedBy = cat.Editor,
                 UpdatedBy = cat.Editor,
                 OrderType = 2,
-                RefundAccount = cat.RefundAccount
+                RefundAccount = cat.RefundAccount,
+                WorkScheduleCode = cat.WorkScheduleCode,
             };
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)

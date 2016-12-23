@@ -40,6 +40,10 @@ namespace EBS.WinPos.Service.Dto
         public string OrderCode { get; set; }
 
         public int OrderId { get; set; }
+        /// <summary>
+        /// 班次代码
+        /// </summary>
+        public string WorkScheduleCode { get; set; }
 
         /// <summary>
         /// 现金支付金额

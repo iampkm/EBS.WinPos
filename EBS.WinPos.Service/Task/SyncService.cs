@@ -38,10 +38,17 @@ namespace EBS.WinPos.Service.Task
             ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipCard));
             ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipProduct));
             ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductAreaPrice));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice));
-          
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice));         
            
         }
+
+        public bool NeedSyncData()
+        {
+            string sql = "select count(*) from account";
+            var rows= _db.ExecuteScalar<int>(sql, null);
+            return rows == 0;  // 没有数据，就需要同步
+        }
+
         private void DownloadAccount(object table)
         {           
             try

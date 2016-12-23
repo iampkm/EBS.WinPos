@@ -29,11 +29,14 @@ namespace EBS.WinPos
                 // updateService.CheckUpdate();
 
                 //开启后台任务
-                //  AppContext.StartTask();
+                AppContext.StartTask();
 
-                // 开启同步任务
-               // SyncService syncService = new SyncService(AppContext.Log);
-               // syncService.DownloadData();
+                // 如果没有账号数据，同步数据                
+                SyncService syncService = new SyncService(AppContext.Log);
+                if (syncService.NeedSyncData())
+                {
+                    syncService.DownloadData();
+                }                
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);

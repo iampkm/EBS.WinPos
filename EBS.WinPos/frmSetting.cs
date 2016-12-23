@@ -11,6 +11,8 @@ using EBS.WinPos.Service;
 using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Service.Dto;
+using EBS.WinPos.Service.Task;
+using EBS.Infrastructure;
 namespace EBS.WinPos
 {
     public partial class frmSetting : Form
@@ -74,6 +76,12 @@ namespace EBS.WinPos
             MessageBox.Show("修改成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
        
            
+        }
+
+        private void btnDownload_Click(object sender, EventArgs e)
+        {
+            SyncService service = new SyncService(AppContext.Log);
+            service.DownloadData();
         }
     }
 }

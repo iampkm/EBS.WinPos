@@ -29,7 +29,7 @@ namespace EBS.WinPos
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            if (ContextService.CurrentAccount.Id == 1)
+            if (Config.Allowsetting.Contains(ContextService.CurrentAccount.RoleId))
             {
                 toolStripButton6.Visible = true;
             }
@@ -92,6 +92,7 @@ namespace EBS.WinPos
 
         private void toolStripButton6_Click(object sender, EventArgs e)
         {
+
             //设置
             frmSetting setting = new frmSetting();
             setting.MdiParent = this;

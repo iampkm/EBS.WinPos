@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Configuration;
+using EBS.Infrastructure.Extension;
 namespace EBS.WinPos.Domain
 {
    public class Config
@@ -85,7 +86,18 @@ namespace EBS.WinPos.Domain
                 string configKey = "SignKey_AliBarcode";
                 return ConfigurationManager.AppSettings[configKey].ToString().Trim();
             }
-        }        
+        }
+
+       /// <summary>
+       /// 允许使用设置的角色
+       /// </summary>
+        public static int[] Allowsetting
+        {
+            get {
+                string configKey = "Allowsetting";
+                return ConfigurationManager.AppSettings[configKey].ToString().Trim().Split(',').ToIntArray();
+            }
+        }
        
     }
 }

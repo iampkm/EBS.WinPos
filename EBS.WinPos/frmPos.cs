@@ -23,6 +23,8 @@ namespace EBS.WinPos
         VipProductService _vipProductService;
         ShopCart _currentShopCat;
         ShopCart _preShopCat;
+        WorkScheduleService _workScheduleService;
+        WorkSchedule _currentWork;
         public VipCard VipCustomer { get; set; }
 
         public frmPos()
@@ -33,6 +35,10 @@ namespace EBS.WinPos
             _productService = new ProductService();
             _vipService = new VipCardService();
             _vipProductService = new VipProductService();
+            _workScheduleService = new WorkScheduleService();
+            // 添加班次信息
+            _currentWork = _workScheduleService.GetWorking(ContextService.StoreId, ContextService.PosId);
+           
 
         }
 
@@ -44,6 +50,7 @@ namespace EBS.WinPos
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
             if (input.Length <= 7)
             {
+                this._currentShopCat.WorkScheduleCode = _currentWork.Code;
                 if (this._currentShopCat.OrderAmount > 0)
                 {
                     CreateSaleOrder(input);
@@ -220,6 +227,7 @@ namespace EBS.WinPos
                 if (this._currentShopCat.OrderId == 0)
                 {
                     if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
+                    _currentShopCat.WorkScheduleCode = _currentWork.Code;
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
                 _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);
