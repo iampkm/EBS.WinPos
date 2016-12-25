@@ -119,9 +119,9 @@ where w.Id=@Id";
             billTemplate = billTemplate.ToLower();
             billTemplate = billTemplate.Replace("{{storename}}", model.StoreName);
             billTemplate = billTemplate.Replace("{{createdbyname}}", model.CreatedByName);
-            billTemplate = billTemplate.Replace("{{posId}}",  model.PosId.ToString());
-            billTemplate = billTemplate.Replace("{{startdate}}", model.StartDate.ToLongDateString());
-            billTemplate = billTemplate.Replace("{{enddate}}", model.EndDate.ToLongDateString());
+            billTemplate = billTemplate.Replace("{{posid}}",  model.PosId.ToString());
+            billTemplate = billTemplate.Replace("{{startdate}}", model.StartDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            billTemplate = billTemplate.Replace("{{enddate}}", model.EndDate.HasValue? model.EndDate.Value.ToString("yyyy-MM-dd HH:mm:ss"):"");
             billTemplate = billTemplate.Replace("{{today}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             // 金额
             string productItems = "";
