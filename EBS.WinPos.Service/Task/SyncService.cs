@@ -355,7 +355,7 @@ namespace EBS.WinPos.Service.Task
             var model = data as WorkSchedule;
             try
             {
-
+                _log.Info("班次{0},开始同步", model.Code);
                 string url = string.Format("{0}/PosSync/WorkScheduleSync", _serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 string body = JsonConvert.SerializeObject(model, dateTimeConverter);
@@ -365,6 +365,7 @@ namespace EBS.WinPos.Service.Task
                 {
                     string sql = @"Update WorkSchedule set IsSync=1 where @Id=@Id";
                     _db.ExecuteSql(sql, new { Id = model.Id });
+                    _log.Info("班次{0},同步成功", model.Code);
                 }
                 else
                 {
@@ -385,6 +386,7 @@ namespace EBS.WinPos.Service.Task
              var model = data as SaleOrder;
             try
             {
+                _log.Info("销售单{0},开始同步", model.Code);
                 string url = string.Format("{0}/PosSync/SaleOrderSync",_serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 string body = JsonConvert.SerializeObject(model, dateTimeConverter);
@@ -394,6 +396,7 @@ namespace EBS.WinPos.Service.Task
                 {
                     string sql = @"Update SaleOrder set IsSync=1 where @Id=@Id";
                     _db.ExecuteSql(sql, new { Id = model.Id});
+                    _log.Info("销售单{0},同步成功", model.Code);
                 }
                 else
                 {

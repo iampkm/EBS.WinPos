@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.plTop = new System.Windows.Forms.Panel();
+            this.btnBack = new System.Windows.Forms.Button();
             this.btnQuery = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
@@ -43,7 +44,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCashAmount = new System.Windows.Forms.TextBox();
-            this.btnBack = new System.Windows.Forms.Button();
+            this.btnPrint = new System.Windows.Forms.Button();
             this.plTop.SuspendLayout();
             this.plBody.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
@@ -53,6 +54,7 @@
             // plTop
             // 
             this.plTop.Controls.Add(this.btnBack);
+            this.plTop.Controls.Add(this.btnPrint);
             this.plTop.Controls.Add(this.btnQuery);
             this.plTop.Controls.Add(this.label2);
             this.plTop.Controls.Add(this.dtpDate);
@@ -61,6 +63,16 @@
             this.plTop.Name = "plTop";
             this.plTop.Size = new System.Drawing.Size(660, 100);
             this.plTop.TabIndex = 0;
+            // 
+            // btnBack
+            // 
+            this.btnBack.Location = new System.Drawing.Point(481, 23);
+            this.btnBack.Name = "btnBack";
+            this.btnBack.Size = new System.Drawing.Size(74, 31);
+            this.btnBack.TabIndex = 2;
+            this.btnBack.Text = "返 回";
+            this.btnBack.UseVisualStyleBackColor = true;
+            this.btnBack.Click += new System.EventHandler(this.button1_Click);
             // 
             // btnQuery
             // 
@@ -193,15 +205,15 @@
             this.txtCashAmount.TabIndex = 0;
             this.txtCashAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCashAmount_KeyDown);
             // 
-            // btnBack
+            // btnPrint
             // 
-            this.btnBack.Location = new System.Drawing.Point(481, 23);
-            this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(74, 31);
-            this.btnBack.TabIndex = 2;
-            this.btnBack.Text = "返 回";
-            this.btnBack.UseVisualStyleBackColor = true;
-            this.btnBack.Click += new System.EventHandler(this.button1_Click);
+            this.btnPrint.Location = new System.Drawing.Point(381, 60);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(125, 31);
+            this.btnPrint.TabIndex = 2;
+            this.btnPrint.Text = "打印收银汇总";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // frmMy
             // 
@@ -245,5 +257,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn EndDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn CashAmount;
         private System.Windows.Forms.Button btnBack;
+        private System.Windows.Forms.Button btnPrint;
     }
 }

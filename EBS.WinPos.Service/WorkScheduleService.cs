@@ -10,6 +10,8 @@ using EBS.WinPos.Service.Dto;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure;
 using EBS.WinPos.Service.Task;
+using EBS.Infrastructure.Helper;
+using EBS.Infrastructure.Extension;
 namespace EBS.WinPos.Service
 {
    public class WorkScheduleService
@@ -17,11 +19,13 @@ namespace EBS.WinPos.Service
         Repository _db;
         SyncService _syncService;
         DapperContext _query;
+        IPosPrinter _printService;
         public WorkScheduleService()
         {
             _db = new Repository();
             _syncService = new SyncService(AppContext.Log);
             _query = new DapperContext();
+            _printService = new DriverPrinterService();
         }
         
         /// <summary>
@@ -86,6 +90,51 @@ namespace EBS.WinPos.Service
             _db.SaveChanges();
             // 同步收现金额到服务器
             _syncService.Send(work);
+        }
+
+        public void PrintWorkSaleSummary(int id)
+        {
+            string sql = @"select w.CreatedByName,s.Name as StoreName,w.PosId,w.StartDate,w.EndDate,t.TotalAmount,t.TotalOnlineAmount,t.paymentWay from WorkSchedule w left join (
+select o.WorkScheduleCode,sum(OrderAmount) as TotalAmount,sum(OnlinePayAmount) as TotalOnlineAmount,paymentWay from  saleorder o where o.Status = 3 group by o.WorkScheduleCode,o.paymentWay
+) t on t.WorkScheduleCode = w.Code
+inner join Store s on s.Id = w.StoreId
+where w.Id=@Id";
+           var models=  _query.Query<WorkSaleSummaryDto>(sql, new { Id = id }).ToList();
+            if (models.Count == 0)
+            {
+                throw new Exception("没有数据");
+            }
+            string template = FileHelper.ReadText("WorkSaleSummaryTemplate.txt");
+            if (string.IsNullOrEmpty(template)) { throw new AppException("收银汇总模板为空"); }
+            template = template.ToLower();
+            var lineLocation = template.LastIndexOf("##itemtemplate##");
+            //分离商品item模板
+            string billTemplate = template.Substring(0, lineLocation);
+            var itemStr = template.Substring(lineLocation);
+            var len = itemStr.IndexOf("{");  //去掉　##itemtemplate##　以及换行符　从{{productname}}
+            string itemTemplate = itemStr.Substring(len);
+            var model = models[0];
+
+
+            billTemplate = billTemplate.ToLower();
+            billTemplate = billTemplate.Replace("{{storename}}", model.StoreName);
+            billTemplate = billTemplate.Replace("{{createdbyname}}", model.CreatedByName);
+            billTemplate = billTemplate.Replace("{{posId}}",  model.PosId.ToString());
+            billTemplate = billTemplate.Replace("{{startdate}}", model.StartDate.ToLongDateString());
+            billTemplate = billTemplate.Replace("{{enddate}}", model.EndDate.ToLongDateString());
+            billTemplate = billTemplate.Replace("{{today}}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            // 金额
+            string productItems = "";
+            foreach (var item in models)
+            {
+                string tempItem = itemTemplate;
+                tempItem = tempItem.Replace("{{totalamount}}", item.TotalAmount.ToString("F2"));
+                tempItem = tempItem.Replace("{{totalonlineamount}}", item.TotalOnlineAmount.ToString("F2"));
+                tempItem = tempItem.Replace("{{paymentway}}", item.PaymentWay.Description());
+                productItems += tempItem; 
+            }
+            billTemplate = billTemplate.Replace("{{items}}", productItems);
+            _printService.Print(billTemplate);
         }
     }
 }

@@ -233,6 +233,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="sqlite\db.sql" />
+    <Content Include="WorkSaleSummaryTemplate.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="安装说明.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

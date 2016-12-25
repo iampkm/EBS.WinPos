@@ -29,6 +29,15 @@ namespace EBS.WinPos
 
         private void frmMy_Load(object sender, EventArgs e)
         {
+            //班次打印权限控制
+            if (Config.Allowsetting.Contains(ContextService.CurrentAccount.RoleId))
+            {
+                this.btnPrint.Visible = true;
+            }
+            else {
+                btnPrint.Visible = false;
+            }
+
             dtpDate.Format = DateTimePickerFormat.Custom; //设置为显示格式为自定义
             dtpDate.CustomFormat = "yyyy-MM-dd"; //设置显示格式
             this.dtpDate.Value = DateTime.Now.Date;
@@ -38,7 +47,7 @@ namespace EBS.WinPos
         public void InitData(DateTime selectDate)
         {
             //默认查询当天的
-            var data = _workService.GetWorkList(selectDate, ContextService.CurrentAccount.StoreId, _setting.PosId, ContextService.CurrentAccount.Id);
+            var data = _workService.GetWorkList(selectDate, _setting.StoreId, _setting.PosId, ContextService.CurrentAccount.Id);
             this.dgvData.AutoGenerateColumns = false;
            // this.dgvData.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvData.DataSource = data;
@@ -111,6 +120,19 @@ namespace EBS.WinPos
         private void button1_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnPrint_Click(object sender, EventArgs e)
+        {
+            //打印收银汇总
+            if (this.dgvData.CurrentRow == null)
+            {
+                MessageBox.Show("请选择要打印的班次记录");
+                return;
+            }
+            var id = Convert.ToInt32(this.dgvData.CurrentRow.Cells["Id"].Value);
+            _workService.PrintWorkSaleSummary(id);
+             
         }
     }
 }

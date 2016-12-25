@@ -60,6 +60,7 @@
     <Compile Include="Dto\PosSettings.cs" />
     <Compile Include="Dto\ShopCart.cs" />
     <Compile Include="Dto\ShopCartItem.cs" />
+    <Compile Include="Dto\WorkSaleSummaryDto.cs" />
     <Compile Include="IPosPrinter.cs" />
     <Compile Include="LptPrinterService.cs" />
     <Compile Include="PrinterService.cs" />
