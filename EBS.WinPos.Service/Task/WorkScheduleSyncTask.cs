@@ -22,7 +22,7 @@ namespace EBS.WinPos.Service.Task
         }
         public void Execute()
         {
-            string sql = "select * from WorkSchedule Where IsSync = @IsSync)";
+            string sql = "select * from WorkSchedule Where IsSync = @IsSync";
             var result = _db.Query<WorkSchedule>(sql, new { IsSync = 0});
             foreach (var model in result)
             {

@@ -8,6 +8,7 @@ using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.WinPos.Service.Task;
 using EBS.Infrastructure;
+using System.Threading;
 namespace EBS.WinPos.Service.Task
 {
     public class OrderSyncTask : ITask
@@ -25,7 +26,11 @@ namespace EBS.WinPos.Service.Task
             var result = _db.Query<SaleOrder>(sql, new { IsSync = 0, Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel });
             foreach (var model in result)
             {
+                string sqlitem = "select * from SaleOrderItem where SaleOrderId=@SaleOrderId";
+                var items = _db.Query<SaleOrderItem>(sqlitem, new { SaleOrderId = model.Id}).ToList();
+                model.Items = items;
                 _syncService.Send(model);
+                Thread.Sleep(5);
             }
         }
     }
