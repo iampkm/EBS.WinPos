@@ -59,10 +59,12 @@ namespace EBS.WinPos.Service.Task
                 {                   
                     string url = string.Format("{0}/PosSync/AccountByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
                     // 下载数据
+                    _log.Info("开始下载账户数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
                         var rows = JsonConvert.DeserializeObject<List<Account>>(result);
+                        _log.Info("已下载账户数据{0}条", rows.Count);
                         var sql = "INSERT INTO Account (Id,UserName,Password,StoreId,Status,RoleId,NickName)VALUES (@Id,@UserName,@Password,@StoreId,@Status,@RoleId,@NickName)";
                         var usql = "update Account set UserName=@UserName,Password=@Password,StoreId=@StoreId,Status=@Status,RoleId=@RoleId,NickName=@NickName where Id=@Id";
                         foreach (var entity in rows)
@@ -84,6 +86,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载账户数据");
             }
             catch (Exception ex)
             {
@@ -100,11 +103,13 @@ namespace EBS.WinPos.Service.Task
                 {
                     string url = string.Format("{0}/PosSync/ProductByPage?pageSize={1}&pageIndex={2}&storeId={3}", _serverUrl, pageSize, pageIndex, _setting.StoreId);
                     // 下载数据
+                    _log.Info("开始下载商品数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
                         var rows = JsonConvert.DeserializeObject<List<Product>>(result);
-                        //入库                      
+                        //入库   
+                        _log.Info("已下载商品数据{0}条", rows.Count);
                         string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
                         var usql = "update Product set Code=@Code,Name=@Name,BarCode=@BarCode,Specification=@Specification,Unit=@Unit,SalePrice=@SalePrice,UpdatedOn=@UpdatedOn where Id=@Id";
                         foreach (var entity in rows)
@@ -126,6 +131,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载商品数据");
             }
             catch (Exception ex)
             {
@@ -141,12 +147,14 @@ namespace EBS.WinPos.Service.Task
                 do
                 {
                     // 下载数据
-                    string url = string.Format("{0}/PosSync/StoreByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);                   
+                    string url = string.Format("{0}/PosSync/StoreByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    _log.Info("开始下载门店数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        var rows = JsonConvert.DeserializeObject<IEnumerable<Store>>(result);
-                        //入库                      
+                        var rows = JsonConvert.DeserializeObject<List<Store>>(result);
+                        //入库 
+                        _log.Info("已下载门店数据{0}条", rows.Count);
                         string sql = "INSERT INTO Store (Id,Code,Name,LicenseCode)VALUES (@Id,@Code,@Name,@LicenseCode)";
                         var usql = "update Store set Code=@Code,Name=@Name,LicenseCode=@LicenseCode where Id=@Id";
                         foreach (var entity in rows)
@@ -168,6 +176,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载门店数据");
             }
             catch (Exception ex)
             {
@@ -184,10 +193,12 @@ namespace EBS.WinPos.Service.Task
                 {
                     // 下载数据
                     string url = string.Format("{0}/PosSync/VipCardByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    _log.Info("开始下载会员卡数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipCard>>(result);  //入库                     
+                        var rows = JsonConvert.DeserializeObject<List<VipCard>>(result);  //入库 
+                        _log.Info("已下载会员卡数据{0}条", rows.Count);
                         string sql = "INSERT INTO VipCard (Id,Code,Discount)VALUES (@Id,@Code,@Discount)";
                         var usql = "update VipCard set Code=@Code,Discount=@Discount where Id=@Id";
                         foreach (var entity in rows)
@@ -209,6 +220,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载会员卡数据");
             }
             catch (Exception ex)
             {
@@ -225,10 +237,12 @@ namespace EBS.WinPos.Service.Task
                 {
                     // 下载数据
                     string url = string.Format("{0}/PosSync/VipProductByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    _log.Info("开始下载会员商品数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
+                        var rows = JsonConvert.DeserializeObject<List<VipProduct>>(result);  //入库 
+                        _log.Info("已下载会员商品数据{0}条", rows.Count);
                         string sql = "INSERT INTO VipProduct (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
                         var usql = "update VipProduct set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
                         foreach (var entity in rows)
@@ -250,6 +264,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载会员商品数据");
             }
             catch (Exception ex)
             {
@@ -267,10 +282,12 @@ namespace EBS.WinPos.Service.Task
                 {
                     // 下载数据
                     string url = string.Format("{0}/PosSync/ProductAreaPriceByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    _log.Info("开始下载商品区域价数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
+                        var rows = JsonConvert.DeserializeObject<List<ProductAreaPrice>>(result);  //入库 
+                        _log.Info("已下载商品区域价数据{0}条", rows.Count);
                         string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,AreaId,SalePrice)VALUES (@Id,@ProductId,@AreaId,@SalePrice)";
                         var usql = "update ProductAreaPrice set ProductId=@ProductId,SalePrice=@SalePrice,AreaId=@AreaId where Id=@Id";
                         foreach (var entity in rows)
@@ -292,6 +309,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载商品区域价数据");
             }
             catch (Exception ex)
             {
@@ -309,10 +327,12 @@ namespace EBS.WinPos.Service.Task
                 {
                     // 下载数据
                     string url = string.Format("{0}/PosSync/ProductStorePriceByPage?pageSize={1}&pageIndex={2}", _serverUrl, pageSize, pageIndex);
+                    _log.Info("开始下载商品门店价数据，请求{0}", url);
                     var result = HttpHelper.HttpGet(url);
                     if (!string.IsNullOrEmpty(result))
                     {
-                        var rows = JsonConvert.DeserializeObject<IEnumerable<VipProduct>>(result);  //入库                     
+                        var rows = JsonConvert.DeserializeObject<List<ProductStorePrice>>(result);  //入库  
+                        _log.Info("已下载商品门店价数据{0}条", rows.Count);
                         string sql = "INSERT INTO ProductStorePrice (Id,ProductId,StoreId,SalePrice)VALUES (@Id,@ProductId,@StoreId,@SalePrice)";
                         var usql = "update ProductStorePrice set ProductId=@ProductId,StoreId=@StoreId,SalePrice=@SalePrice where Id=@Id";
                         foreach (var entity in rows)
@@ -334,6 +354,7 @@ namespace EBS.WinPos.Service.Task
                     pageIndex += 1;
                 }
                 while (count == pageSize);
+                _log.Info("结束下载商品门店价数据");
             }
             catch (Exception ex)
             {
