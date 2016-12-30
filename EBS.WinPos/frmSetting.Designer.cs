@@ -38,7 +38,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.btnDownload = new System.Windows.Forms.Button();
-            this.lstInfo = new System.Windows.Forms.ListBox();
             this.btnUpdateProduct = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -144,18 +143,9 @@
             this.btnDownload.UseVisualStyleBackColor = true;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
-            // lstInfo
-            // 
-            this.lstInfo.FormattingEnabled = true;
-            this.lstInfo.ItemHeight = 21;
-            this.lstInfo.Location = new System.Drawing.Point(190, 253);
-            this.lstInfo.Name = "lstInfo";
-            this.lstInfo.Size = new System.Drawing.Size(365, 151);
-            this.lstInfo.TabIndex = 3;
-            // 
             // btnUpdateProduct
             // 
-            this.btnUpdateProduct.Location = new System.Drawing.Point(35, 311);
+            this.btnUpdateProduct.Location = new System.Drawing.Point(200, 266);
             this.btnUpdateProduct.Name = "btnUpdateProduct";
             this.btnUpdateProduct.Size = new System.Drawing.Size(128, 39);
             this.btnUpdateProduct.TabIndex = 2;
@@ -168,7 +158,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 421);
-            this.Controls.Add(this.lstInfo);
             this.Controls.Add(this.btnUpdateProduct);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.groupBox2);
@@ -197,7 +186,6 @@
         private System.Windows.Forms.Button btnSavePosId;
         private System.Windows.Forms.Button btnSaveStoreID;
         private System.Windows.Forms.Button btnDownload;
-        private System.Windows.Forms.ListBox lstInfo;
         private System.Windows.Forms.Button btnUpdateProduct;
     }
 }

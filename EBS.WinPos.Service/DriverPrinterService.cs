@@ -29,7 +29,7 @@ namespace EBS.WinPos.Service
             }
             catch (Exception ex)
             {
-                throw new AppException("小票打印异常，请重试或联系管理员",ex);
+                throw ex;
             }          
         }
        

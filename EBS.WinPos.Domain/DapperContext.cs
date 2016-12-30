@@ -5,12 +5,20 @@ using System.Text;
 using System.Data.SQLite;
 using System.Data;
 using Dapper;
+using EBS.Infrastructure;
+using EBS.Infrastructure.Log;
 namespace EBS.WinPos.Domain
 {
    public class DapperContext
-    {       
+    {
+       ILogger _log;
+
+       public DapperContext()
+       {
+           _log = AppContext.Log;
+       }
         public static IDbConnection GetConnection()
-        {            
+        {
             return new SQLiteConnection(Config.ConnectionString);
         }
 
@@ -40,20 +48,25 @@ namespace EBS.WinPos.Domain
 
         public T ExecuteScalar<T>(string sql, object param)
         {
-            var result = default(T);
-            using (IDbConnection conn = GetConnection())
+            var result = default(T);           
+            IDbTransaction tran = null;
+            IDbConnection conn = null;
+            try
             {
+                conn = GetConnection();
                 conn.Open();
-                var tran = conn.BeginTransaction();      
-                result = conn.ExecuteScalar<T>(sql, param);
-                if (result== null)
-                {
-                    tran.Commit();
-                }
-                else
-                {
-                    tran.Rollback();
-                }
+                tran = conn.BeginTransaction();
+                result = conn.ExecuteScalar<T>(sql, param,tran);
+                tran.Commit();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, sql);
+                tran.Rollback();
+            }
+            finally
+            {
+                tran.Dispose();
                 conn.Close();
             }
             return result;
@@ -62,18 +75,23 @@ namespace EBS.WinPos.Domain
         public int ExecuteSql(string sql,object param)
         {
             var rows = 0;
-            using (IDbConnection conn = GetConnection())
+            IDbTransaction tran = null;
+            IDbConnection conn = null;
+            try
             {
+                conn = GetConnection();
                 conn.Open();
-                var tran= conn.BeginTransaction();               
-                rows = conn.Execute(sql,param,tran);
-                if (rows > 0)
-                {
-                    tran.Commit();
-                }
-                else {
-                    tran.Rollback();
-                }
+                tran = conn.BeginTransaction();
+                rows = conn.Execute(sql, param, tran);
+                tran.Commit();
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex,sql);              
+                tran.Rollback();
+            }
+            finally {
+                tran.Dispose();
                 conn.Close();
             }
             return rows;

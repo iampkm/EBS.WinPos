@@ -11,6 +11,8 @@ using EBS.Infrastructure.Extension;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Service;
+using EBS.Infrastructure;
+using EBS.Infrastructure.Log;
 namespace EBS.WinPos
 {
     public partial class frmPay : Form
@@ -19,11 +21,15 @@ namespace EBS.WinPos
         public frmPos PosForm { get; set; }
 
         public SaleOrderService _orderService;
+
+        ILogger _log;
+        
         public frmPay()
         {
             InitializeComponent();
 
             _orderService = new SaleOrderService();
+            _log = AppContext.Log;
         }
 
 
@@ -152,16 +158,22 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = 0m;
                 _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }          
+            // 打印小票
+            try
+            {
+                _orderService.PrintTicket(CurrentOrder.OrderId);
             }
-
+            catch (Exception ex)
+            {
+                _log.Error(ex, "小票打印失败");
+            }           
+            ClosePayForm();
         }
 
         public void AliPay(string payBarCode)
@@ -178,15 +190,22 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+            // 打印小票
+            try
+            {
+                _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "小票打印失败");
+            }
+            ClosePayForm();
         }
 
         public void WechatPay(string payBarCode)
@@ -202,15 +221,22 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+            // 打印小票
+            try
+            {
+                _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "小票打印失败");
+            }
+            ClosePayForm();
         }
 
         private void lstPaymentWay_KeyDown(object sender, KeyEventArgs e)

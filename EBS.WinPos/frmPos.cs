@@ -162,6 +162,11 @@ namespace EBS.WinPos
             var inputAmount = 0m;
             decimal.TryParse(money, out inputAmount);
             _currentShopCat.PayAmount = inputAmount;
+            if (_currentShopCat.Items.Count == 0)
+            {
+                MessageBox.Show("商品明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             _saleOrderService.CreateOrder(_currentShopCat);
             this.lblOrderCode.Text = "订单号：" + _currentShopCat.OrderCode;
             this.txtBarCode.Text = "";
@@ -194,6 +199,11 @@ namespace EBS.WinPos
                 var inputAmount = 0m;
                 decimal.TryParse(money, out inputAmount);
                 _currentShopCat.PayAmount = inputAmount;
+            }
+            if (_currentShopCat.Items.Count == 0)
+            {
+                MessageBox.Show("退单无明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
             _currentShopCat.OrderType = 2; // 销售退单
             _saleOrderService.CreateSaleRefund(_currentShopCat);
@@ -230,6 +240,11 @@ namespace EBS.WinPos
                 {
                     if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
                     _currentShopCat.WorkScheduleCode = _currentWork.Code;
+                    if (_currentShopCat.Items.Count == 0)
+                    {
+                        MessageBox.Show("商品明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
                 _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);

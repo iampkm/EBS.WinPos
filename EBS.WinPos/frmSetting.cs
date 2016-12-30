@@ -20,6 +20,7 @@ namespace EBS.WinPos
         SettingService _settingService;
         StoreService _storeService;
         PosSettings _currentSetting;
+        SyncService _service ;
         
         public frmSetting()
         {
@@ -27,6 +28,7 @@ namespace EBS.WinPos
 
             _settingService = new Service.SettingService();
             _storeService = new Service.StoreService();
+            _service = new SyncService(AppContext.Log);
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,13 +82,18 @@ namespace EBS.WinPos
 
         private void btnDownload_Click(object sender, EventArgs e)
         {
-            SyncService service = new SyncService(AppContext.Log);
-            service.DownloadData();
+           
+            _service.DownloadData();
+            System.Threading.Thread.Sleep(3000);
+            MessageBox.Show("下载需要几秒钟，请稍后验证数据", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnUpdateProduct_Click(object sender, EventArgs e)
         {
             //更新商品
+            _service.DownloadProductSync();
+            System.Threading.Thread.Sleep(3000);
+            MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
