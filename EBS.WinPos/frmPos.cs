@@ -46,9 +46,9 @@ namespace EBS.WinPos
         public void inputEnter()
         {
             var input = this.txtBarCode.Text;
-            //商品编码固定8位，少于8位，即认为是输入的金额
+            //商品编码固定6位，少于6位，即认为是输入的金额
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
-            if (input.Length <= 7)
+            if (input.Length <6)
             {
                 this._currentShopCat.WorkScheduleCode = _currentWork.Code;
                 if (this._currentShopCat.OrderAmount > 0)
@@ -72,6 +72,8 @@ namespace EBS.WinPos
 
         public void InputBarCode(string productCodeOrBarCode)
         {
+            if (string.IsNullOrEmpty(productCodeOrBarCode)) { return; }
+            productCodeOrBarCode = productCodeOrBarCode.Trim();
             Product model = _productService.GetProduct(productCodeOrBarCode);
             if (model == null)
             {

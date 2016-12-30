@@ -83,5 +83,10 @@ namespace EBS.WinPos
             SyncService service = new SyncService(AppContext.Log);
             service.DownloadData();
         }
+
+        private void btnUpdateProduct_Click(object sender, EventArgs e)
+        {
+            //更新商品
+        }
     }
 }
