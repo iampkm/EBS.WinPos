@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using EBS.Infrastructure.Log;
 using EBS.WinPos.Service.Dto;
 using Newtonsoft.Json.Converters;
+using EBS.WinPos.Domain.ValueObject;
+
 namespace EBS.WinPos.Service.Task
 {
     public class SyncService
@@ -31,15 +33,20 @@ namespace EBS.WinPos.Service.Task
         }
         public void DownloadData()
         {
-            //启动线程池来进行多线程下载数据
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadAccount));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadStore));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipCard));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipProduct));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductAreaPrice));
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice));
+            var taskCount = 7;
+            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
 
+            //启动线程池来进行多线程下载数据
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadAccount), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadStore), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipCard), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipProduct), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductAreaPrice), threadEvent);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice), threadEvent);
+
+            threadEvent.WaitAll();
+            threadEvent.Dispose(); 
         }
 
         public bool NeedSyncData()
@@ -49,8 +56,9 @@ namespace EBS.WinPos.Service.Task
             return rows == 0;  // 没有数据，就需要同步
         }
 
-        private void DownloadAccount(object table)
+        private void DownloadAccount(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int count = 0;
@@ -94,16 +102,21 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
 
         public void DownloadProductSync()
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct));
+            var taskCount = 1;
+            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
+            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct), threadEvent);
+            threadEvent.WaitAll();
+            threadEvent.Dispose();
         }
 
-        public void DownloadProduct(object table)
+        public void DownloadProduct(object state)
         {
-
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             int pageIndex = 1;
             int count = 0;
             do
@@ -143,9 +156,13 @@ namespace EBS.WinPos.Service.Task
             while (count == pageSize);
             _log.Info("结束下载商品数据");
 
+            // 标记线程执行完毕
+            are.Set();
+
         }
-        private void DownloadStore(object table)
+        private void DownloadStore(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int pageIndex = 1;
@@ -189,9 +206,11 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
-        private void DownloadVipCard(object table)
+        private void DownloadVipCard(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int pageIndex = 1;
@@ -234,9 +253,11 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
-        private void DownloadVipProduct(object table)
+        private void DownloadVipProduct(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int pageIndex = 1;
@@ -279,10 +300,12 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
 
-        private void DownloadProductAreaPrice(object table)
+        private void DownloadProductAreaPrice(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int pageIndex = 1;
@@ -325,10 +348,12 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
 
-        private void DownloadProductStorePrice(object table)
+        private void DownloadProductStorePrice(object state)
         {
+            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
             try
             {
                 int pageIndex = 1;
@@ -371,6 +396,7 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex);
             }
+            are.Set();
         }
 
         public void Send(SaleOrder model)
@@ -440,6 +466,29 @@ namespace EBS.WinPos.Service.Task
                 _log.Error(ex);
 
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="day">today  yyyy-MM-dd</param>
+        public void SaleSyncDaily(string day)
+        {
+            string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
+            var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate= day });
+            //var taskCount = result.Count();
+            //MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
+            foreach (var model in result)
+            {
+                string sqlitem = "select * from SaleOrderItem where SaleOrderId=@SaleOrderId";
+                var items = _db.Query<SaleOrderItem>(sqlitem, new { SaleOrderId = model.Id }).ToList();
+                model.Items = items;
+                Send(model);
+                Thread.Sleep(5);
+            }
+
+            //threadEvent.WaitAll();
+            //threadEvent.Dispose();
         }
     }
 }

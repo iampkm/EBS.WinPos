@@ -39,6 +39,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.btnDownload = new System.Windows.Forms.Button();
             this.btnUpdateProduct = new System.Windows.Forms.Button();
+            this.dtpDate = new System.Windows.Forms.DateTimePicker();
+            this.btnSaleSync = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -114,7 +116,9 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btnUpdateProduct);
             this.groupBox2.Controls.Add(this.button1);
+            this.groupBox2.Controls.Add(this.btnDownload);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 147);
             this.groupBox2.Name = "groupBox2";
@@ -135,7 +139,7 @@
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(35, 266);
+            this.btnDownload.Location = new System.Drawing.Point(200, 40);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(128, 39);
             this.btnDownload.TabIndex = 2;
@@ -145,7 +149,7 @@
             // 
             // btnUpdateProduct
             // 
-            this.btnUpdateProduct.Location = new System.Drawing.Point(200, 266);
+            this.btnUpdateProduct.Location = new System.Drawing.Point(357, 40);
             this.btnUpdateProduct.Name = "btnUpdateProduct";
             this.btnUpdateProduct.Size = new System.Drawing.Size(128, 39);
             this.btnUpdateProduct.TabIndex = 2;
@@ -153,14 +157,31 @@
             this.btnUpdateProduct.UseVisualStyleBackColor = true;
             this.btnUpdateProduct.Click += new System.EventHandler(this.btnUpdateProduct_Click);
             // 
+            // dtpDate
+            // 
+            this.dtpDate.Location = new System.Drawing.Point(51, 297);
+            this.dtpDate.Name = "dtpDate";
+            this.dtpDate.Size = new System.Drawing.Size(200, 29);
+            this.dtpDate.TabIndex = 2;
+            // 
+            // btnSaleSync
+            // 
+            this.btnSaleSync.Location = new System.Drawing.Point(277, 287);
+            this.btnSaleSync.Name = "btnSaleSync";
+            this.btnSaleSync.Size = new System.Drawing.Size(128, 39);
+            this.btnSaleSync.TabIndex = 2;
+            this.btnSaleSync.Text = "销售对账";
+            this.btnSaleSync.UseVisualStyleBackColor = true;
+            this.btnSaleSync.Click += new System.EventHandler(this.btnSaleSync_Click);
+            // 
             // frmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 421);
-            this.Controls.Add(this.btnUpdateProduct);
-            this.Controls.Add(this.btnDownload);
+            this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.btnSaleSync);
             this.Controls.Add(this.groupBox1);
             this.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Margin = new System.Windows.Forms.Padding(5);
@@ -187,5 +208,7 @@
         private System.Windows.Forms.Button btnSaveStoreID;
         private System.Windows.Forms.Button btnDownload;
         private System.Windows.Forms.Button btnUpdateProduct;
+        private System.Windows.Forms.DateTimePicker dtpDate;
+        private System.Windows.Forms.Button btnSaleSync;
     }
 }

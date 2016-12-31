@@ -63,6 +63,7 @@
     <Compile Include="Helper\FileHelper.cs" />
     <Compile Include="Helper\HttpHelper.cs" />
     <Compile Include="Helper\JsonHelper.cs" />
+    <Compile Include="Helper\MultiThreadResetEvent.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\NLogWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

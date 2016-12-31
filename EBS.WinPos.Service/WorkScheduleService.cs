@@ -36,15 +36,22 @@ namespace EBS.WinPos.Service
         public WorkSchedule GetWorking(int storeId,int posId)
         {
            // return _db.WorkSchedules.Where(n => n.StoreId == storeId && n.EndBy == 0 && n.PosId == posId).FirstOrDefault();   
-            string sql = "select * from WorkSchedule where StoreId = @StoreId and EndBy = 0 and PosId = @PostId order by Id desc";
-            return _query.First<WorkSchedule>(sql, new { StoreId= storeId,PostId =posId});
+            string sql = "select * from WorkSchedule where StoreId = @StoreId and EndBy = 0 and PosId = @PosId order by Id desc";
+            return _query.First<WorkSchedule>(sql, new { StoreId= storeId,PosId =posId});
         }
 
         public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy)
         {
-            var data = _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId && n.CreatedBy == CreatedBy).OrderByDescending(n => n.Id).ToList();
-            var result= data.Where(n => n.StartDate.Date <= date && CheckEndDate(n.EndDate,date)).ToList();
-            return result;          
+            string sql = "select * from workschedule where storeId=@StoreId and posId=@PosId and  date(StartDate) =@StartDate";
+            if (CreatedBy > 0)
+            {
+                sql += " and CreatedBy=" + CreatedBy;
+            }
+            var data = _query.Query<WorkSchedule>(sql, new { StoreId = storeId, PosId = posId, StartDate = date.ToString("yyyy-MM-dd") }).ToList();
+            return data;
+            //var data = _db.WorkSchedules.Where(n => n.StoreId == storeId && n.PosId == posId && n.CreatedBy == CreatedBy).OrderByDescending(n => n.Id).ToList();
+            //var result= data.Where(n => n.StartDate.Date <= date && CheckEndDate(n.EndDate,date)).ToList();
+            //return result;          
         }
 
         private bool CheckEndDate(DateTime? endDate,DateTime date)
@@ -60,11 +67,19 @@ namespace EBS.WinPos.Service
 
         public void BeginWork(Account account,int storeId,int posId)
         {
+            var work = GetWorking(storeId, posId);
+            if (work != null)
+            {
+                throw new AppException("必须交班后才能开始下一个班次");
+            }
+
             WorkSchedule model = new WorkSchedule();
             model.StoreId = storeId;
             model.CreatedBy = account.Id;
             model.CreatedByName = account.NickName;
             model.PosId = posId;
+            // 验证是否有未结束的上班记录
+            
             _db.WorkSchedules.Add(model);
             _db.SaveChanges();
             // 同步到服务器

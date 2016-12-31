@@ -47,7 +47,12 @@ namespace EBS.WinPos
         public void InitData(DateTime selectDate)
         {
             //默认查询当天的
-            var data = _workService.GetWorkList(selectDate, _setting.StoreId, _setting.PosId, ContextService.CurrentAccount.Id);
+            var createdBy = ContextService.CurrentAccount.Id;
+            if (Config.Allowsetting.Contains(ContextService.CurrentAccount.RoleId))
+            {
+                createdBy = 0;
+            }
+            var data = _workService.GetWorkList(selectDate, _setting.StoreId, _setting.PosId, createdBy);
             this.dgvData.AutoGenerateColumns = false;
            // this.dgvData.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvData.DataSource = data;

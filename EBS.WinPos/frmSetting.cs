@@ -51,7 +51,12 @@ namespace EBS.WinPos
             {
                 txtPosId.Text = _currentSetting.PosId.ToString();
                 cbbStores.SelectedValue = _currentSetting.StoreId;
-            }           
+            }
+
+            //设置对账日期
+            dtpDate.Format = DateTimePickerFormat.Custom; //设置为显示格式为自定义
+            dtpDate.CustomFormat = "yyyy-MM-dd"; //设置显示格式
+            this.dtpDate.Value = DateTime.Now.Date;
         }
 
 
@@ -84,16 +89,22 @@ namespace EBS.WinPos
         {
            
             _service.DownloadData();
-            System.Threading.Thread.Sleep(3000);
-            MessageBox.Show("下载需要几秒钟，请稍后验证数据", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnUpdateProduct_Click(object sender, EventArgs e)
         {
             //更新商品
             _service.DownloadProductSync();
-            System.Threading.Thread.Sleep(3000);
             MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btnSaleSync_Click(object sender, EventArgs e)
+        {
+            //上传销售数据
+            var today= this.dtpDate.Value.ToString("yyyy-MM-dd");
+            _service.SaleSyncDaily(today);
+            MessageBox.Show("同步完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
