@@ -104,6 +104,7 @@ namespace EBS.WinPos
             //上传销售数据
             var today= this.dtpDate.Value.ToString("yyyy-MM-dd");
             _service.SaleSyncDaily(today);
+            _service.UploadSaleSync(today);
             MessageBox.Show("同步完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }

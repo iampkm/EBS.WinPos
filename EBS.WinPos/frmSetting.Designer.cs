@@ -36,9 +36,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cbbStores = new System.Windows.Forms.ComboBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnUpdateProduct = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.btnDownload = new System.Windows.Forms.Button();
-            this.btnUpdateProduct = new System.Windows.Forms.Button();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.btnSaleSync = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
@@ -127,6 +127,16 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "功能测试";
             // 
+            // btnUpdateProduct
+            // 
+            this.btnUpdateProduct.Location = new System.Drawing.Point(357, 40);
+            this.btnUpdateProduct.Name = "btnUpdateProduct";
+            this.btnUpdateProduct.Size = new System.Drawing.Size(128, 39);
+            this.btnUpdateProduct.TabIndex = 2;
+            this.btnUpdateProduct.Text = "下载商品";
+            this.btnUpdateProduct.UseVisualStyleBackColor = true;
+            this.btnUpdateProduct.Click += new System.EventHandler(this.btnUpdateProduct_Click);
+            // 
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(35, 42);
@@ -147,16 +157,6 @@
             this.btnDownload.UseVisualStyleBackColor = true;
             this.btnDownload.Click += new System.EventHandler(this.btnDownload_Click);
             // 
-            // btnUpdateProduct
-            // 
-            this.btnUpdateProduct.Location = new System.Drawing.Point(357, 40);
-            this.btnUpdateProduct.Name = "btnUpdateProduct";
-            this.btnUpdateProduct.Size = new System.Drawing.Size(128, 39);
-            this.btnUpdateProduct.TabIndex = 2;
-            this.btnUpdateProduct.Text = "下载商品";
-            this.btnUpdateProduct.UseVisualStyleBackColor = true;
-            this.btnUpdateProduct.Click += new System.EventHandler(this.btnUpdateProduct_Click);
-            // 
             // dtpDate
             // 
             this.dtpDate.Location = new System.Drawing.Point(51, 297);
@@ -170,7 +170,7 @@
             this.btnSaleSync.Name = "btnSaleSync";
             this.btnSaleSync.Size = new System.Drawing.Size(128, 39);
             this.btnSaleSync.TabIndex = 2;
-            this.btnSaleSync.Text = "销售对账";
+            this.btnSaleSync.Text = "上传销售数据";
             this.btnSaleSync.UseVisualStyleBackColor = true;
             this.btnSaleSync.Click += new System.EventHandler(this.btnSaleSync_Click);
             // 

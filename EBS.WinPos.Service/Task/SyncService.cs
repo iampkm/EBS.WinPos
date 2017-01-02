@@ -46,7 +46,7 @@ namespace EBS.WinPos.Service.Task
             ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice), threadEvent);
 
             threadEvent.WaitAll();
-            threadEvent.Dispose(); 
+            threadEvent.Dispose();
         }
 
         public bool NeedSyncData()
@@ -133,7 +133,7 @@ namespace EBS.WinPos.Service.Task
                     string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
                     var usql = "update Product set Code=@Code,Name=@Name,BarCode=@BarCode,Specification=@Specification,Unit=@Unit,SalePrice=@SalePrice,UpdatedOn=@UpdatedOn where Id=@Id";
                     foreach (var entity in rows)
-                    {                       
+                    {
                         if (_db.ExecuteScalar<int>("select count(*) from Product where Id=@Id", new { Id = entity.Id }) > 0)
                         {
                             _log.Info("更新:id={0},code={1},barcode={2},saleprice={3}", entity.Id, entity.Code, entity.BarCode, entity.SalePrice);
@@ -143,7 +143,7 @@ namespace EBS.WinPos.Service.Task
                         {
                             _log.Info("添加:id={0},code={1},barcode={2},saleprice={3}", entity.Id, entity.Code, entity.BarCode, entity.SalePrice);
                             _db.ExecuteSql(sql, entity);
-                        }                       
+                        }
                     }
                     count = rows.Count();
                 }
@@ -441,7 +441,7 @@ namespace EBS.WinPos.Service.Task
 
         private void SendSaleOrder(object data)
         {
-            var model = data as SaleOrder;
+            var model = data as SaleOrder;           
             try
             {
                 _log.Info("销售单{0},开始同步", model.Code);
@@ -466,6 +466,10 @@ namespace EBS.WinPos.Service.Task
                 _log.Error(ex);
 
             }
+            if (model.GetAre() != null)
+            {
+                model.GetAre().Set(); // 线程同步
+            }
         }
 
         /// <summary>
@@ -475,20 +479,49 @@ namespace EBS.WinPos.Service.Task
         public void SaleSyncDaily(string day)
         {
             string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
-            var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate= day });
-            //var taskCount = result.Count();
-            //MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
+            var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day });
+            var taskCount = result.Count();
+            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
             foreach (var model in result)
             {
                 string sqlitem = "select * from SaleOrderItem where SaleOrderId=@SaleOrderId";
                 var items = _db.Query<SaleOrderItem>(sqlitem, new { SaleOrderId = model.Id }).ToList();
                 model.Items = items;
+                model.SetAre(threadEvent);  // 线程同步
                 Send(model);
                 Thread.Sleep(5);
             }
 
-            //threadEvent.WaitAll();
-            //threadEvent.Dispose();
+            threadEvent.WaitAll();
+            threadEvent.Dispose();
+        }
+
+
+        /// <summary>
+        /// 上传销售对账
+        /// </summary>
+        /// <param name="today">格式：yyyy-MM-dd</param>
+        public void UploadSaleSync(string today)
+        {
+            string sql = @"select s.StoreId,s.PosId,count(*) as orderCount,sum(orderAmount) as OrderTotalAmount
+ from saleorder s where date(updatedOn) = @UpdatedOn and Status in (-1,3) 
+ group by s.StoreId,s.PosId ";
+            var rows = _db.Query<SaleSync>(sql, new { UpdatedOn = today }).ToList();
+            rows.ForEach(n => n.SaleDate = today);
+            _log.Info("上传销售对账");
+            string url = string.Format("{0}/PosSync/UpdateSaleSync", _serverUrl);
+            var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+            string body = JsonConvert.SerializeObject(rows, dateTimeConverter);
+            string param = string.Format("body={0}", body);
+            string result = HttpHelper.HttpPost(url, param);
+            if (result == "1")
+            {
+                _log.Info("销售对账上传成功");
+            }
+            else
+            {
+                _log.Info("销售对账上传失败");
+            }
         }
     }
 }
