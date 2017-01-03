@@ -480,6 +480,11 @@ namespace EBS.WinPos.Service.Task
         {
             string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
             var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day });
+            if (result.Count() == 0)
+            {
+                _log.Info("销售数据为空，终止上传");
+                return;
+            }
             var taskCount = result.Count();
             MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
             foreach (var model in result)
@@ -507,6 +512,10 @@ namespace EBS.WinPos.Service.Task
  from saleorder s where date(updatedOn) = @UpdatedOn and Status in (-1,3) 
  group by s.StoreId,s.PosId ";
             var rows = _db.Query<SaleSync>(sql, new { UpdatedOn = today }).ToList();
+            if (rows.Count == 0) {
+                _log.Info("销售数据为空，终止上传");
+                return;
+            }
             rows.ForEach(n => n.SaleDate = today);
             _log.Info("上传销售对账");
             string url = string.Format("{0}/PosSync/UpdateSaleSync", _serverUrl);
