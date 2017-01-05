@@ -6,11 +6,18 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using EBS.WinPos.Service.Task;
+using EBS.Infrastructure;
+using EBS.Infrastructure.Helper;
+using System.Threading;
+using EBS.WinPos.Domain;
+using EBS.WinPos.Service;
 namespace EBS.WinPos
 {
     public partial class frmProgress : Form
     {
+        SyncService _syncService;
+        SaleOrderService _saleService;
         // 窗体单例
         private static frmProgress _instance;
         public static frmProgress CreateForm()
@@ -25,27 +32,60 @@ namespace EBS.WinPos
         public frmProgress()
         {
             InitializeComponent();
+            _syncService = new SyncService(AppContext.Log);
+            _saleService = new SaleOrderService();
         }
 
         private void frmProgress_Load(object sender, EventArgs e)
         {
+           
+            this.backgroundWorker1.WorkerReportsProgress = true;
+        }
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+           // this.backgroundWorker1.ReportProgress(1);
+            
+            //上传销售数据
+            var orders = _saleService.QueryUploadSaleOrders(this.dtpDate.Value);
+            if (orders.Count == 0)
+            {
+                MessageBox.Show("今天暂时没有可上传的销售数据", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                for (var i = 0; i < orders.Count; i++)
+                {
+                    var model = orders[i];
+                    Thread.Sleep(5);                   
+                    _syncService.SendSaleOrder(model);
+                    int persent =(int)Math.Round((decimal)(i + 1) / orders.Count * 100, 0) ;
+                    this.backgroundWorker1.ReportProgress(persent);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppContext.Log.Error(ex);
+            }
 
         }
 
-        public void InitProgressBar(int max)
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.progressBar1.Maximum = max;
-            this.progressBar1.Minimum = 1;
-            this.progressBar1.Value = 0;
-            this.progressBar1.Step = 1;
+            this.progressBar1.Value = e.ProgressPercentage;
+            // Set the text.
+            this.lblMsg.Text =string.Format("已完成:{0}%", e.ProgressPercentage.ToString());
         }
 
-        public void PerformStep()
+        private void btnSaleSync_Click(object sender, EventArgs e)
         {
-            this.progressBar1.PerformStep();
-            // 完成百分比
-            var persent = this.progressBar1.Value / this.progressBar1.Maximum * 100;
-            this.lblMsg.Text = string.Format("已完成{0}%", persent);
+            this.backgroundWorker1.RunWorkerAsync();
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

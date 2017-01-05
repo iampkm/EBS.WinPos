@@ -439,7 +439,7 @@ namespace EBS.WinPos.Service.Task
 
 
 
-        private void SendSaleOrder(object data)
+        public void SendSaleOrder(object data)
         {
             var model = data as SaleOrder;           
             try

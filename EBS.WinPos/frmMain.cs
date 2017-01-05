@@ -10,10 +10,7 @@ using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Service;
 using EBS.WinPos.Service.Dto;
-using EBS.WinPos.Service.Task;
-using EBS.Infrastructure;
-using EBS.Infrastructure.Helper;
-using System.Threading;
+
 namespace EBS.WinPos
 {
     public partial class frmMain : Form
@@ -21,8 +18,7 @@ namespace EBS.WinPos
         WorkScheduleService _workService;
         SettingService _settingService;
         PosSettings _setting;
-        SyncService _syncService;
-        SaleOrderService _saleService;
+       
 
         // 窗体单例
         private static frmMain _instance;
@@ -43,8 +39,7 @@ namespace EBS.WinPos
             _workService = new WorkScheduleService();
             _settingService = new SettingService();
             _setting = _settingService.GetSettings();
-            _syncService = new SyncService(AppContext.Log);
-            _saleService = new SaleOrderService();
+           
         }
 
        
@@ -139,40 +134,9 @@ namespace EBS.WinPos
         }
 
         private void tsbUp_Click(object sender, EventArgs e)
-        {
-            //上传销售数据
-             var orders= _saleService.QueryUploadSaleOrders();
-             if (orders.Count == 0) {
-                 MessageBox.Show("今天暂时没有可上传的销售数据", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                 return;
-             }
-             try
-             {
-                 frmProgress progress = frmProgress.CreateForm();
-                 progress.Show();
-                 var taskCount = orders.Count();
-                 progress.InitProgressBar(taskCount);
-                // MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
-                 for (var i = 0; i < orders.Count; i++)
-                 {
-                     var model = orders[i];
-                   //  model.SetAre(threadEvent);  // 线程同步
-                   //  Thread.Sleep(5);
-                     _syncService.SendSaleOrder(model);
-                     progress.PerformStep();
-
-                 }
-                // threadEvent.WaitAll();
-                // threadEvent.Dispose();
-                 //上传完毕，关闭
-
-                progress.Close();
-             }
-             catch (Exception ex)
-             {
-                 AppContext.Log.Error(ex);
-             }
-
+        {            
+            frmProgress progress = frmProgress.CreateForm();
+            progress.Show();
             
         }
     }

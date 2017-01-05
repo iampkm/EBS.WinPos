@@ -272,9 +272,9 @@ namespace EBS.WinPos.Service
         }
 
 
-        public List<SaleOrder> QueryUploadSaleOrders()
+        public List<SaleOrder> QueryUploadSaleOrders(DateTime today)
         {
-            var day = DateTime.Now.ToString("yyyy-MM-dd");
+            var day = today.ToString("yyyy-MM-dd");
             string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
             var orders = _dbContext.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day }).ToList();
             if(orders.Count==0)

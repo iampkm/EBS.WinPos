@@ -52,7 +52,7 @@
             this.tsbUp});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(1080, 28);
+            this.toolStrip1.Size = new System.Drawing.Size(1080, 27);
             this.toolStrip1.TabIndex = 1;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -62,18 +62,18 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(80, 25);
+            this.toolStripButton1.Size = new System.Drawing.Size(80, 24);
             this.toolStripButton1.Text = "收银台&P";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
             // toolStripButton2
             // 
             this.toolStripButton2.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-            this.toolStripButton2.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.toolStripButton2.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(75, 25);
+            this.toolStripButton2.Size = new System.Drawing.Size(68, 24);
             this.toolStripButton2.Text = "注销&Q";
             this.toolStripButton2.Click += new System.EventHandler(this.toolStripButton2_Click);
             // 
@@ -83,7 +83,7 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(85, 25);
+            this.toolStripButton3.Size = new System.Drawing.Size(85, 24);
             this.toolStripButton3.Text = "交接班&W";
             this.toolStripButton3.Click += new System.EventHandler(this.toolStripButton3_Click);
             // 
@@ -93,7 +93,7 @@
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(93, 25);
+            this.toolStripButton4.Size = new System.Drawing.Size(93, 24);
             this.toolStripButton4.Text = "我的班次&E";
             this.toolStripButton4.Click += new System.EventHandler(this.toolStripButton4_Click);
             // 
@@ -103,7 +103,7 @@
             this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(92, 25);
+            this.toolStripButton5.Size = new System.Drawing.Size(92, 24);
             this.toolStripButton5.Text = "价格查询&F";
             this.toolStripButton5.Click += new System.EventHandler(this.toolStripButton5_Click);
             // 
@@ -113,7 +113,7 @@
             this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(65, 25);
+            this.toolStripButton6.Size = new System.Drawing.Size(65, 24);
             this.toolStripButton6.Text = "设置&S";
             this.toolStripButton6.Click += new System.EventHandler(this.toolStripButton6_Click);
             // 
@@ -123,7 +123,7 @@
             this.tsbUp.Image = ((System.Drawing.Image)(resources.GetObject("tsbUp.Image")));
             this.tsbUp.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUp.Name = "tsbUp";
-            this.tsbUp.Size = new System.Drawing.Size(95, 25);
+            this.tsbUp.Size = new System.Drawing.Size(95, 24);
             this.tsbUp.Text = "上传数据&U";
             this.tsbUp.Click += new System.EventHandler(this.tsbUp_Click);
             // 
