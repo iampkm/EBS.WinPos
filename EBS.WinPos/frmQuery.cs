@@ -15,12 +15,24 @@ namespace EBS.WinPos
     {
         ProductService _productService;
         VipCardService _vipService;
+        VipProductService _vipProductService;
+        private static frmQuery _instance;
+        public static frmQuery CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmQuery();
+            }
+            return _instance;
+        }
         public frmQuery()
         {
             InitializeComponent();
 
             _productService = new ProductService();
             _vipService = new VipCardService();
+            _vipProductService = new VipProductService();
         }
 
         public void Query()
@@ -38,21 +50,16 @@ namespace EBS.WinPos
             //查询会员折扣
             var vipCustomer  = _vipService.GetByCode(this.txtVipCode.Text);
             var discount = vipCustomer == null ? 1 : vipCustomer.Discount;
-
-            //int lastIndex = this.dgvData.Rows.GetLastRow(DataGridViewElementStates.Selected);
-            //if (lastIndex > -1)
-            //{
-            //    //前一行商品如果与扫码的商品一样，就直接累加数量
-            //    var preRow = this.dgvData.Rows[lastIndex];
-            //    if (preRow.Cells["ProductId"].Value != null && (int)preRow.Cells["ProductId"].Value == model.Id)
-            //    {
-            //        preRow.Cells["Quantity"].Value = (int)preRow.Cells["Quantity"].Value + 1;
-            //        preRow.Selected = true;
-            //        this.txtBarCode.Text = "";
-            //        ShowOrderInfo();
-            //        return;
-            //    }
-            //}
+            var realPrice = model.SalePrice; 
+            if (vipCustomer != null)
+            {
+                var vipProduct = _vipProductService.GetByProductId(model.Id);
+                //真正的销售价                              
+                realPrice = vipProduct == null ? model.SalePrice * discount : vipProduct.SalePrice;
+              
+            }
+           
+            
             this.dgvData.Rows.Clear();
             int index = this.dgvData.Rows.Add();
             var row = this.dgvData.Rows[index];
@@ -61,8 +68,8 @@ namespace EBS.WinPos
             row.Cells["BarCode"].Value = model.BarCode;
             row.Cells["ProductName"].Value = model.Name;
             row.Cells["Specification"].Value = model.Specification;
-            row.Cells["SalePrice"].Value = model.SalePrice;
-            row.Cells["RealPrice"].Value = model.SalePrice * discount;
+            row.Cells["SalePrice"].Value = model.SalePrice.ToString("F2");
+            row.Cells["RealPrice"].Value = realPrice.ToString("F2");
             row.Cells["Quantity"].Value = 1;
             row.Cells["Amount"].Value = model.SalePrice * discount * 1;
             row.Selected = true;

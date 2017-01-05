@@ -30,6 +30,7 @@
         {
             this.plTop = new System.Windows.Forms.Panel();
             this.btnBack = new System.Windows.Forms.Button();
+            this.btnPrint = new System.Windows.Forms.Button();
             this.btnQuery = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
@@ -44,7 +45,6 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.txtCashAmount = new System.Windows.Forms.TextBox();
-            this.btnPrint = new System.Windows.Forms.Button();
             this.plTop.SuspendLayout();
             this.plBody.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
@@ -73,6 +73,16 @@
             this.btnBack.Text = "返 回";
             this.btnBack.UseVisualStyleBackColor = true;
             this.btnBack.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // btnPrint
+            // 
+            this.btnPrint.Location = new System.Drawing.Point(381, 60);
+            this.btnPrint.Name = "btnPrint";
+            this.btnPrint.Size = new System.Drawing.Size(125, 31);
+            this.btnPrint.TabIndex = 2;
+            this.btnPrint.Text = "打印收银汇总";
+            this.btnPrint.UseVisualStyleBackColor = true;
+            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
             // 
             // btnQuery
             // 
@@ -205,16 +215,6 @@
             this.txtCashAmount.TabIndex = 0;
             this.txtCashAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCashAmount_KeyDown);
             // 
-            // btnPrint
-            // 
-            this.btnPrint.Location = new System.Drawing.Point(381, 60);
-            this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(125, 31);
-            this.btnPrint.TabIndex = 2;
-            this.btnPrint.Text = "打印收银汇总";
-            this.btnPrint.UseVisualStyleBackColor = true;
-            this.btnPrint.Click += new System.EventHandler(this.btnPrint_Click);
-            // 
             // frmMy
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
@@ -227,7 +227,6 @@
             this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "frmMy";
             this.Text = "我的班次";
-            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmMy_Load);
             this.plTop.ResumeLayout(false);
             this.plTop.PerformLayout();

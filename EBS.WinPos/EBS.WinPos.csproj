@@ -222,6 +222,7 @@
     <Content Include="picture\exit.png" />
     <Content Include="picture\search.png" />
     <Content Include="picture\setting.png" />
+    <Content Include="picture\up.png" />
     <Content Include="picture\work.png" />
     <Content Include="PosBillTemplate.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -10,7 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using EBS.Infrastructure;
 namespace EBS.WinPos
 {
     public partial class frmRefund : Form
@@ -19,6 +19,16 @@ namespace EBS.WinPos
         public frmPos PosForm { get; set; }
 
         public SaleOrderService _orderService;
+        private static frmRefund _instance;
+        public static frmRefund CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmRefund();
+            }
+            return _instance;
+        }
         public frmRefund()
         {
             InitializeComponent();
@@ -148,6 +158,10 @@ namespace EBS.WinPos
                 // 打印小票
                 _orderService.PrintTicket(CurrentOrder.OrderId);
             }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -175,8 +189,13 @@ namespace EBS.WinPos
                 // 打印小票
                 _orderService.PrintTicket(CurrentOrder.OrderId);
             }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
             catch (Exception ex)
             {
+                AppContext.Log.Error(ex);
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
           
@@ -200,6 +219,10 @@ namespace EBS.WinPos
                 ClosePayForm();
                 // 打印小票
                 _orderService.PrintTicket(CurrentOrder.OrderId);
+            }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {

@@ -26,7 +26,16 @@ namespace EBS.WinPos
         WorkScheduleService _workScheduleService;
         WorkSchedule _currentWork;
         public VipCard VipCustomer { get; set; }
-
+        private static frmPos _instance;
+        public static frmPos CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmPos();
+            }
+            return _instance;
+        }
         public frmPos()
         {
             InitializeComponent();
@@ -42,7 +51,7 @@ namespace EBS.WinPos
 
         }
 
-        frmPay _payForm;
+       
         public void inputEnter()
         {
             var input = this.txtBarCode.Text;
@@ -125,7 +134,9 @@ namespace EBS.WinPos
             this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("F2");
             this.lblPreChargeAmount.Text = "找零：" + model.ChargeAmount.ToString("F2");
         }
-
+        /// <summary>
+        /// 上一单面板显示作废信息
+        /// </summary>
         public void ShowCancelOrderInfo()
         {
             var model = this._currentShopCat;
@@ -173,11 +184,11 @@ namespace EBS.WinPos
 
             // 显示支付窗体  
             if (_currentShopCat.CheckCanPay())
-            {
-                _payForm = new frmPay();
-                _payForm.CurrentOrder = _currentShopCat;
-                _payForm.PosForm = this;
-                _payForm.ShowDialog(this);
+            {               
+                frmPay payForm = frmPay.CreateForm();
+                payForm.CurrentOrder = _currentShopCat;
+                payForm.PosForm = this;
+                payForm.ShowDialog(this);
             }
             else
             {
@@ -212,7 +223,7 @@ namespace EBS.WinPos
 
             if (_currentShopCat.OrderAmount < 0)
             {
-                frmRefund refundFrom = new frmRefund();
+                frmRefund refundFrom = frmRefund.CreateForm();
                 refundFrom.CurrentOrder = _currentShopCat;
                 refundFrom.PosForm = this;
                 refundFrom.ShowDialog(this);
@@ -249,17 +260,18 @@ namespace EBS.WinPos
                 }
                 _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);
                 MessageBox.Show("订单作废成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                //打印小票              
+                //显示历史单据信息            
                 ShowCancelOrderInfo();
+                //情况当前单据信息
                 this.ClearAll();
+                // 打印作废小票
+                _saleOrderService.PrintTicket(this._preShopCat.OrderId);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
-
-            // 打印作废小票
-            _saleOrderService.PrintTicket(this._preShopCat.OrderId);
+           
         }
 
 
@@ -308,7 +320,7 @@ namespace EBS.WinPos
                 return;
             }
 
-            frmMain mainForm = new frmMain();
+            frmMain mainForm = frmMain.CreateForm();
             mainForm.Show();
             this.Close();
         }
@@ -333,7 +345,7 @@ namespace EBS.WinPos
 
         public void inputCustomer()
         {
-            frmVipCard vipForm = new frmVipCard();
+            frmVipCard vipForm = frmVipCard.CreateForm();
             vipForm.PosFrom = this;
             vipForm.ShowDialog(this);
         }
@@ -366,14 +378,12 @@ namespace EBS.WinPos
 
         private void frmPos_Load(object sender, EventArgs e)
         {
-            // 如果没有点上班，不显示该界面
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.StoreId;
             lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
             lblKeys2.Text = "快捷键：F5 主菜单,F6 重打小票 ";
             this.txtBarCode.Focus();
             this.dgvData.ClearSelection();
-
 
         }
 

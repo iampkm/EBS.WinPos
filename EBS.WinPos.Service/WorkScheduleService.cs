@@ -67,6 +67,7 @@ namespace EBS.WinPos.Service
 
         public void BeginWork(Account account,int storeId,int posId)
         {
+            // 验证是否有未结束的上班记录
             var work = GetWorking(storeId, posId);
             if (work != null)
             {
@@ -77,8 +78,7 @@ namespace EBS.WinPos.Service
             model.StoreId = storeId;
             model.CreatedBy = account.Id;
             model.CreatedByName = account.NickName;
-            model.PosId = posId;
-            // 验证是否有未结束的上班记录
+            model.PosId = posId;           
             
             _db.WorkSchedules.Add(model);
             _db.SaveChanges();

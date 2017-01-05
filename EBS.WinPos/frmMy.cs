@@ -18,6 +18,16 @@ namespace EBS.WinPos
         PosSettings _setting;
         SettingService _settingService;
         int _curentWrokId = 0;
+        private static frmMy _instance;
+        public static frmMy CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmMy();
+            }
+            return _instance;
+        }
         public frmMy()
         {
             InitializeComponent();

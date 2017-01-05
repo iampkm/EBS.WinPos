@@ -1,6 +1,6 @@
 ﻿namespace EBS.WinPos
 {
-    partial class frmDownload
+    partial class frmProgress
     {
         /// <summary>
         /// Required designer variable.
@@ -37,6 +37,7 @@
             this.progressBar1.Location = new System.Drawing.Point(52, 79);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(389, 23);
+            this.progressBar1.Step = 1;
             this.progressBar1.TabIndex = 0;
             // 
             // lblMsg
@@ -45,19 +46,20 @@
             this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblMsg.Location = new System.Drawing.Point(48, 42);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(106, 21);
+            this.lblMsg.Size = new System.Drawing.Size(81, 21);
             this.lblMsg.TabIndex = 1;
-            this.lblMsg.Text = "正在下载数据";
+            this.lblMsg.Text = "已完成0%";
             // 
-            // frmDownload
+            // frmProgress
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(523, 188);
+            this.ClientSize = new System.Drawing.Size(506, 173);
             this.Controls.Add(this.lblMsg);
             this.Controls.Add(this.progressBar1);
-            this.Name = "frmDownload";
+            this.Name = "frmProgress";
             this.Text = "正在从服务器下载数据";
+            this.Load += new System.EventHandler(this.frmProgress_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

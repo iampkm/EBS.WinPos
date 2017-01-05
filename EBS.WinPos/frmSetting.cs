@@ -21,7 +21,17 @@ namespace EBS.WinPos
         StoreService _storeService;
         PosSettings _currentSetting;
         SyncService _service ;
-        
+
+        private static frmSetting _instance;
+        public static frmSetting CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmSetting();
+            }
+            return _instance;
+        }
         public frmSetting()
         {
             InitializeComponent();
@@ -29,12 +39,6 @@ namespace EBS.WinPos
             _settingService = new Service.SettingService();
             _storeService = new Service.StoreService();
             _service = new SyncService(AppContext.Log);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            IPosPrinter _printService = new DriverPrinterService();
-            _printService.Print("-------------小票打印机测试 ---------------");
         }
 
         private void frmSetting_Load(object sender, EventArgs e)
@@ -86,26 +90,35 @@ namespace EBS.WinPos
         }
 
         private void btnDownload_Click(object sender, EventArgs e)
-        {
-           
-            _service.DownloadData();
+        {           
+            ShowInfo(_service.DownloadData);
+
             MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnUpdateProduct_Click(object sender, EventArgs e)
         {
             //更新商品
-            _service.DownloadProductSync();
+            ShowInfo(_service.DownloadProductSync);
             MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void btnSaleSync_Click(object sender, EventArgs e)
         {
             //上传销售数据
+            this.lblMsg.Text = "数据处理中...";
             var today= this.dtpDate.Value.ToString("yyyy-MM-dd");
             _service.SaleSyncDaily(today);
             _service.UploadSaleSync(today);
+            this.lblMsg.Text = "";
             MessageBox.Show("同步完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        public void ShowInfo(Action action)
+        {
+            this.lblMsg.Text = "数据处理中...";
+            action();
+            this.lblMsg.Text = "";
         }
     }
 }

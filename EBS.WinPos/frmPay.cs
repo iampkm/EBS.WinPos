@@ -23,6 +23,17 @@ namespace EBS.WinPos
         public SaleOrderService _orderService;
 
         ILogger _log;
+
+        private static frmPay _instance;
+        public static frmPay CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmPay();
+            }
+            return _instance;
+        }
         
         public frmPay()
         {
@@ -158,22 +169,20 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = 0m;
                 _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
+                ClosePayForm();
+                _orderService.PrintTicket(CurrentOrder.OrderId);               
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
+                _log.Error(ex);
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }          
-            // 打印小票
-            try
-            {
-                _orderService.PrintTicket(CurrentOrder.OrderId);
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex, "小票打印失败");
-            }           
-            ClosePayForm();
+            } 
+           
         }
 
         public void AliPay(string payBarCode)
@@ -190,22 +199,19 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            // 打印小票
-            try
-            {
+                ClosePayForm();
                 _orderService.PrintTicket(CurrentOrder.OrderId);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "小票打印失败");
-            }
-            ClosePayForm();
+                _log.Error(ex);
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            } 
         }
 
         public void WechatPay(string payBarCode)
@@ -221,22 +227,19 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);               
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            // 打印小票
-            try
-            {
+                ClosePayForm();
                 _orderService.PrintTicket(CurrentOrder.OrderId);
+                MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "小票打印失败");
-            }
-            ClosePayForm();
+                _log.Error(ex);
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            } 
         }
 
         private void lstPaymentWay_KeyDown(object sender, KeyEventArgs e)

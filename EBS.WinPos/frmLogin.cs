@@ -53,20 +53,17 @@ namespace EBS.WinPos
 
         public void ShowWrokForm()
         {
-            frmMain main = new frmMain();
-            ContextService.AddFrom(main);
+            frmMain main = frmMain.CreateForm();
             main.Show();
 
-            frmWork workForm = new frmWork();
-            ContextService.AddFrom(workForm);
+            frmWork workForm = frmWork.CreateForm();
             workForm.MdiParent = main;
             workForm.Show();
         }
 
         public void ShowPosForm()
         {
-            frmPos posForm = new frmPos();
-            ContextService.AddFrom(posForm);
+            frmPos posForm = frmPos.CreateForm();
             posForm.Show();
         }
 

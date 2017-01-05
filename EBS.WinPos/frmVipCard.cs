@@ -11,6 +11,16 @@ namespace EBS.WinPos
     public partial class frmVipCard : Form
     {
         public frmPos PosFrom { get; set; }
+        private static frmVipCard _instance;
+        public static frmVipCard CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmVipCard();
+            }
+            return _instance;
+        }
         public frmVipCard()
         {
             InitializeComponent();

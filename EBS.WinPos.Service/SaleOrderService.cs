@@ -13,6 +13,7 @@ using EBS.Infrastructure.Helper;
 using EBS.Infrastructure.Extension;
 using EBS.Infrastructure;
 using EBS.WinPos.Service.Task;
+using EBS.Infrastructure.Log;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
@@ -20,12 +21,16 @@ namespace EBS.WinPos.Service
         Repository _db;
         IPosPrinter _printService;
         SyncService _syncService;
+        ILogger _log;
+        DapperContext _dbContext;
         public SaleOrderService()
         {
+          _log=  AppContext.Log;
             _db = new Repository();
            // _printService = new LptPrinterService();
             _printService = new DriverPrinterService();
             _syncService = new SyncService(AppContext.Log);
+            _dbContext = new DapperContext();
         }
         public void CreateOrder(ShopCart cat)
         {
@@ -210,8 +215,16 @@ namespace EBS.WinPos.Service
 
         public void PrintTicket(int orderId)
         {
-            var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
-            PrintTicket(model);
+            try
+            {
+                var model = _db.Orders.FirstOrDefault(n => n.Id == orderId);
+                PrintTicket(model);
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex, "小票打印失败");
+            }
+           
         }
         public void PrintTicket(SaleOrder model)
         {
@@ -259,7 +272,24 @@ namespace EBS.WinPos.Service
         }
 
 
-
+        public List<SaleOrder> QueryUploadSaleOrders()
+        {
+            var day = DateTime.Now.ToString("yyyy-MM-dd");
+            string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
+            var orders = _dbContext.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day }).ToList();
+            if(orders.Count==0)
+            {
+                return orders;
+            }
+            // 查询明细
+            string sqlitem = "select i.* from SaleOrderItem i inner join SaleOrder o on i.SaleOrderId=o.Id where (o.Status =@Paid or o.Status=@Cancel) and date(o.updatedOn) =@SyncDate ";
+            var items = _dbContext.Query<SaleOrderItem>(sqlitem, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day }).ToList();
+            foreach (var order in orders)
+            {
+                order.Items.AddRange(items.Where(n => n.SaleOrderId == order.Id));
+            }
+            return orders;
+        }
 
     }
 }
