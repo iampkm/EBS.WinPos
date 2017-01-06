@@ -441,9 +441,15 @@ namespace EBS.WinPos.Service.Task
 
         public void SendSaleOrder(object data)
         {
-            var model = data as SaleOrder;           
+            var model = data as SaleOrder;
+            if (model.Items.Count == 0)
+            {
+                _log.Info("销售单{0},明细为空,终止上传", model.Code);
+                return;
+            }
             try
             {
+                
                 _log.Info("销售单{0},开始同步", model.Code);
                 string url = string.Format("{0}/PosSync/SaleOrderSync", _serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
