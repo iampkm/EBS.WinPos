@@ -20,7 +20,7 @@ namespace EBS.WinPos.Domain.Entity
         /// </summary>
         public decimal RealPrice { get; set; }
         public int Quantity { get; set; }    
-       public virtual int SaleOrderId { get; set; }
+       public int SaleOrderId { get; set; }
 
        /// <summary>
        /// 优惠金额

@@ -18,7 +18,7 @@ namespace EBS.WinPos.Service.Task
     {
         string _serverUrl;
         ILogger _log;
-        int pageSize = 3000;
+        int pageSize = 5000;
         DapperContext _db;
         SettingService _settingService;
         PosSettings _setting;
@@ -472,10 +472,6 @@ namespace EBS.WinPos.Service.Task
                 _log.Error(ex);
 
             }
-            if (model.GetAre() != null)
-            {
-                model.GetAre().Set(); // 线程同步
-            }
         }
 
         /// <summary>
@@ -491,20 +487,14 @@ namespace EBS.WinPos.Service.Task
                 _log.Info("销售数据为空，终止上传");
                 return;
             }
-            var taskCount = result.Count();
-            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
             foreach (var model in result)
             {
                 string sqlitem = "select * from SaleOrderItem where SaleOrderId=@SaleOrderId";
                 var items = _db.Query<SaleOrderItem>(sqlitem, new { SaleOrderId = model.Id }).ToList();
                 model.Items = items;
-                model.SetAre(threadEvent);  // 线程同步
                 Send(model);
                 Thread.Sleep(5);
             }
-
-            threadEvent.WaitAll();
-            threadEvent.Dispose();
         }
 
 

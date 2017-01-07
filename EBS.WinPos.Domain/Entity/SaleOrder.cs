@@ -75,25 +75,6 @@ namespace EBS.WinPos.Domain.Entity
 
         public virtual List<SaleOrderItem> Items { get; set; }
 
-        private MultiThreadResetEvent _are;
-
-        /// <summary>
-        /// 获取 设置线程同步
-        /// </summary>
-        /// <returns></returns>
-        public MultiThreadResetEvent GetAre()
-        {
-            return _are;
-        }
-        /// <summary>
-        /// 设置线程同步
-        /// </summary>
-        /// <param name="are"></param>
-        public void SetAre(MultiThreadResetEvent are)
-        {
-            this._are = are;
-        }
-
         public void AddOrderItem(Product product, int quantity, decimal realPrice)
         {
             var item = this.Items.Where(n => n.ProductId == product.Id).FirstOrDefault();

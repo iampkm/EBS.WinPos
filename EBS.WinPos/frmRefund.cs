@@ -155,8 +155,6 @@ namespace EBS.WinPos
                 PosForm.ClearItems();
                 MessageBox.Show("退款成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
             }
             catch (AppException aex)
             {
@@ -186,8 +184,6 @@ namespace EBS.WinPos
                 PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
             }
             catch (AppException aex)
             {
@@ -217,8 +213,6 @@ namespace EBS.WinPos
                 PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
-                // 打印小票
-                _orderService.PrintTicket(CurrentOrder.OrderId);
             }
             catch (AppException aex)
             {

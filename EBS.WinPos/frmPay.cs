@@ -169,8 +169,7 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = 0m;
                 _orderService.CashPay(CurrentOrder.OrderId, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                ClosePayForm();
-                _orderService.PrintTicket(CurrentOrder.OrderId);               
+                ClosePayForm();                         
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (AppException aex)
@@ -199,8 +198,7 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.AliPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                ClosePayForm();
-                _orderService.PrintTicket(CurrentOrder.OrderId);
+                ClosePayForm();               
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (AppException aex)
@@ -227,8 +225,7 @@ namespace EBS.WinPos
                 CurrentOrder.OnlinePayAmount = onlinePayAmount;
                 _orderService.WechatPay(CurrentOrder.OrderId, payBarCode, CurrentOrder.PayAmount);
                 PosForm.ClearItems();
-                ClosePayForm();
-                _orderService.PrintTicket(CurrentOrder.OrderId);
+                ClosePayForm();               
                 MessageBox.Show("支付成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (AppException aex)

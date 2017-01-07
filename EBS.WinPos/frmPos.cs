@@ -262,10 +262,7 @@ namespace EBS.WinPos
                 MessageBox.Show("订单作废成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 //显示历史单据信息            
                 ShowCancelOrderInfo();
-                //情况当前单据信息
                 this.ClearAll();
-                // 打印作废小票
-                _saleOrderService.PrintTicket(this._preShopCat.OrderId);
             }
             catch (Exception ex)
             {
