@@ -42,32 +42,29 @@ namespace EBS.WinPos
             this.backgroundWorker1.WorkerReportsProgress = true;
         }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-
-           // this.backgroundWorker1.ReportProgress(1);
-            
+        {            
             //上传销售数据
-            //var orders = _saleService.QueryUploadSaleOrders(this.dtpDate.Value);
-            //if (orders.Count == 0)
-            //{
-            //    MessageBox.Show("今天暂时没有可上传的销售数据", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    return;
-            //}
-            //try
-            //{
-            //    for (var i = 0; i < orders.Count; i++)
-            //    {
-            //        var model = orders[i];
-            //        Thread.Sleep(5);                   
-            //        _syncService.SendSaleOrder(model);
-            //        int persent =(int)Math.Round((decimal)(i + 1) / orders.Count * 100, 0) ;
-            //        this.backgroundWorker1.ReportProgress(persent);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    AppContext.Log.Error(ex);
-            //}
+            var orders = _saleService.QueryUploadSaleOrders(this.dtpDate.Value);
+            if (orders.Count == 0)
+            {
+                MessageBox.Show("今天暂时没有可上传的销售数据", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            try
+            {
+                for (var i = 0; i < orders.Count; i++)
+                {
+                    var model = orders[i];
+                    Thread.Sleep(5);
+                    _syncService.SendSaleOrder(model);
+                    int persent = (int)Math.Round((decimal)(i + 1) / orders.Count * 100, 0);
+                    this.backgroundWorker1.ReportProgress(persent);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppContext.Log.Error(ex);
+            }
 
         }
 
