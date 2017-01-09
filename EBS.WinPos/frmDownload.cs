@@ -60,6 +60,8 @@ namespace EBS.WinPos
                     int persent = (int)Math.Round((decimal)(i + 1) / orders.Count * 100, 0);
                     this.backgroundWorker1.ReportProgress(persent);
                 }
+                //上传汇总数据
+                _syncService.UploadSaleSync(this.dtpDate.Value.Date.ToString());
             }
             catch (Exception ex)
             {
