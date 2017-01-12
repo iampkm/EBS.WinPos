@@ -18,6 +18,7 @@ namespace EBS.WinPos
     {
         SyncService _syncService;
         SaleOrderService _saleService;
+        WorkScheduleService _workScheduleService;
         // 窗体单例
         private static frmProgress _instance;
         public static frmProgress CreateForm()
@@ -34,6 +35,7 @@ namespace EBS.WinPos
             InitializeComponent();
             _syncService = new SyncService(AppContext.Log);
             _saleService = new SaleOrderService();
+            _workScheduleService = new WorkScheduleService();
         }
 
         private void frmProgress_Load(object sender, EventArgs e)
@@ -42,24 +44,36 @@ namespace EBS.WinPos
             this.backgroundWorker1.WorkerReportsProgress = true;
         }
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {            
+        {         
+            
             //上传销售数据
-            var orders = _saleService.QueryUploadSaleOrders(this.dtpDate.Value);
+            var selectDate = this.dtpDate.Value;
+            var orders = _saleService.QueryUploadSaleOrders(selectDate);
             if (orders.Count == 0)
             {
                 MessageBox.Show("今天暂时没有可上传的销售数据", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+            //班次数据
+            var works = _workScheduleService.GetWorkList(selectDate, ContextService.StoreId, ContextService.PosId);
             try
             {
-                int totalTasks = orders.Count + 1;
-
+                int totalTasks = orders.Count +works.Count + 1;
+                //上传销售数据
                 for (var i = 0; i < orders.Count; i++)
                 {
                     var model = orders[i];
                     Thread.Sleep(5);
                     _syncService.SendSaleOrder(model);
                     int persent = (int)Math.Round((decimal)(i + 1) / totalTasks * 100, 0);
+                    this.backgroundWorker1.ReportProgress(persent);
+                }
+                //上传班次数据
+                for(var j=0;j<works.Count;j++)
+                {
+                    var workModel = works[j];
+                    _syncService.SendWorkSchedule(workModel);
+                    int persent = (int)Math.Round((decimal)(orders.Count + 1) / totalTasks * 100, 0);
                     this.backgroundWorker1.ReportProgress(persent);
                 }
                 //上传汇总数据,报告最后一个任务
@@ -78,7 +92,7 @@ namespace EBS.WinPos
         {
             this.progressBar1.Value = e.ProgressPercentage;
             // Set the text.
-            this.lblMsg.Text =string.Format("已完成:{0}%", e.ProgressPercentage.ToString());
+            this.lblMsg.Text =string.Format("已上传:{0}%", e.ProgressPercentage.ToString());
         }
 
         private void btnSaleSync_Click(object sender, EventArgs e)

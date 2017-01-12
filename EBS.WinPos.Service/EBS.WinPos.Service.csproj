@@ -59,6 +59,7 @@
     <Compile Include="Dto\InputCashAmount.cs" />
     <Compile Include="Dto\OrerInfo.cs" />
     <Compile Include="Dto\PosSettings.cs" />
+    <Compile Include="Dto\ProductPriceDto.cs" />
     <Compile Include="Dto\ShopCart.cs" />
     <Compile Include="Dto\ShopCartItem.cs" />
     <Compile Include="Dto\WorkSaleSummaryDto.cs" />

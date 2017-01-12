@@ -28,17 +28,15 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnQuery = new System.Windows.Forms.Button();
-            this.txtVipCode = new System.Windows.Forms.TextBox();
             this.txtBarCode = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.dgvData = new System.Windows.Forms.DataGridView();
@@ -48,9 +46,9 @@
             this.ProductName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Specification = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SalePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.RealPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Quantity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Amount = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.VipSalePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AreaSalePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.StoreSalePrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvData)).BeginInit();
@@ -60,9 +58,7 @@
             // 
             this.panel1.Controls.Add(this.btnBack);
             this.panel1.Controls.Add(this.btnQuery);
-            this.panel1.Controls.Add(this.txtVipCode);
             this.panel1.Controls.Add(this.txtBarCode);
-            this.panel1.Controls.Add(this.label2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -93,39 +89,20 @@
             this.btnQuery.UseVisualStyleBackColor = true;
             this.btnQuery.Click += new System.EventHandler(this.btnQuery_Click);
             // 
-            // txtVipCode
-            // 
-            this.txtVipCode.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtVipCode.Location = new System.Drawing.Point(153, 56);
-            this.txtVipCode.Name = "txtVipCode";
-            this.txtVipCode.Size = new System.Drawing.Size(180, 29);
-            this.txtVipCode.TabIndex = 1;
-            this.txtVipCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtVipCode_KeyDown);
-            // 
             // txtBarCode
             // 
             this.txtBarCode.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtBarCode.Location = new System.Drawing.Point(153, 12);
+            this.txtBarCode.Location = new System.Drawing.Point(171, 36);
             this.txtBarCode.Name = "txtBarCode";
             this.txtBarCode.Size = new System.Drawing.Size(180, 29);
             this.txtBarCode.TabIndex = 0;
             this.txtBarCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtBarCode_KeyDown);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(72, 59);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(58, 21);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "会员码";
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(40, 15);
+            this.label1.Location = new System.Drawing.Point(58, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 21);
             this.label1.TabIndex = 4;
@@ -143,14 +120,14 @@
             // dgvData
             // 
             this.dgvData.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvData.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvData.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle6;
             this.dgvData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvData.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.ProductId,
@@ -159,33 +136,33 @@
             this.ProductName,
             this.Specification,
             this.SalePrice,
-            this.RealPrice,
-            this.Quantity,
-            this.Amount});
-            dataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle13.Font = new System.Drawing.Font("宋体", 14F);
-            dataGridViewCellStyle13.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvData.DefaultCellStyle = dataGridViewCellStyle13;
+            this.VipSalePrice,
+            this.AreaSalePrice,
+            this.StoreSalePrice});
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("宋体", 14F);
+            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvData.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvData.GridColor = System.Drawing.Color.Gray;
             this.dgvData.Location = new System.Drawing.Point(0, 0);
             this.dgvData.MultiSelect = false;
             this.dgvData.Name = "dgvData";
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.ControlDark;
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("宋体", 14F);
-            dataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvData.RowHeadersDefaultCellStyle = dataGridViewCellStyle14;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.Blue;
-            this.dgvData.RowsDefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.ControlDark;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("宋体", 14F);
+            dataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvData.RowHeadersDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle10.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.Blue;
+            this.dgvData.RowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvData.RowTemplate.DefaultCellStyle.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.dgvData.RowTemplate.Height = 23;
             this.dgvData.Size = new System.Drawing.Size(1042, 441);
@@ -236,34 +213,33 @@
             this.SalePrice.HeaderText = "售价";
             this.SalePrice.Name = "SalePrice";
             this.SalePrice.ReadOnly = true;
-            this.SalePrice.Width = 85;
+            this.SalePrice.Width = 80;
             // 
-            // RealPrice
+            // VipSalePrice
             // 
-            this.RealPrice.HeaderText = "会员价";
-            this.RealPrice.Name = "RealPrice";
-            this.RealPrice.ReadOnly = true;
-            this.RealPrice.Width = 85;
+            this.VipSalePrice.DataPropertyName = "VipSalePrice";
+            this.VipSalePrice.HeaderText = "会员价";
+            this.VipSalePrice.Name = "VipSalePrice";
+            this.VipSalePrice.ReadOnly = true;
+            this.VipSalePrice.Width = 80;
             // 
-            // Quantity
+            // AreaSalePrice
             // 
-            this.Quantity.DataPropertyName = "Quantity";
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.Red;
-            this.Quantity.DefaultCellStyle = dataGridViewCellStyle12;
-            this.Quantity.HeaderText = "数量";
-            this.Quantity.Name = "Quantity";
-            this.Quantity.Visible = false;
-            this.Quantity.Width = 65;
+            this.AreaSalePrice.DataPropertyName = "AreaSalePrice";
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.Color.Red;
+            this.AreaSalePrice.DefaultCellStyle = dataGridViewCellStyle7;
+            this.AreaSalePrice.HeaderText = "区域售价";
+            this.AreaSalePrice.Name = "AreaSalePrice";
+            this.AreaSalePrice.Width = 80;
             // 
-            // Amount
+            // StoreSalePrice
             // 
-            this.Amount.DataPropertyName = "Amount";
-            this.Amount.HeaderText = "金额";
-            this.Amount.Name = "Amount";
-            this.Amount.ReadOnly = true;
-            this.Amount.Visible = false;
-            this.Amount.Width = 85;
+            this.StoreSalePrice.DataPropertyName = "StoreSalePrice";
+            this.StoreSalePrice.HeaderText = "门店售价";
+            this.StoreSalePrice.Name = "StoreSalePrice";
+            this.StoreSalePrice.ReadOnly = true;
+            this.StoreSalePrice.Width = 80;
             // 
             // frmQuery
             // 
@@ -292,17 +268,15 @@
         private System.Windows.Forms.TextBox txtBarCode;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView dgvData;
-        private System.Windows.Forms.TextBox txtVipCode;
         private System.Windows.Forms.Button btnBack;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductId;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductCode;
         private System.Windows.Forms.DataGridViewTextBoxColumn BarCode;
         private System.Windows.Forms.DataGridViewTextBoxColumn ProductName;
         private System.Windows.Forms.DataGridViewTextBoxColumn Specification;
         private System.Windows.Forms.DataGridViewTextBoxColumn SalePrice;
-        private System.Windows.Forms.DataGridViewTextBoxColumn RealPrice;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Quantity;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Amount;
+        private System.Windows.Forms.DataGridViewTextBoxColumn VipSalePrice;
+        private System.Windows.Forms.DataGridViewTextBoxColumn AreaSalePrice;
+        private System.Windows.Forms.DataGridViewTextBoxColumn StoreSalePrice;
     }
 }

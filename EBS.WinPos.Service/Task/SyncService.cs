@@ -34,7 +34,7 @@ namespace EBS.WinPos.Service.Task
 
         private string BuildAccessToken()
         {
-            if (string.IsNullOrEmpty(_setting.CDKey)) { _log.Info("没有cdkey，构建参数失败，处理终止!"); throw new AppException("没有cdkey，构建参数失败，处理终止!"); }
+           // if (string.IsNullOrEmpty(_setting.CDKey)) { _log.Info("没有cdkey，构建参数失败，处理终止!"); throw new AppException("没有cdkey，构建参数失败，处理终止!"); }
             string paramters = string.Format("StoreId={0}&PosId={1}&CDKey={2}", _setting.StoreId, _setting.PosId, _setting.CDKey);
             return paramters;
         }
@@ -371,7 +371,11 @@ namespace EBS.WinPos.Service.Task
             ThreadPool.QueueUserWorkItem(new WaitCallback(SendWorkSchedule), model);
         }
 
-        private void SendWorkSchedule(object data)
+        /// <summary>
+        /// 上传班次数据
+        /// </summary>
+        /// <param name="data"></param>
+        public void SendWorkSchedule(object data)
         {
             var model = data as WorkSchedule;
             try

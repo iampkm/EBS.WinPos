@@ -1,5 +1,6 @@
 ﻿using EBS.WinPos.Domain.Entity;
 using EBS.WinPos.Service;
+using EBS.WinPos.Service.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,27 +39,13 @@ namespace EBS.WinPos
         public void Query()
         {
             string productCodeOrBarCode = this.txtBarCode.Text;
-            Product model = _productService.GetProduct(productCodeOrBarCode);
+            ProductPriceDto model = _productService.QueryProductPrice(productCodeOrBarCode);
             if (model == null)
             {
                 MessageBox.Show("商品不存在");
                 this.txtBarCode.Text = "";
                 return;
             }
-            
-
-            //查询会员折扣
-            var vipCustomer  = _vipService.GetByCode(this.txtVipCode.Text);
-            var discount = vipCustomer == null ? 1 : vipCustomer.Discount;
-            var realPrice = model.SalePrice; 
-            if (vipCustomer != null)
-            {
-                var vipProduct = _vipProductService.GetByProductId(model.Id);
-                //真正的销售价                              
-                realPrice = vipProduct == null ? model.SalePrice * discount : vipProduct.SalePrice;
-              
-            }
-           
             
             this.dgvData.Rows.Clear();
             int index = this.dgvData.Rows.Add();
@@ -69,9 +56,9 @@ namespace EBS.WinPos
             row.Cells["ProductName"].Value = model.Name;
             row.Cells["Specification"].Value = model.Specification;
             row.Cells["SalePrice"].Value = model.SalePrice.ToString("F2");
-            row.Cells["RealPrice"].Value = realPrice.ToString("F2");
-            row.Cells["Quantity"].Value = 1;
-            row.Cells["Amount"].Value = model.SalePrice * discount * 1;
+            row.Cells["VipSalePrice"].Value =model.VipSalePrice.ToString("F2");
+            row.Cells["AreaSalePrice"].Value = model.AreaSalePrice.ToString("F2");
+            row.Cells["StoreSalePrice"].Value =model.StoreSalePrice.ToString("F2");
             row.Selected = true;
             this.txtBarCode.Text = "";
         }

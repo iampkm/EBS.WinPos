@@ -1,1 +1,1 @@
-insert into setting (Name,Key,Value) values ('CDKey','CommonSetting.Store.CDKey','');
+insert into setting (Name,Key,Value) values ('CDKey','CommonSetting.Store.CDKey','c3089eaeb92880e92e1c1545a2ddf3d6');

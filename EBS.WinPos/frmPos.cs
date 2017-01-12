@@ -92,13 +92,13 @@ namespace EBS.WinPos
             }
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
             //查询会员折扣
-            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
-            var vipProduct = _vipProductService.GetByProductId(model.Id);
+           // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;          
             //真正的销售价
             var realPrice = model.SalePrice;
             if (this.VipCustomer != null)
             {
-                realPrice = vipProduct == null ? model.SalePrice * discount : vipProduct.SalePrice;
+                var vipProduct = _vipProductService.GetByProductId(model.Id);
+                realPrice = vipProduct == null ? model.SalePrice : vipProduct.SalePrice;
             }
             //加入购物车
             this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));
@@ -351,16 +351,16 @@ namespace EBS.WinPos
         {
             this.VipCustomer = _vipService.GetByCode(code);
             //刷新当前购物车折扣  
-            var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
+           // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
             foreach (var item in this._currentShopCat.Items)
-            {
-                var vipProduct = _vipProductService.GetByProductId(item.ProductId);
-                //真正的销售价
+            {                
+                //只取会员商品价，不按折扣计算
                 var realPrice = item.SalePrice;
                 if (this.VipCustomer != null)
                 {
-                    realPrice = vipProduct == null ? item.SalePrice * discount : vipProduct.SalePrice;
+                    var vipProduct = _vipProductService.GetByProductId(item.ProductId);
+                    realPrice = vipProduct == null ? item.SalePrice : vipProduct.SalePrice;
                 }
                 item.ChangeRealPrice(realPrice);
             }

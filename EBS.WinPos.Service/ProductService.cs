@@ -5,6 +5,7 @@ using System.Text;
 using EBS.WinPos.Domain;
 using EBS.WinPos.Domain.Entity;
 using EBS.Infrastructure;
+using EBS.WinPos.Service.Dto;
 namespace EBS.WinPos.Service
 {
    public class ProductService
@@ -43,5 +44,17 @@ namespace EBS.WinPos.Service
            }
            return model;
        }
+
+       public ProductPriceDto QueryProductPrice(string productCodeOrBarCode)
+       {
+           string sql = @"select p.Id,p.name,p.Code,p.BarCode,p.Specification,p.Unit,p.salePrice,a.SalePrice as AreaSalePrice,s.SalePrice as StoreSalePrice
+,v.SalePrice as VipSalePrice from product p
+left join productareaprice a on p.Id = a.ProductId
+left join productstoreprice s on p.Id =s.ProductId
+left join vipproduct v on p.Id = v.ProductId where p.Code=@ProductCodeOrBarCode Or p.BarCode=@ProductCodeOrBarCode";
+           var model = _query.First<ProductPriceDto>(sql, new { ProductCodeOrBarCode = productCodeOrBarCode });
+           return model;
+       }
+  
     }
 }

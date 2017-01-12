@@ -40,7 +40,7 @@ namespace EBS.WinPos.Service
             return _query.First<WorkSchedule>(sql, new { StoreId= storeId,PosId =posId});
         }
 
-        public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy)
+        public List<WorkSchedule> GetWorkList(DateTime date, int storeId, int posId, int CreatedBy=0)
         {
             string sql = "select * from workschedule where storeId=@StoreId and posId=@PosId and  date(StartDate) =@StartDate";
             if (CreatedBy > 0)
