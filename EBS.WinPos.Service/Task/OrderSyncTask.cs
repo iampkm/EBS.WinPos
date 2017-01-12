@@ -36,7 +36,7 @@ namespace EBS.WinPos.Service.Task
             }
 
             // 上传销售对账数据
-            _syncService.UploadSaleSync(DateTime.Now.ToString("yyyy-MM-dd"));
+            _syncService.UploadSaleSync(DateTime.Now);
         }
     }
 }

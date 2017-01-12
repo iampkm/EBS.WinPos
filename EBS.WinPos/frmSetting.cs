@@ -107,7 +107,7 @@ namespace EBS.WinPos
         {
             //上传销售数据
             this.lblMsg.Text = "数据处理中...";
-            var today= this.dtpDate.Value.ToString("yyyy-MM-dd");
+            var today= this.dtpDate.Value;
             _service.SaleSyncDaily(today);
             _service.UploadSaleSync(today);
             this.lblMsg.Text = "";

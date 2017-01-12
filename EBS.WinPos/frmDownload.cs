@@ -52,16 +52,20 @@ namespace EBS.WinPos
             }
             try
             {
+                int totalTasks = orders.Count + 1;
+
                 for (var i = 0; i < orders.Count; i++)
                 {
                     var model = orders[i];
                     Thread.Sleep(5);
                     _syncService.SendSaleOrder(model);
-                    int persent = (int)Math.Round((decimal)(i + 1) / orders.Count * 100, 0);
+                    int persent = (int)Math.Round((decimal)(i + 1) / totalTasks * 100, 0);
                     this.backgroundWorker1.ReportProgress(persent);
                 }
-                //上传汇总数据
-                _syncService.UploadSaleSync(this.dtpDate.Value.Date.ToString());
+                //上传汇总数据,报告最后一个任务
+                _syncService.UploadSaleSync(this.dtpDate.Value);
+               // int LastPersent = (int)Math.Round((decimal)(totalTasks) / totalTasks * 100, 0);
+                this.backgroundWorker1.ReportProgress(100);
             }
             catch (Exception ex)
             {
@@ -84,7 +88,7 @@ namespace EBS.WinPos
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            this.Close();
+            //this.Close();
         }
     }
 }

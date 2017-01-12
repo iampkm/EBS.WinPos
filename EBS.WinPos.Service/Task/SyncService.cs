@@ -35,7 +35,7 @@ namespace EBS.WinPos.Service.Task
         private string BuildAccessToken()
         {
             if (string.IsNullOrEmpty(_setting.CDKey)) { _log.Info("没有cdkey，构建参数失败，处理终止!"); throw new AppException("没有cdkey，构建参数失败，处理终止!"); }
-            string paramters = string.Format("StoreId={0}&PosId={1}&AccessToken={2}", _setting.StoreId, _setting.PosId, _setting.CDKey);
+            string paramters = string.Format("StoreId={0}&PosId={1}&CDKey={2}", _setting.StoreId, _setting.PosId, _setting.CDKey);
             return paramters;
         }
 
@@ -440,11 +440,11 @@ namespace EBS.WinPos.Service.Task
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="day">today  yyyy-MM-dd</param>
-        public void SaleSyncDaily(string day)
+        /// <param name="today">today  yyyy-MM-dd</param>
+        public void SaleSyncDaily(DateTime today)
         {
             string sql = "select * from SaleOrder Where (Status =@Paid or Status=@Cancel) and date(updatedOn) =@SyncDate ";
-            var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = day });
+            var result = _db.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, SyncDate = today.ToString("yyyy-MM-dd") });
             if (result.Count() == 0)
             {
                 _log.Info("销售数据为空，终止上传");
@@ -464,19 +464,18 @@ namespace EBS.WinPos.Service.Task
         /// <summary>
         /// 上传销售对账
         /// </summary>
-        /// <param name="today">格式：yyyy-MM-dd</param>
-        public void UploadSaleSync(string today)
+        /// <param name="today">上传日期： 格式：yyyy-MM-dd</param>
+        public void UploadSaleSync(DateTime today)
         {
-            string sql = @"select s.StoreId,s.PosId,count(*) as orderCount,sum(orderAmount) as OrderTotalAmount
+            string sql = @"select s.StoreId,s.PosId,date(updatedOn) as SaleDate,count(*) as orderCount,sum(orderAmount) as OrderTotalAmount
  from saleorder s where date(updatedOn) = @UpdatedOn and Status in (-1,3) 
- group by s.StoreId,s.PosId ";
-            var rows = _db.Query<SaleSync>(sql, new { UpdatedOn = today }).ToList();
+  group by s.StoreId,s.PosId, date(updatedOn) ";
+            var rows = _db.Query<SaleSync>(sql, new { UpdatedOn = today.ToString("yyyy-MM-dd") }).ToList();
             if (rows.Count == 0)
             {
                 _log.Info("销售数据为空，终止上传");
                 return;
             }
-            rows.ForEach(n => n.SaleDate = today);
             _log.Info("上传销售对账");
             string url = string.Format("{0}/PosSync/UpdateSaleSync", _serverUrl);
             var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
