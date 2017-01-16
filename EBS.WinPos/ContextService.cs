@@ -8,8 +8,6 @@ namespace EBS.WinPos
 {
     public static class ContextService
     {
-
-        static Dictionary<Type, Form> _fromDic = new Dictionary<Type, Form>();
         public static void SetCurrentAccount(Account account,int storeId,int posId)
         {
             CurrentAccount = account;
@@ -19,48 +17,9 @@ namespace EBS.WinPos
         }
         public static void SignOut()
         {
-            CurrentAccount = null;
-            _fromDic.Clear();
+            CurrentAccount = null;           
         }
-
-        public static void AddFrom(Form form)
-        {
-            var formType = form.GetType();
-            if (!_fromDic.ContainsKey(formType))
-            {
-                _fromDic.Add(formType, form);
-            }
-        }
-        public static void RemoveFrom(Type formType)
-        {
-            if (_fromDic.ContainsKey(formType))
-            {
-                _fromDic.Remove(formType);
-            }
-        }
-
-        public static Form GetFrom(Type formType)
-        {
-            return _fromDic.ContainsKey(formType) ? _fromDic[formType] : null;
-        }
-
-        /// <summary>
-        /// 父容器窗体
-        /// </summary>
-        public static frmMain ParentForm
-        {
-            get
-            {
-                if (_fromDic.ContainsKey(typeof(frmMain)))
-                {
-                    return (frmMain)_fromDic[typeof(frmMain)];
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+       
         /// <summary>
         /// 当前账户
         /// </summary>

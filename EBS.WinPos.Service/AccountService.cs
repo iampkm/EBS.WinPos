@@ -30,6 +30,10 @@ namespace EBS.WinPos.Service
            {
              throw new AppException("用户名或密码错误"); 
            }
+           if (model.Status != 1)
+           {
+               throw new AppException("该账号已被禁用"); 
+           }
            return model;           
        }
     }

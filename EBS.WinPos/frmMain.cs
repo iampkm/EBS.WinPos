@@ -83,6 +83,7 @@ namespace EBS.WinPos
         private void toolStripButton2_Click(object sender, EventArgs e)
         {
             // 注销
+            ContextService.SignOut();
             Application.Restart();
         }
 
@@ -135,7 +136,7 @@ namespace EBS.WinPos
 
         private void tsbUp_Click(object sender, EventArgs e)
         {            
-            frmProgress progress = frmProgress.CreateForm();
+            frmUpload progress = frmUpload.CreateForm();
             progress.Show();
             
         }

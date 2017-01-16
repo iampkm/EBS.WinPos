@@ -1,6 +1,6 @@
 ﻿namespace EBS.WinPos
 {
-    partial class frmProgress
+    partial class frmDownload
     {
         /// <summary>
         /// Required designer variable.
@@ -29,68 +29,34 @@
         private void InitializeComponent()
         {
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.lblMsg = new System.Windows.Forms.Label();
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.dtpDate = new System.Windows.Forms.DateTimePicker();
-            this.btnSaleSync = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(52, 138);
+            this.progressBar1.Location = new System.Drawing.Point(37, 168);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(389, 23);
-            this.progressBar1.Step = 1;
+            this.progressBar1.Size = new System.Drawing.Size(396, 23);
             this.progressBar1.TabIndex = 0;
             // 
-            // lblMsg
+            // label1
             // 
-            this.lblMsg.AutoSize = true;
-            this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblMsg.Location = new System.Drawing.Point(48, 109);
-            this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(81, 21);
-            this.lblMsg.TabIndex = 1;
-            this.lblMsg.Text = "已完成0%";
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(35, 139);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(41, 12);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "lblMsg";
             // 
-            // backgroundWorker1
-            // 
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            // 
-            // dtpDate
-            // 
-            this.dtpDate.CalendarFont = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dtpDate.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.dtpDate.Location = new System.Drawing.Point(52, 55);
-            this.dtpDate.Name = "dtpDate";
-            this.dtpDate.Size = new System.Drawing.Size(200, 26);
-            this.dtpDate.TabIndex = 3;
-            // 
-            // btnSaleSync
-            // 
-            this.btnSaleSync.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSaleSync.Location = new System.Drawing.Point(281, 55);
-            this.btnSaleSync.Name = "btnSaleSync";
-            this.btnSaleSync.Size = new System.Drawing.Size(128, 29);
-            this.btnSaleSync.TabIndex = 4;
-            this.btnSaleSync.Text = "上传销售数据";
-            this.btnSaleSync.UseVisualStyleBackColor = true;
-            this.btnSaleSync.Click += new System.EventHandler(this.btnSaleSync_Click);
-            // 
-            // frmProgress
+            // frmDownload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(506, 173);
-            this.Controls.Add(this.dtpDate);
-            this.Controls.Add(this.btnSaleSync);
-            this.Controls.Add(this.lblMsg);
+            this.ClientSize = new System.Drawing.Size(505, 243);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.progressBar1);
-            this.Name = "frmProgress";
-            this.Text = "上传销售数据";
-            this.Load += new System.EventHandler(this.frmProgress_Load);
+            this.Name = "frmDownload";
+            this.Text = "下载数据";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -99,9 +65,6 @@
         #endregion
 
         private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.Label lblMsg;
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.DateTimePicker dtpDate;
-        private System.Windows.Forms.Button btnSaleSync;
+        private System.Windows.Forms.Label label1;
     }
 }
