@@ -140,5 +140,12 @@ namespace EBS.WinPos
             progress.Show();
             
         }
+
+        private void tsbDownLoad_Click(object sender, EventArgs e)
+        {
+            // 下载数据
+            frmDownload download = frmDownload.CreateForm();
+            download.Show();
+        }
     }
 }

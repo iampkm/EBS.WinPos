@@ -37,7 +37,7 @@
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.tsbUp = new System.Windows.Forms.ToolStripButton();
-            this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
+            this.tsbDownLoad = new System.Windows.Forms.ToolStripButton();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -49,9 +49,9 @@
             this.toolStripButton3,
             this.toolStripButton4,
             this.toolStripButton5,
-            this.toolStripButton6,
             this.tsbUp,
-            this.toolStripButton7});
+            this.tsbDownLoad,
+            this.toolStripButton6});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.Size = new System.Drawing.Size(1080, 27);
@@ -129,13 +129,14 @@
             this.tsbUp.Text = "上传&U";
             this.tsbUp.Click += new System.EventHandler(this.tsbUp_Click);
             // 
-            // toolStripButton7
+            // tsbDownLoad
             // 
-            this.toolStripButton7.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton7.Image")));
-            this.toolStripButton7.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripButton7.Name = "toolStripButton7";
-            this.toolStripButton7.Size = new System.Drawing.Size(61, 24);
-            this.toolStripButton7.Text = "下载&D";
+            this.tsbDownLoad.Image = ((System.Drawing.Image)(resources.GetObject("tsbDownLoad.Image")));
+            this.tsbDownLoad.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbDownLoad.Name = "tsbDownLoad";
+            this.tsbDownLoad.Size = new System.Drawing.Size(61, 24);
+            this.tsbDownLoad.Text = "下载&D";
+            this.tsbDownLoad.Click += new System.EventHandler(this.tsbDownLoad_Click);
             // 
             // frmMain
             // 
@@ -166,6 +167,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.ToolStripButton tsbUp;
-        private System.Windows.Forms.ToolStripButton toolStripButton7;
+        private System.Windows.Forms.ToolStripButton tsbDownLoad;
     }
 }

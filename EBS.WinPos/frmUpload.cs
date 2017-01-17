@@ -102,7 +102,7 @@ namespace EBS.WinPos
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            //this.Close();
+            MessageBox.Show("上传完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

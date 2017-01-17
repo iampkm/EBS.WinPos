@@ -6,7 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-
+using EBS.WinPos.Service.Task;
+using EBS.Infrastructure;
 namespace EBS.WinPos
 {
     public partial class frmDownload : Form
@@ -22,9 +23,59 @@ namespace EBS.WinPos
             }
             return _instance;
         }
+
+        private BackgroundWorker _backWorker;
+        SyncService _syncService;
         public frmDownload()
         {
             InitializeComponent();
+
+            _syncService = new SyncService(AppContext.Log);
+            _backWorker = new BackgroundWorker();
+            
+            _backWorker.DoWork += _backWorker_DoWork;
+            _backWorker.ProgressChanged += _backWorker_ProgressChanged;
+            _backWorker.RunWorkerCompleted += _backWorker_RunWorkerCompleted;
+            _backWorker.WorkerReportsProgress = true;
+            this.lblMsg.Text = "下载数据，大约持续1分钟，请耐心等待...";
         }
+
+        void _backWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        void _backWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            this.progressBar1.Value = e.ProgressPercentage;
+            // Set the text.
+            this.lblMsg.Text = string.Format("已下载:{0}%", e.ProgressPercentage.ToString());
+        }
+
+        void _backWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            var loadDataType = (string)e.Argument;
+            worker.ReportProgress(50);
+            if (loadDataType == "all")
+            {
+                _syncService.DownloadData();
+            }
+            else {
+                _syncService.DownloadProductSync();
+            }
+            worker.ReportProgress(100);
+        }
+
+        private void btnDownloadAll_Click(object sender, EventArgs e)
+        {
+                _backWorker.RunWorkerAsync("all"); 
+        }
+
+        private void btnDownloadProduct_Click(object sender, EventArgs e)
+        {
+            _backWorker.RunWorkerAsync("product"); 
+        }
+                
     }
 }
