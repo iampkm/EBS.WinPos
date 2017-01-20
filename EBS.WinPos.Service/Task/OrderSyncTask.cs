@@ -22,6 +22,7 @@ namespace EBS.WinPos.Service.Task
         }
         public void Execute()
         {
+            AppContext.Log.Info("开始销售自动上传任务");
             string sql = "select * from SaleOrder Where IsSync = @IsSync and (Status =@Paid or Status=@Cancel)";
             var result = _db.Query<SaleOrder>(sql, new { IsSync = 0, Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel });
             Thread.Sleep(3000);  //延迟3秒 发送，避免和 及时订单产生并发
@@ -34,9 +35,11 @@ namespace EBS.WinPos.Service.Task
                 _syncService.Send(model);
               
             }
-
+            AppContext.Log.Info("结束销售自动上传任务");
             // 上传销售对账数据
+            AppContext.Log.Info("开始销售对账自动上传任务");
             _syncService.UploadSaleSync(DateTime.Now);
+            AppContext.Log.Info("结束销售对账自动上传任务");
         }
     }
 }

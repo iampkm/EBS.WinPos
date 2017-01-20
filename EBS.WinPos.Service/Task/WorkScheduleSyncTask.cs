@@ -22,12 +22,14 @@ namespace EBS.WinPos.Service.Task
         }
         public void Execute()
         {
-            string sql = "select * from WorkSchedule Where IsSync = @IsSync Or EndBy=0 or CashAmount =0";
+            AppContext.Log.Info("开始班次自动上传任务");
+            string sql = "select * from WorkSchedule Where IsSync = @IsSync";
             var result = _db.Query<WorkSchedule>(sql, new { IsSync = 0});
             foreach (var model in result)
             {
                 _syncService.Send(model);
             }
+            AppContext.Log.Info("结束班次自动上传任务");
         }
     }
 }

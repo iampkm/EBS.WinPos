@@ -110,7 +110,7 @@ namespace EBS.WinPos.Service
         public void PrintWorkSaleSummary(int id)
         {
             string sql = @"select w.CreatedByName,s.Name as StoreName,w.PosId,w.StartDate,w.EndDate,t.TotalAmount,t.TotalOnlineAmount,t.paymentWay from WorkSchedule w left join (
-select o.WorkScheduleCode,sum(OrderAmount) as TotalAmount,sum(OnlinePayAmount) as TotalOnlineAmount,paymentWay from  saleorder o where o.Status = 3 group by o.WorkScheduleCode,o.paymentWay
+select o.WorkScheduleCode,total(OrderAmount) as TotalAmount,total(OnlinePayAmount) as TotalOnlineAmount,paymentWay from  saleorder o where o.Status = 3 group by o.WorkScheduleCode,o.paymentWay
 ) t on t.WorkScheduleCode = w.Code
 inner join Store s on s.Id = w.StoreId
 where w.Id=@Id";

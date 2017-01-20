@@ -46,8 +46,9 @@ namespace EBS.WinPos
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {         
             
-            //上传销售数据
+            //上传销售数据           
             var selectDate = this.dtpDate.Value;
+            AppContext.Log.Info("开始手动上传{0}数据",selectDate.ToString());
             var orders = _saleService.QueryUploadSaleOrders(selectDate);
             if (orders.Count == 0)
             {
@@ -80,6 +81,7 @@ namespace EBS.WinPos
                 _syncService.UploadSaleSync(this.dtpDate.Value);
                // int LastPersent = (int)Math.Round((decimal)(totalTasks) / totalTasks * 100, 0);
                 this.backgroundWorker1.ReportProgress(100);
+                AppContext.Log.Info("结束手动上传{0}数据", selectDate.ToString());
             }
             catch (Exception ex)
             {

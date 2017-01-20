@@ -388,13 +388,17 @@ namespace EBS.WinPos.Service.Task
                 string result = HttpHelper.HttpPost(url, param);
                 if (result == "1")
                 {
-                    string sql = @"Update WorkSchedule set IsSync=1 where @Id=@Id";
-                    _db.ExecuteSql(sql, new { Id = model.Id });
-                    _log.Info("班次{0},同步成功", model.Code);
+                    if (model.EndBy > 0 && model.CashAmount > 0)
+                    {
+                        string sql = @"Update WorkSchedule set IsSync=1 where @Id=@Id";
+                        _db.ExecuteSql(sql, new { Id = model.Id });
+                        _log.Info("班次{0}设置金额已同步", model.Code);
+                    }
+                    _log.Info("班次{0}数据已上传", model.Code);
                 }
                 else
                 {
-                    _log.Info("班次{0},同步失败", model.Code);
+                    _log.Info("班次{0},同步失败:{1}", model.Code,result);
                 }
             }
             catch (Exception ex)
@@ -431,7 +435,7 @@ namespace EBS.WinPos.Service.Task
                 }
                 else
                 {
-                    _log.Info("销售单{0},同步失败", model.Code);
+                    _log.Info("销售单{0},同步失败:{1}", model.Code,result);
                 }
             }
             catch (Exception ex)
@@ -471,7 +475,7 @@ namespace EBS.WinPos.Service.Task
         /// <param name="today">上传日期： 格式：yyyy-MM-dd</param>
         public void UploadSaleSync(DateTime today)
         {
-            string sql = @"select s.StoreId,s.PosId,date(updatedOn) as SaleDate,count(*) as orderCount,sum(orderAmount) as OrderTotalAmount
+            string sql = @"select s.StoreId,s.PosId,date(updatedOn) as SaleDate,count(*) as orderCount,total(orderAmount) as OrderTotalAmount
  from saleorder s where date(updatedOn) = @UpdatedOn and Status in (-1,3) 
   group by s.StoreId,s.PosId, date(updatedOn) ";
             var rows = _db.Query<SaleSync>(sql, new { UpdatedOn = today.ToString("yyyy-MM-dd") }).ToList();
@@ -488,11 +492,11 @@ namespace EBS.WinPos.Service.Task
             string result = HttpHelper.HttpPost(url, param);
             if (result == "1")
             {
-                _log.Info("销售对账上传成功");
+                _log.Info("{0}销售对账上传成功", today.ToString("yyyy-MM-dd"));
             }
             else
             {
-                _log.Info("销售对账上传失败");
+                _log.Info("{0}销售对账上传失败:{1}", today.ToString("yyyy-MM-dd"), result);
             }
         }
     }
