@@ -41,6 +41,8 @@
             this.dtpDate = new System.Windows.Forms.DateTimePicker();
             this.btnSaleSync = new System.Windows.Forms.Button();
             this.lblMsg = new System.Windows.Forms.Label();
+            this.btnCommand = new System.Windows.Forms.Button();
+            this.txtInfo = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -116,19 +118,20 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblMsg);
             this.groupBox2.Controls.Add(this.btnUpdateProduct);
             this.groupBox2.Controls.Add(this.btnDownload);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox2.Location = new System.Drawing.Point(0, 147);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(567, 109);
+            this.groupBox2.Size = new System.Drawing.Size(567, 82);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "数据下载";
             // 
             // btnUpdateProduct
             // 
-            this.btnUpdateProduct.Location = new System.Drawing.Point(227, 40);
+            this.btnUpdateProduct.Location = new System.Drawing.Point(193, 28);
             this.btnUpdateProduct.Name = "btnUpdateProduct";
             this.btnUpdateProduct.Size = new System.Drawing.Size(128, 39);
             this.btnUpdateProduct.TabIndex = 2;
@@ -138,7 +141,7 @@
             // 
             // btnDownload
             // 
-            this.btnDownload.Location = new System.Drawing.Point(51, 40);
+            this.btnDownload.Location = new System.Drawing.Point(35, 28);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(128, 39);
             this.btnDownload.TabIndex = 2;
@@ -148,14 +151,14 @@
             // 
             // dtpDate
             // 
-            this.dtpDate.Location = new System.Drawing.Point(51, 287);
+            this.dtpDate.Location = new System.Drawing.Point(35, 246);
             this.dtpDate.Name = "dtpDate";
             this.dtpDate.Size = new System.Drawing.Size(200, 29);
             this.dtpDate.TabIndex = 2;
             // 
             // btnSaleSync
             // 
-            this.btnSaleSync.Location = new System.Drawing.Point(284, 284);
+            this.btnSaleSync.Location = new System.Drawing.Point(268, 243);
             this.btnSaleSync.Name = "btnSaleSync";
             this.btnSaleSync.Size = new System.Drawing.Size(128, 39);
             this.btnSaleSync.TabIndex = 2;
@@ -167,17 +170,37 @@
             // 
             this.lblMsg.AutoSize = true;
             this.lblMsg.ForeColor = System.Drawing.Color.Red;
-            this.lblMsg.Location = new System.Drawing.Point(62, 355);
+            this.lblMsg.Location = new System.Drawing.Point(336, 37);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(0, 21);
+            this.lblMsg.Size = new System.Drawing.Size(86, 21);
             this.lblMsg.TabIndex = 3;
+            this.lblMsg.Text = "下载数据...";
+            // 
+            // btnCommand
+            // 
+            this.btnCommand.Location = new System.Drawing.Point(428, 298);
+            this.btnCommand.Name = "btnCommand";
+            this.btnCommand.Size = new System.Drawing.Size(89, 32);
+            this.btnCommand.TabIndex = 4;
+            this.btnCommand.Text = "执行命令";
+            this.btnCommand.UseVisualStyleBackColor = true;
+            this.btnCommand.Click += new System.EventHandler(this.btnCommand_Click);
+            // 
+            // txtInfo
+            // 
+            this.txtInfo.Location = new System.Drawing.Point(24, 288);
+            this.txtInfo.Multiline = true;
+            this.txtInfo.Name = "txtInfo";
+            this.txtInfo.Size = new System.Drawing.Size(387, 108);
+            this.txtInfo.TabIndex = 5;
             // 
             // frmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 421);
-            this.Controls.Add(this.lblMsg);
+            this.Controls.Add(this.txtInfo);
+            this.Controls.Add(this.btnCommand);
             this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnSaleSync);
@@ -190,6 +213,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -210,5 +234,7 @@
         private System.Windows.Forms.DateTimePicker dtpDate;
         private System.Windows.Forms.Button btnSaleSync;
         private System.Windows.Forms.Label lblMsg;
+        private System.Windows.Forms.Button btnCommand;
+        private System.Windows.Forms.TextBox txtInfo;
     }
 }

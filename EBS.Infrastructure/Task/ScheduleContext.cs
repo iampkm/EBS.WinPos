@@ -39,7 +39,8 @@ namespace EBS.Infrastructure.Task
        public static void Close()
        {
            _timer.Enabled = false;
-           _timer = null;
+           _timer.Close();
+           _schedule = null;
        }
     }
 }

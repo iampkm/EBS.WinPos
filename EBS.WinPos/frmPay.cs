@@ -112,6 +112,15 @@ namespace EBS.WinPos
                 var select = (KeyValuePair<int, string>)this.lstPaymentWay.SelectedItem;
                 if (select.Key == (int)PaymentWay.Cash)
                 {
+                    //校验录入金额是否超过订单金额+100
+                    if (amount > this.CurrentOrder.OrderAmount + 100)
+                    {
+                        MessageBox.Show("实收款录入的金额过大", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.txtPayAmount.Text = "0.00";                       
+                        this.txtPayAmount.Focus();
+                        this.txtPayAmount.SelectAll();
+                        return;
+                    }
                     CashPay();  // 现金开始支付
                 }
                 else
@@ -119,8 +128,9 @@ namespace EBS.WinPos
                     if (amount > this.CurrentOrder.OrderAmount)
                     {
                         MessageBox.Show("现金支付部分不能超过订单金额", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        this.txtPayAmount.Text = "0.00";
+                        this.txtPayAmount.Text = "0.00";                       
                         this.txtPayAmount.Focus();
+                        this.txtPayAmount.SelectAll();
                         return;
                     }
                     this.txtOnlinePayAmount.Text = (this.CurrentOrder.OrderAmount - amount).ToString();

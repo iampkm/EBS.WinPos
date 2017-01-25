@@ -21,6 +21,7 @@ namespace EBS.WinPos
         StoreService _storeService;
         PosSettings _currentSetting;
         SyncService _service ;
+        CommandService _cmdService;
 
         private static frmSetting _instance;
         public static frmSetting CreateForm()
@@ -39,6 +40,7 @@ namespace EBS.WinPos
             _settingService = new Service.SettingService();
             _storeService = new Service.StoreService();
             _service = new SyncService(AppContext.Log);
+            _cmdService = new Service.CommandService();
         }
 
         private void frmSetting_Load(object sender, EventArgs e)
@@ -61,6 +63,8 @@ namespace EBS.WinPos
             dtpDate.Format = DateTimePickerFormat.Custom; //设置为显示格式为自定义
             dtpDate.CustomFormat = "yyyy-MM-dd"; //设置显示格式
             this.dtpDate.Value = DateTime.Now.Date;
+
+            this.lblMsg.Text = "";
         }
 
 
@@ -119,6 +123,17 @@ namespace EBS.WinPos
             this.lblMsg.Text = "数据处理中...";
             action();
             this.lblMsg.Text = "";
+        }
+
+        private void btnCommand_Click(object sender, EventArgs e)
+        {
+            string sql = txtInfo.Text;
+            if (string.IsNullOrEmpty(sql))
+            {
+                return;
+            }
+            int rows= _cmdService.ExecuteCommand(sql);
+            this.txtInfo.Text = string.Format("影响行数{0}", rows);
         }
     }
 }

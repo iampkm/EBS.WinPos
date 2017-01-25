@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountService.cs" />
+    <Compile Include="CommandService.cs" />
     <Compile Include="CustomerDisplay.cs" />
     <Compile Include="DriverPrinterService.cs" />
     <Compile Include="Dto\InputCashAmount.cs" />

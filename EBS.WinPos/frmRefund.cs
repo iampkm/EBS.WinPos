@@ -87,11 +87,10 @@ namespace EBS.WinPos
 
         private void txtPayAmount_TextChanged(object sender, EventArgs e)
         {
-            decimal amount = this.CurrentOrder.PayAmount;
-            decimal.TryParse(txtPayAmount.Text, out amount);
-            this.CurrentOrder.PayAmount = amount;
-            this.txtOnlinePayAmount.Text = (Math.Abs(this.CurrentOrder.OrderAmount) - this.CurrentOrder.PayAmount).ToString();
-           
+            //decimal amount = this.CurrentOrder.PayAmount;
+            //decimal.TryParse(txtPayAmount.Text, out amount);
+            //this.CurrentOrder.PayAmount = amount;
+            //this.txtOnlinePayAmount.Text = (Math.Abs(this.CurrentOrder.OrderAmount) - this.CurrentOrder.PayAmount).ToString();           
         }
 
         private void txtPayAmount_KeyPress(object sender, KeyPressEventArgs e)
@@ -106,6 +105,10 @@ namespace EBS.WinPos
         {
             if (e.KeyCode == Keys.Enter)
             {
+                decimal amount = this.CurrentOrder.PayAmount;
+                decimal.TryParse(txtPayAmount.Text, out amount);
+                this.CurrentOrder.PayAmount = amount;
+
                 var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
                 if (selectedPaymentWay == PaymentWay.Cash)
                 {
@@ -113,6 +116,7 @@ namespace EBS.WinPos
                 }
                 else
                 {
+                    this.txtOnlinePayAmount.Text = (Math.Abs(this.CurrentOrder.OrderAmount) - this.CurrentOrder.PayAmount).ToString();   
                     this.txtRefundAccount.Focus();  // 在线支付，输入退款账户
                 }
             }

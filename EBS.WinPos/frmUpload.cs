@@ -99,11 +99,13 @@ namespace EBS.WinPos
 
         private void btnSaleSync_Click(object sender, EventArgs e)
         {
+            AppContext.CloseTask(); //关闭自动任务
             this.backgroundWorker1.RunWorkerAsync();
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            AppContext.StartTask();  //重启自动任务
             MessageBox.Show("上传完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }

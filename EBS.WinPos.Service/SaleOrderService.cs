@@ -99,6 +99,9 @@ namespace EBS.WinPos.Service
             {
                 throw new AppException("支付金额低于订单金额");
             }
+            if (payAmount > model.OrderAmount + 100) {
+                throw new AppException("收现金额录入过大");
+            }
 
             model.FinishPaid(payAmount);
             //保存交易记录
@@ -116,9 +119,9 @@ namespace EBS.WinPos.Service
             if (model == null) { throw new AppException("订单不存在"); }
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount))
+            if (Math.Abs(model.PayAmount) != Math.Abs(model.OrderAmount))
             {
-                throw new AppException("退款金额不能大于订单金额");
+                throw new AppException("退款金额应等于订单金额");
             }
 
             model.FinishPaid(payAmount);

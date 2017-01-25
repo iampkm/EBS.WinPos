@@ -34,5 +34,10 @@ namespace EBS.Infrastructure
         // 服务器数据变动，写入同步表
         //  SyncData
         // Id,  TableName,KeyId,CreatedOn 
+
+        public static void CloseTask()
+        {
+            ScheduleContext.Close();
+        }
     }
 }
