@@ -119,9 +119,10 @@ namespace EBS.WinPos.Service
             if (model == null) { throw new AppException("订单不存在"); }
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            if (Math.Abs(model.PayAmount) != Math.Abs(model.OrderAmount))
+            model.PayAmount = payAmount;
+            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount))
             {
-                throw new AppException("退款金额应等于订单金额");
+                throw new AppException("退款金额不能超过订单金额");
             }
 
             model.FinishPaid(payAmount);

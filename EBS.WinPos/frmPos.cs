@@ -99,14 +99,18 @@ namespace EBS.WinPos
             {
                 var vipProduct = _vipProductService.GetByProductId(model.Id);
                 realPrice = vipProduct == null ? model.SalePrice : vipProduct.SalePrice;
-            }
+            }           
             //加入购物车
-            this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));
-
+            this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));           
             ShowOrderInfo();
             this.txtBarCode.Text = "";
             var lastIndex = this.dgvData.Rows.Count - 1;
             this.dgvData.Rows[lastIndex].Selected = true;
+
+            if (realPrice <= 0)
+            {
+                MessageBox.Show(string.Format("警告：商品[{0}]售价为0,请确认后再销售", model.Name), "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         }
 
