@@ -23,8 +23,9 @@ namespace EBS.WinPos.Service.Task
         public void Execute()
         {
             AppContext.Log.Info("开始销售自动上传任务");
-            string sql = "select * from SaleOrder Where IsSync = @IsSync and (Status =@Paid or Status=@Cancel)";
-            var result = _db.Query<SaleOrder>(sql, new { IsSync = 0, Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel });
+            var today = DateTime.Now.AddMinutes(-10); // 自动任务同步10分钟以前的历史订单，避免与当前订单产生并发冲突            
+            string sql = "select * from SaleOrder Where IsSync = @IsSync and (Status =@Paid or Status=@Cancel) and datetime(CreatedOn)<@CreatedOn";
+            var result = _db.Query<SaleOrder>(sql, new { IsSync = 0, Paid = (int)SaleOrderStatus.Paid, Cancel = (int)SaleOrderStatus.Cancel, CreatedOn=today });
             Thread.Sleep(3000);  //延迟3秒 发送，避免和 及时订单产生并发
             foreach (var model in result)
             {
