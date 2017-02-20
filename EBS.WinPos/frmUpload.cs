@@ -99,6 +99,7 @@ namespace EBS.WinPos
 
         private void btnSaleSync_Click(object sender, EventArgs e)
         {
+            btnSaleSync.Enabled = false;
             AppContext.CloseTask(); //关闭自动任务
             this.backgroundWorker1.RunWorkerAsync();
         }
@@ -107,6 +108,7 @@ namespace EBS.WinPos
         {
             AppContext.StartTask();  //重启自动任务
             MessageBox.Show("上传完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            btnSaleSync.Enabled = true;
         }
     }
 }

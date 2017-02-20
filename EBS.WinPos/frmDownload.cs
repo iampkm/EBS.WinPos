@@ -42,6 +42,7 @@ namespace EBS.WinPos
 
         void _backWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            SetButton(true);
             MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -50,6 +51,7 @@ namespace EBS.WinPos
             this.progressBar1.Value = e.ProgressPercentage;
             // Set the text.
             this.lblMsg.Text = string.Format("已下载:{0}%", e.ProgressPercentage.ToString());
+
         }
 
         void _backWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -69,12 +71,20 @@ namespace EBS.WinPos
 
         private void btnDownloadAll_Click(object sender, EventArgs e)
         {
-                _backWorker.RunWorkerAsync("all"); 
+            SetButton(false);
+            _backWorker.RunWorkerAsync("all"); 
         }
 
         private void btnDownloadProduct_Click(object sender, EventArgs e)
         {
+            SetButton(false);
             _backWorker.RunWorkerAsync("product"); 
+        }
+
+        private void SetButton(bool enabledValue)
+        {
+            btnDownloadAll.Enabled = enabledValue;
+            btnDownloadProduct.Enabled = enabledValue;
         }
                 
     }
