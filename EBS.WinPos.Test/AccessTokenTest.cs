@@ -10,20 +10,22 @@ namespace EBS.WinPos.Test
         [TestMethod]
         public void GenerateAccessToken()
         {
-            var storeId = 2;
-            var posId = 301;
-            var cdkey = "6d43d931e66bd88038aa384ddde7bdc8";
+            var storeId = 15;
+            var posId = 201;
+            var cdkey = "9e591dfa860110bc9b3974d391dbba05";
             MD5 md5Prider = MD5.Create();
             string clientCDKEY = string.Format("{0}{1}{2}", storeId, posId, cdkey);
             //加密    
             string clientCDKeyMd5 = md5Prider.GetMd5Hash(clientCDKEY);
+            Assert.AreEqual("1", clientCDKeyMd5);
+
         }
 
         [TestMethod]
         public void GenerateCDKeyMd5()
         {
 
-            var cdkeySource = "20170111@b";
+            var cdkeySource = "20170301@qaz";
             MD5 md5Prider = MD5.Create();
            // string clientCDKEY = string.Format("{0}{1}{2}", storeId, posId, cdkeySource);
             //加密    
