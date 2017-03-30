@@ -57,6 +57,7 @@
     <Compile Include="CommandService.cs" />
     <Compile Include="CustomerDisplay.cs" />
     <Compile Include="DriverPrinterService.cs" />
+    <Compile Include="Dto\DataItem.cs" />
     <Compile Include="Dto\InputCashAmount.cs" />
     <Compile Include="Dto\OrerInfo.cs" />
     <Compile Include="Dto\PosSettings.cs" />

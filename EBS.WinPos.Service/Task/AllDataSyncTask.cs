@@ -22,7 +22,7 @@ namespace EBS.WinPos.Service.Task
 
         public void Execute()
         {
-            _syncService.DownloadData();
+            _syncService.LoadDataByName();
         }
     }
 }

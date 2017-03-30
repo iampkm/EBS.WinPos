@@ -18,9 +18,7 @@ namespace EBS.WinPos
     public partial class frmSetting : Form
     {
         SettingService _settingService;
-        StoreService _storeService;
         PosSettings _currentSetting;
-        SyncService _service ;
         CommandService _cmdService;
 
         private static frmSetting _instance;
@@ -38,92 +36,21 @@ namespace EBS.WinPos
             InitializeComponent();
 
             _settingService = new Service.SettingService();
-            _storeService = new Service.StoreService();
-            _service = new SyncService(AppContext.Log);
             _cmdService = new Service.CommandService();
         }
 
         private void frmSetting_Load(object sender, EventArgs e)
         {
-            var stores = _storeService.GetAll();
-            cbbStores.DataSource = stores;
-            cbbStores.DisplayMember = "Name";
-            cbbStores.ValueMember = "Id";
-            cbbStores.SelectedIndex = 0;
-
             //加载设置
             _currentSetting = _settingService.GetSettings();
             if(_currentSetting!=null)
             {
+                txtStoreId.Text = _currentSetting.StoreId.ToString();
                 txtPosId.Text = _currentSetting.PosId.ToString();
-                cbbStores.SelectedValue = _currentSetting.StoreId;
+                txtCDKey.Text = _currentSetting.CDKey;
             }
-
-            //设置对账日期
-            dtpDate.Format = DateTimePickerFormat.Custom; //设置为显示格式为自定义
-            dtpDate.CustomFormat = "yyyy-MM-dd"; //设置显示格式
-            this.dtpDate.Value = DateTime.Now.Date;
-
-            this.lblMsg.Text = "";
         }
-
-
-        private void btnSavePosId_Click(object sender, EventArgs e)
-        {
-            int posId = 0;
-            if (int.TryParse(txtPosId.Text, out posId))
-            {
-                _currentSetting.PosId = posId;
-                _settingService.Update(2, _currentSetting.PosId.ToString());
-                MessageBox.Show("修改成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else
-            {
-                MessageBox.Show("门店编号只能是整数", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }    
-        }
-
-        private void btnSaveStoreID_Click(object sender, EventArgs e)
-        {
-            var storeId = cbbStores.SelectedValue;
-            _currentSetting.StoreId = (int)storeId;
-            _settingService.Update(1, storeId.ToString());
-            MessageBox.Show("修改成功", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
        
-           
-        }
-
-        private void btnDownload_Click(object sender, EventArgs e)
-        {           
-            ShowInfo(_service.DownloadData);
-
-            MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnUpdateProduct_Click(object sender, EventArgs e)
-        {
-            //更新商品
-            ShowInfo(_service.DownloadProductSync);
-            MessageBox.Show("下载完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void btnSaleSync_Click(object sender, EventArgs e)
-        {
-            //上传销售数据
-            this.lblMsg.Text = "数据处理中...";
-            var today= this.dtpDate.Value;
-            _service.SaleSyncDaily(today);
-            _service.UploadSaleSync(today);
-            this.lblMsg.Text = "";
-            MessageBox.Show("同步完成", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public void ShowInfo(Action action)
-        {
-            this.lblMsg.Text = "数据处理中...";
-            action();
-            this.lblMsg.Text = "";
-        }
 
         private void btnCommand_Click(object sender, EventArgs e)
         {
@@ -133,7 +60,43 @@ namespace EBS.WinPos
                 return;
             }
             int rows= _cmdService.ExecuteCommand(sql);
-            this.txtInfo.Text = string.Format("影响行数{0}", rows);
+            string result = rows > 0 ? "执行成功!" : "执行失败!";
+            this.txtInfo.Text = string.Format("{0}影响行数{1}.", result,rows);
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SetButton(false);
+            CheckInput(txtStoreId, "请输入门店整数编号");
+            CheckInput(txtPosId, "请输入收银机整数编号");
+            CheckInput(txtCDKey, "请输入授权码");
+            int storeId = 0;
+            int.TryParse(txtStoreId.Text, out storeId);
+            int posId = 0;
+            int.TryParse(txtPosId.Text, out posId);
+            string cdkey = txtCDKey.Text;
+
+            _settingService.Update(1, storeId.ToString());
+            _settingService.Update(2, posId.ToString());
+            _settingService.Update(3, cdkey);
+
+            MessageBox.Show("保存成功!", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            SetButton(true);
+
+        }
+
+        public void CheckInput(TextBox input, string message)
+        {
+            if (string.IsNullOrEmpty(input.Text))
+            {
+                MessageBox.Show(message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+        }
+
+        private void SetButton(bool enabledValue)
+        {
+            btnSave.Enabled = enabledValue;
         }
     }
 }

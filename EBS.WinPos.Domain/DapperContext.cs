@@ -12,24 +12,25 @@ namespace EBS.WinPos.Domain
    public class DapperContext
     {
        ILogger _log;
-
+       IDbConnection _conn;
        public DapperContext()
        {
            _log = AppContext.Log;
        }
-        public static IDbConnection GetConnection()
-        {
-            return new SQLiteConnection(Config.ConnectionString);
+        public IDbConnection GetConnection()
+        {          
+            _conn = new SQLiteConnection(Config.ConnectionString);          
+            return _conn;            
         }
 
         public T First<T>(string sql, object param)
         {
             var result = default(T);
-            using (IDbConnection conn = GetConnection())
+            using (_conn = GetConnection())
             {
-                conn.Open();
-                result= conn.Query<T>(sql,param).FirstOrDefault();
-                conn.Close();
+                _conn.Open();
+                result= _conn.Query<T>(sql,param).FirstOrDefault();
+                _conn.Close();
             }
             return result;
         }
@@ -37,11 +38,11 @@ namespace EBS.WinPos.Domain
         public IEnumerable<T> Query<T>(string sql,object param)
         {
             var result = default(IEnumerable<T>);
-            using (IDbConnection conn = GetConnection())
+            using (_conn = GetConnection())
             {
-                conn.Open();
-                result = conn.Query<T>(sql,param);
-                conn.Close();
+                _conn.Open();
+                result = _conn.Query<T>(sql,param);
+                _conn.Close();
             }
             return result;
         }
@@ -50,13 +51,13 @@ namespace EBS.WinPos.Domain
         {
             var result = default(T);           
             IDbTransaction tran = null;
-            IDbConnection conn = null;
+            _conn = null;
             try
             {
-                conn = GetConnection();
-                conn.Open();
-                tran = conn.BeginTransaction();
-                result = conn.ExecuteScalar<T>(sql, param,tran);
+                _conn = GetConnection();
+                _conn.Open();
+                tran = _conn.BeginTransaction();
+                result = _conn.ExecuteScalar<T>(sql, param,tran);
                 tran.Commit();
             }
             catch (Exception ex)
@@ -67,7 +68,7 @@ namespace EBS.WinPos.Domain
             finally
             {
                 tran.Dispose();
-                conn.Close();
+                _conn.Close();
             }
             return result;
         }
@@ -76,13 +77,13 @@ namespace EBS.WinPos.Domain
         {
             var rows = 0;
             IDbTransaction tran = null;
-            IDbConnection conn = null;
+            _conn = null;
             try
             {
-                conn = GetConnection();
-                conn.Open();
-                tran = conn.BeginTransaction();
-                rows = conn.Execute(sql, param, tran);
+                _conn = GetConnection();
+                _conn.Open();
+                tran = _conn.BeginTransaction();
+                rows = _conn.Execute(sql, param, tran);
                 tran.Commit();
             }
             catch (Exception ex)
@@ -92,7 +93,7 @@ namespace EBS.WinPos.Domain
             }
             finally {
                 tran.Dispose();
-                conn.Close();
+                _conn.Close();
             }
             return rows;
         }

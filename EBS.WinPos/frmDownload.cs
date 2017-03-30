@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using EBS.WinPos.Service.Task;
 using EBS.Infrastructure;
+using EBS.WinPos.Service.Dto;
 namespace EBS.WinPos
 {
     public partial class frmDownload : Form
@@ -57,28 +58,46 @@ namespace EBS.WinPos
         void _backWorker_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = (BackgroundWorker)sender;
-            var loadDataType = (string)e.Argument;
+            var dataList = e.Argument as List<DataItem>;
             worker.ReportProgress(50);
-            if (loadDataType == "all")
+            if (dataList == null)
             {
-                _syncService.DownloadData();
+                _syncService.LoadDataByName();
             }
             else {
-                _syncService.DownloadProductSync();
+                foreach (var item in dataList)
+                {
+                    _syncService.LoadDataByName(item.Value);
+                }
             }
+           
             worker.ReportProgress(100);
         }
 
         private void btnDownloadAll_Click(object sender, EventArgs e)
         {
             SetButton(false);
-            _backWorker.RunWorkerAsync("all"); 
+            _backWorker.RunWorkerAsync(null); 
         }
 
         private void btnDownloadProduct_Click(object sender, EventArgs e)
         {
             SetButton(false);
-            _backWorker.RunWorkerAsync("product"); 
+            //获取选择的数据项
+            List<DataItem> checkItems = new List<DataItem>();
+            for (int i = 0; i < this.chkList.Items.Count; i++)
+            {
+                if (this.chkList.GetItemChecked(i))
+                {
+                    var item = this.chkList.Items[i] as DataItem;
+                    checkItems.Add(item);
+                }
+            }
+            if (checkItems.Count == 0) {
+                MessageBox.Show("请选择要下载的数据", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            _backWorker.RunWorkerAsync(checkItems); 
         }
 
         private void SetButton(bool enabledValue)
@@ -86,6 +105,31 @@ namespace EBS.WinPos
             btnDownloadAll.Enabled = enabledValue;
             btnDownloadProduct.Enabled = enabledValue;
         }
+
+        private void frmDownload_Load(object sender, EventArgs e)
+        {
+            List<DataItem> list = new List<DataItem>();
+            list.Add(new DataItem("商品信息", "Product"));
+            list.Add(new DataItem("账户信息", "Account"));
+            list.Add(new DataItem("门店信息", "Store"));
+            list.Add(new DataItem("会员信息", "VipCard"));
+            list.Add(new DataItem("会员商品信息", "VipProduct"));
+            list.Add(new DataItem("门店价格信息", "ProductStorePrice"));
+
+            this.chkList.DataSource = list;
+            this.chkList.DisplayMember = "DisplayName";
+            this.chkList.ValueMember = "Value";
+
+           
+        }
+
+        private void chkAll_CheckedChanged(object sender, EventArgs e)
+        {
+            for (int i = 0; i < this.chkList.Items.Count; i++)
+                this.chkList.SetItemChecked(i, this.chkAll.Checked); 
+        }      
                 
     }
+
+   
 }

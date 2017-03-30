@@ -351,21 +351,27 @@ namespace EBS.WinPos
             vipForm.ShowDialog(this);
         }
 
-        public void SetVipCard(string code)
+        public void SetVipCard(VipCard vip)
         {
-            this.VipCustomer = _vipService.GetByCode(code);
+            //设置vip对象
+            this.VipCustomer = vip;
+            
             //刷新当前购物车折扣  
            // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
+            this._currentShopCat.OrderLevel =  Domain.ValueObject.SaleOrderLevel.Vip;
+            if (this._currentShopCat.Items.Count == 0)
+            { 
+                //如果当前还没刷商品，焦点返回输入框
+                this.txtBarCode.Focus();
+                return;
+            }
             foreach (var item in this._currentShopCat.Items)
             {                
                 //只取会员商品价，不按折扣计算
-                var realPrice = item.SalePrice;
-                if (this.VipCustomer != null)
-                {
-                    var vipProduct = _vipProductService.GetByProductId(item.ProductId);
-                    realPrice = vipProduct == null ? item.SalePrice : vipProduct.SalePrice;
-                }
+                var realPrice = item.SalePrice;               
+                var vipProduct = _vipProductService.GetByProductId(item.ProductId);
+                realPrice = vipProduct == null ? item.SalePrice : vipProduct.SalePrice;               
                 item.ChangeRealPrice(realPrice);
             }
             // 重新绑定

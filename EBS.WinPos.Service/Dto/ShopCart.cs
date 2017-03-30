@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using EBS.WinPos.Domain.Entity;
+using EBS.WinPos.Domain.ValueObject;
 namespace EBS.WinPos.Service.Dto
 {
     public class ShopCart
@@ -14,6 +15,7 @@ namespace EBS.WinPos.Service.Dto
             this.Editor = editor;
             this.OrderType = orderType;
             this.PosId = posId;
+            this.OrderLevel =  SaleOrderLevel.General; //普通订单
 
         }
         /// <summary>
@@ -34,6 +36,10 @@ namespace EBS.WinPos.Service.Dto
         /// 退款账户
         /// </summary>
         public string RefundAccount { get; set; }
+        /// <summary>
+        /// 订单等级
+        /// </summary>
+        public SaleOrderLevel OrderLevel { get; set; }
 
         public List<ShopCartItem> Items { get; set; }
 

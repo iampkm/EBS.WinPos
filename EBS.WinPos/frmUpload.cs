@@ -65,7 +65,7 @@ namespace EBS.WinPos
                 {
                     var model = orders[i];
                     Thread.Sleep(5);
-                    _syncService.SendSaleOrder(model);
+                    _syncService.Send(model);
                     int persent = (int)Math.Round((decimal)(i + 1) / totalTasks * 100, 0);
                     this.backgroundWorker1.ReportProgress(persent);
                 }
@@ -73,7 +73,7 @@ namespace EBS.WinPos
                 for(var j=0;j<works.Count;j++)
                 {
                     var workModel = works[j];
-                    _syncService.SendWorkSchedule(workModel);
+                    _syncService.Send(workModel);
                     int persent = (int)Math.Round((decimal)(orders.Count + 1) / totalTasks * 100, 0);
                     this.backgroundWorker1.ReportProgress(persent);
                 }

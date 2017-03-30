@@ -17,6 +17,17 @@ namespace EBS.WinPos
         AccountService _accountService;
         WorkScheduleService _wrokService;
         SettingService _settingService;
+
+        private static frmLogin _instance;
+        public static frmLogin CreateForm()
+        {
+            //判断是否存在该窗体,或时候该字窗体是否被释放过,如果不存在该窗体,则 new 一个字窗体  
+            if (_instance == null || _instance.IsDisposed)
+            {
+                _instance = new frmLogin();
+            }
+            return _instance;
+        }
         public frmLogin()
         {
             InitializeComponent();

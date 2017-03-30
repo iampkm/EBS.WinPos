@@ -12,13 +12,13 @@ using EBS.WinPos.Service.Dto;
 using Newtonsoft.Json.Converters;
 using EBS.WinPos.Domain.ValueObject;
 using EBS.Infrastructure;
+using System.Reflection;
 namespace EBS.WinPos.Service.Task
 {
     public class SyncService
     {
         string _serverUrl;
         ILogger _log;
-        int pageSize = 5000;
         DapperContext _db;
         SettingService _settingService;
         PosSettings _setting;
@@ -36,25 +36,7 @@ namespace EBS.WinPos.Service.Task
         {
            // if (string.IsNullOrEmpty(_setting.CDKey)) { _log.Info("没有cdkey，构建参数失败，处理终止!"); throw new AppException("没有cdkey，构建参数失败，处理终止!"); }
             string paramters = string.Format("StoreId={0}&PosId={1}&CDKey={2}", _setting.StoreId, _setting.PosId, _setting.CDKey);
-            return paramters;
-        }
-
-        public void DownloadData()
-        {
-            var taskCount = 7;
-            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
-
-            //启动线程池来进行多线程下载数据
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadAccount), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadStore), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipCard), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadVipProduct), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductAreaPrice), threadEvent);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProductStorePrice), threadEvent);
-
-            threadEvent.WaitAll();
-            threadEvent.Dispose();
+            return paramters;            
         }
 
         public bool NeedSyncData()
@@ -64,13 +46,20 @@ namespace EBS.WinPos.Service.Task
             return rows == 0;  // 没有数据，就需要同步
         }
 
-        private void DownloadAccount(object state)
+        public bool CheckStoreSetting()
         {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+            if (_setting == null) return false;
+            if(_setting.StoreId==0 || string.IsNullOrEmpty(_setting.CDKey))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public void DownloadAccount()
+        {           
             try
             {
-
-
                 string url = string.Format("{0}/PosSync/QueryAccount?{1}", _serverUrl, BuildAccessToken());
                 // 下载数据
                 _log.Info("开始下载账户数据，请求{0}", url);
@@ -78,20 +67,9 @@ namespace EBS.WinPos.Service.Task
                 if (!string.IsNullOrEmpty(result))
                 {
                     var rows = JsonConvert.DeserializeObject<List<Account>>(result);
-                    _log.Info("已下载账户数据{0}条", rows.Count);
-                    var sql = "INSERT INTO Account (Id,UserName,Password,StoreId,Status,RoleId,NickName)VALUES (@Id,@UserName,@Password,@StoreId,@Status,@RoleId,@NickName)";
-                    var usql = "update Account set UserName=@UserName,Password=@Password,StoreId=@StoreId,Status=@Status,RoleId=@RoleId,NickName=@NickName where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from Account where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    _log.Info("已下载账户数据{0}条", rows.Count);                    
+                    var sql = @"Replace INTO Account (Id,UserName,Password,StoreId,Status,RoleId,NickName)VALUES (@Id,@UserName,@Password,@StoreId,@Status,@RoleId,@NickName)";
+                    _db.ExecuteSql(sql, rows.ToArray());
                     _log.Info("结束账号数据下载");
                 }
                 else
@@ -102,22 +80,12 @@ namespace EBS.WinPos.Service.Task
             catch (Exception ex)
             {
                 _log.Error(ex, "下载数据失败");
-            }
-            are.Set();
+            }           
         }
 
-        public void DownloadProductSync()
+        public void DownloadProduct()
         {
-            var taskCount = 1;
-            MultiThreadResetEvent threadEvent = new MultiThreadResetEvent(taskCount);
-            ThreadPool.QueueUserWorkItem(new WaitCallback(DownloadProduct), threadEvent);
-            threadEvent.WaitAll();
-            threadEvent.Dispose();
-        }
-
-        public void DownloadProduct(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+            Console.WriteLine("product success");
 
             string url = string.Format("{0}/PosSync/QueryProduct?{1}", _serverUrl, BuildAccessToken());
             // 下载数据
@@ -128,34 +96,18 @@ namespace EBS.WinPos.Service.Task
                 var rows = JsonConvert.DeserializeObject<List<Product>>(result);
                 //入库   
                 _log.Info("已下载商品数据{0}条", rows.Count);
-                string sql = "INSERT INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
-                var usql = "update Product set Code=@Code,Name=@Name,BarCode=@BarCode,Specification=@Specification,Unit=@Unit,SalePrice=@SalePrice,UpdatedOn=@UpdatedOn where Id=@Id";
-                foreach (var entity in rows)
-                {
-                    if (_db.ExecuteScalar<int>("select count(*) from Product where Id=@Id", new { Id = entity.Id }) > 0)
-                    {
-                        _log.Info("更新:id={0},code={1},barcode={2},saleprice={3}", entity.Id, entity.Code, entity.BarCode, entity.SalePrice);
-                        _db.ExecuteSql(usql, entity);
-                    }
-                    else
-                    {
-                        _log.Info("添加:id={0},code={1},barcode={2},saleprice={3}", entity.Id, entity.Code, entity.BarCode, entity.SalePrice);
-                        _db.ExecuteSql(sql, entity);
-                    }
-                }
+                string sql = "Replace INTO Product (Id,Code,Name,BarCode,Specification,Unit,SalePrice,UpdatedOn) values (@Id,@Code,@Name,@BarCode,@Specification,@Unit,@SalePrice,@UpdatedOn)";
+                _db.ExecuteSql(sql, rows.ToArray());
                 _log.Info("结束下载商品数据");
             }
             else
             {
                 _log.Info("下载数据为空，下载失败");
-            }
-            // 标记线程执行完毕
-            are.Set();
+            }        
 
         }
-        private void DownloadStore(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+        public void DownloadStore()
+        {            
             try
             {
                 // 下载数据
@@ -167,19 +119,8 @@ namespace EBS.WinPos.Service.Task
                     var rows = JsonConvert.DeserializeObject<List<Store>>(result);
                     //入库 
                     _log.Info("已下载门店数据{0}条", rows.Count);
-                    string sql = "INSERT INTO Store (Id,Code,Name,LicenseCode)VALUES (@Id,@Code,@Name,@LicenseCode)";
-                    var usql = "update Store set Code=@Code,Name=@Name,LicenseCode=@LicenseCode where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from Store where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    string sql = "Replace INTO Store (Id,Code,Name,LicenseCode)VALUES (@Id,@Code,@Name,@LicenseCode)";  
+                    _db.ExecuteSql(sql, rows.ToArray());
                     _log.Info("结束下载门店数据");
 
                 }
@@ -192,15 +133,12 @@ namespace EBS.WinPos.Service.Task
             catch (Exception ex)
             {
                 _log.Error(ex, "门店数据下载失败");
-            }
-            are.Set();
+            }         
         }
-        private void DownloadVipCard(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+        public void DownloadVipCard()
+        {           
             try
             {
-
                 // 下载数据
                 string url = string.Format("{0}/PosSync/QueryVipCard?{1}", _serverUrl, BuildAccessToken());
                 _log.Info("开始下载会员卡数据，请求{0}", url);
@@ -209,19 +147,8 @@ namespace EBS.WinPos.Service.Task
                 {
                     var rows = JsonConvert.DeserializeObject<List<VipCard>>(result);  //入库 
                     _log.Info("已下载会员卡数据{0}条", rows.Count);
-                    string sql = "INSERT INTO VipCard (Id,Code,Discount)VALUES (@Id,@Code,@Discount)";
-                    var usql = "update VipCard set Code=@Code,Discount=@Discount where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from VipCard where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    string sql = "Replace INTO VipCard (Id,Code,Discount)VALUES (@Id,@Code,@Discount)";                  
+                    _db.ExecuteSql(sql, rows.ToArray());
                     _log.Info("结束下载会员卡数据");
                 }
                 else
@@ -233,14 +160,12 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex, "下载会员卡数据失败");
             }
-            are.Set();
+          
         }
-        private void DownloadVipProduct(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+        public void DownloadVipProduct()
+        {           
             try
             {
-
                 // 下载数据
                 string url = string.Format("{0}/PosSync/QueryVipProduct?{1}", _serverUrl, BuildAccessToken());
                 _log.Info("开始下载会员商品数据，请求{0}", url);
@@ -249,19 +174,10 @@ namespace EBS.WinPos.Service.Task
                 {
                     var rows = JsonConvert.DeserializeObject<List<VipProduct>>(result);  //入库 
                     _log.Info("已下载会员商品数据{0}条", rows.Count);
-                    string sql = "INSERT INTO VipProduct (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
-                    var usql = "update VipProduct set ProductId=@ProductId,SalePrice=@SalePrice where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from VipProduct where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    string sql = "Replace INTO VipProduct (Id,ProductId,SalePrice)VALUES (@Id,@ProductId,@SalePrice)";
+                    var sqlDel = "delete from VipProduct";
+                    _db.ExecuteSql(sqlDel, null);
+                    _db.ExecuteSql(sql, rows.ToArray());
                     _log.Info("结束下载会员商品数据");
                 }
                 else
@@ -274,12 +190,11 @@ namespace EBS.WinPos.Service.Task
             {
                 _log.Error(ex, "下载会员商品数据失败");
             }
-            are.Set();
+          
         }
 
-        private void DownloadProductAreaPrice(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+        public void DownloadProductAreaPrice()
+        {           
             try
             {
 
@@ -291,19 +206,10 @@ namespace EBS.WinPos.Service.Task
                 {
                     var rows = JsonConvert.DeserializeObject<List<ProductAreaPrice>>(result);  //入库 
                     _log.Info("已下载商品区域价数据{0}条", rows.Count);
-                    string sql = "INSERT INTO ProductAreaPrice (Id,ProductId,AreaId,SalePrice)VALUES (@Id,@ProductId,@AreaId,@SalePrice)";
-                    var usql = "update ProductAreaPrice set ProductId=@ProductId,SalePrice=@SalePrice,AreaId=@AreaId where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from ProductAreaPrice where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    string sql = "Replace INTO ProductAreaPrice (Id,ProductId,AreaId,SalePrice)VALUES (@Id,@ProductId,@AreaId,@SalePrice)";
+                    var sqlDel = "delete from ProductAreaPrice";
+                    _db.ExecuteSql(sqlDel, null);
+                    _db.ExecuteSql(sql, rows.ToArray());
                     _log.Info("结束下载商品区域价数据");
                 }
                 else
@@ -311,19 +217,16 @@ namespace EBS.WinPos.Service.Task
                     _log.Info("下载数据为空，下载商品区域价失败");
                 }
 
-
-
             }
             catch (Exception ex)
             {
                 _log.Error(ex, "下载失败");
             }
-            are.Set();
+          
         }
 
-        private void DownloadProductStorePrice(object state)
-        {
-            MultiThreadResetEvent are = (MultiThreadResetEvent)state;
+        public void DownloadProductStorePrice()
+        {         
             try
             {
                 // 下载数据
@@ -334,19 +237,11 @@ namespace EBS.WinPos.Service.Task
                 {
                     var rows = JsonConvert.DeserializeObject<List<ProductStorePrice>>(result);  //入库  
                     _log.Info("已下载商品门店价数据{0}条", rows.Count);
-                    string sql = "INSERT INTO ProductStorePrice (Id,ProductId,StoreId,SalePrice)VALUES (@Id,@ProductId,@StoreId,@SalePrice)";
-                    var usql = "update ProductStorePrice set ProductId=@ProductId,StoreId=@StoreId,SalePrice=@SalePrice where Id=@Id";
-                    foreach (var entity in rows)
-                    {
-                        if (_db.ExecuteScalar<int>("select count(*) from ProductStorePrice where Id=@Id", new { Id = entity.Id }) > 0)
-                        {
-                            _db.ExecuteSql(usql, entity);
-                        }
-                        else
-                        {
-                            _db.ExecuteSql(sql, entity);
-                        }
-                    }
+                    string sql = "Replace INTO ProductStorePrice (Id,ProductId,StoreId,SalePrice)VALUES (@Id,@ProductId,@StoreId,@SalePrice)";
+                    var sqlDel = "delete from ProductStorePrice";
+                    _db.ExecuteSql(sqlDel, null);
+                    _db.ExecuteSql(sql, rows.ToArray());
+                   
                     _log.Info("结束下载商品门店价数据");
                 }
                 else
@@ -358,33 +253,51 @@ namespace EBS.WinPos.Service.Task
             catch (Exception ex)
             {
                 _log.Error(ex, "下载商品门店价失败");
-            }
-            are.Set();
+            }          
         }
 
         public void Send(SaleOrder model)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(SendSaleOrder), model);
+            if (model.Items.Count == 0)
+            {
+                _log.Info("销售单{0},明细为空,终止上传", model.Code);
+                return;
+            }
+            try
+            {
+
+                _log.Info("销售单{0},开始同步", model.Code);
+                string url = string.Format("{0}/PosSync/SaleOrderSync", _serverUrl);
+                var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
+                string body = JsonConvert.SerializeObject(model, dateTimeConverter);
+                string param = string.Format("{0}&body={1}", BuildAccessToken(), body);
+                string result = HttpHelper.HttpPost(url, param);
+                if (result == "1")
+                {
+                    // string sql = @"Update SaleOrder set IsSync=1 where @Id=@Id";
+                    // _db.ExecuteSql(sql, new { Id = model.Id });
+                    _log.Info("销售单{0},同步成功", model.Code);
+                }
+                else
+                {
+                    _log.Info("销售单{0},同步失败:{1}", model.Code, result);
+                }
+            }
+            catch (Exception ex)
+            {
+                _log.Error(ex);
+
+            }
         }
         public void Send(WorkSchedule model)
         {
-            ThreadPool.QueueUserWorkItem(new WaitCallback(SendWorkSchedule), model);
-        }
-
-        /// <summary>
-        /// 上传班次数据
-        /// </summary>
-        /// <param name="data"></param>
-        public void SendWorkSchedule(object data)
-        {
-            var model = data as WorkSchedule;
             try
             {
                 _log.Info("班次{0},开始同步", model.Code);
                 string url = string.Format("{0}/PosSync/WorkScheduleSync", _serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 string body = JsonConvert.SerializeObject(model, dateTimeConverter);
-                string param = string.Format("{0}&body={1}",BuildAccessToken(), body);
+                string param = string.Format("{0}&body={1}", BuildAccessToken(), body);
                 string result = HttpHelper.HttpPost(url, param);
                 if (result == "1")
                 {
@@ -398,7 +311,7 @@ namespace EBS.WinPos.Service.Task
                 }
                 else
                 {
-                    _log.Info("班次{0},同步失败:{1}", model.Code,result);
+                    _log.Info("班次{0},同步失败:{1}", model.Code, result);
                 }
             }
             catch (Exception ex)
@@ -407,46 +320,10 @@ namespace EBS.WinPos.Service.Task
 
             }
         }
-
-
-
-        public void SendSaleOrder(object data)
-        {
-            var model = data as SaleOrder;
-            if (model.Items.Count == 0)
-            {
-                _log.Info("销售单{0},明细为空,终止上传", model.Code);
-                return;
-            }
-            try
-            {
-
-                _log.Info("销售单{0},开始同步", model.Code);
-                string url = string.Format("{0}/PosSync/SaleOrderSync", _serverUrl);
-                var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
-                string body = JsonConvert.SerializeObject(model, dateTimeConverter);
-                string param = string.Format("{0}&body={1}",BuildAccessToken(), body);
-                string result = HttpHelper.HttpPost(url, param);
-                if (result == "1")
-                {
-                    string sql = @"Update SaleOrder set IsSync=1 where @Id=@Id";
-                    _db.ExecuteSql(sql, new { Id = model.Id });
-                    _log.Info("销售单{0},同步成功", model.Code);
-                }
-                else
-                {
-                    _log.Info("销售单{0},同步失败:{1}", model.Code,result);
-                }
-            }
-            catch (Exception ex)
-            {
-                _log.Error(ex);
-
-            }
-        }
+        
 
         /// <summary>
-        /// 
+        /// 上传指定日期全部销售数据
         /// </summary>
         /// <param name="today">today  yyyy-MM-dd</param>
         public void SaleSyncDaily(DateTime today)
@@ -499,5 +376,27 @@ namespace EBS.WinPos.Service.Task
                 _log.Info("{0}销售对账上传失败:{1}", today.ToString("yyyy-MM-dd"), result);
             }
         }
+
+        /// <summary>
+        /// 根据方法命名，下载数据
+        /// </summary>
+        /// <param name="methodName">方法名为空，表示下载所有</param>
+        public void LoadDataByName(string methodName="")
+        {
+            var t = typeof(SyncService);
+            if (string.IsNullOrEmpty(methodName))
+            {
+                var allDownloadFunctions =t.GetMethods().Where(n => n.Name.StartsWith("download", StringComparison.OrdinalIgnoreCase)).ToList();
+                foreach (var mi in allDownloadFunctions)
+                {
+                    mi.Invoke(this, null);
+                }
+            }
+            else {
+                var mi = t.GetMethod("Download"+methodName);
+                mi.Invoke(this, null);
+            }           
+        }
+      
     }
 }

@@ -31,16 +31,19 @@ namespace EBS.WinPos
                 //开启后台任务
                 AppContext.StartTask();
 
-                // 如果没有账号数据，同步数据                
-                SyncService syncService = new SyncService(AppContext.Log);
-                if (syncService.NeedSyncData())
-                {
-                    syncService.DownloadData();
-                }                
-
+                // 第一次运行时，进行门店参数配置 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new frmLogin());
+                SyncService syncService = new SyncService(AppContext.Log);
+                if (syncService.CheckStoreSetting())
+                {
+                    Application.Run(new frmLogin());                   
+                }
+                else {
+                    Application.Run(new frmInit());
+                }
+               
+              
             }
             catch (Exception e)
             {

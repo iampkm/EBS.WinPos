@@ -17,6 +17,7 @@ namespace EBS.WinPos.Domain.Entity
             this.UpdatedOn = DateTime.Now;
             this.Status = SaleOrderStatus.Create;
             this.OrderType = 1;
+            this.OrderLevel = SaleOrderLevel.General;
         }
         public string Code { get; set; }
 
@@ -72,6 +73,10 @@ namespace EBS.WinPos.Domain.Entity
         public string WorkScheduleCode { get; set; }
 
         public int IsSync { get; set; }
+        /// <summary>
+        /// 订单级别： 0 普通订单，1 Vip订单
+        /// </summary>
+        public SaleOrderLevel OrderLevel { get; set; }
 
         public virtual List<SaleOrderItem> Items { get; set; }
 

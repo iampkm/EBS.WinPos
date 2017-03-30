@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EBS.WinPos.Service;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,9 +22,14 @@ namespace EBS.WinPos
             }
             return _instance;
         }
+
+        VipCardService _vipService;
+
         public frmVipCard()
         {
             InitializeComponent();
+
+            _vipService = new VipCardService();
         }
 
         private void frmDiscount_Load(object sender, EventArgs e)
@@ -43,7 +49,16 @@ namespace EBS.WinPos
 
         public void SaveCode()
         {
-            this.PosFrom.SetVipCard(this.txtCode.Text);           
+            var vipCustomer = _vipService.GetByCode(this.txtCode.Text);
+            if (vipCustomer == null)
+            {
+                MessageBox.Show("您输入的会员卡错误,请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.txtCode.Focus();
+                this.txtCode.SelectAll();
+                return;
+            }
+
+            this.PosFrom.SetVipCard(vipCustomer);           
             this.Close();
         }
 
