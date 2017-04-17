@@ -29,20 +29,22 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtStoreId = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtPosId = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtCDKey = new System.Windows.Forms.TextBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.lblMsg = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.btnSave = new System.Windows.Forms.Button();
+            this.txtCDKey = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtPosId = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtStoreId = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnDown = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnDown);
             this.groupBox1.Controls.Add(this.lblMsg);
             this.groupBox1.Controls.Add(this.progressBar1);
             this.groupBox1.Controls.Add(this.btnSave);
@@ -61,41 +63,41 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "配置门店参数";
             // 
-            // label1
+            // lblMsg
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(76, 64);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(75, 21);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "门店ID：";
+            this.lblMsg.AutoSize = true;
+            this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblMsg.Location = new System.Drawing.Point(37, 306);
+            this.lblMsg.Name = "lblMsg";
+            this.lblMsg.Size = new System.Drawing.Size(81, 21);
+            this.lblMsg.TabIndex = 4;
+            this.lblMsg.Text = "已完成0%";
             // 
-            // txtStoreId
+            // progressBar1
             // 
-            this.txtStoreId.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtStoreId.Location = new System.Drawing.Point(150, 61);
-            this.txtStoreId.Name = "txtStoreId";
-            this.txtStoreId.Size = new System.Drawing.Size(258, 29);
-            this.txtStoreId.TabIndex = 1;
+            this.progressBar1.Location = new System.Drawing.Point(37, 341);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(476, 23);
+            this.progressBar1.TabIndex = 3;
             // 
-            // label2
+            // btnSave
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(61, 112);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(91, 21);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "收银机ID：";
+            this.btnSave.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnSave.Location = new System.Drawing.Point(150, 202);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(114, 34);
+            this.btnSave.TabIndex = 3;
+            this.btnSave.Text = "保 存";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // txtPosId
+            // txtCDKey
             // 
-            this.txtPosId.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPosId.Location = new System.Drawing.Point(150, 109);
-            this.txtPosId.Name = "txtPosId";
-            this.txtPosId.Size = new System.Drawing.Size(258, 29);
-            this.txtPosId.TabIndex = 1;
+            this.txtCDKey.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtCDKey.Location = new System.Drawing.Point(150, 158);
+            this.txtCDKey.Name = "txtCDKey";
+            this.txtCDKey.Size = new System.Drawing.Size(258, 29);
+            this.txtCDKey.TabIndex = 2;
             // 
             // label3
             // 
@@ -107,41 +109,53 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "授权码：";
             // 
-            // txtCDKey
+            // txtPosId
             // 
-            this.txtCDKey.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtCDKey.Location = new System.Drawing.Point(150, 158);
-            this.txtCDKey.Name = "txtCDKey";
-            this.txtCDKey.Size = new System.Drawing.Size(258, 29);
-            this.txtCDKey.TabIndex = 1;
+            this.txtPosId.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtPosId.Location = new System.Drawing.Point(150, 109);
+            this.txtPosId.Name = "txtPosId";
+            this.txtPosId.Size = new System.Drawing.Size(258, 29);
+            this.txtPosId.TabIndex = 1;
             // 
-            // btnSave
+            // label2
             // 
-            this.btnSave.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSave.Location = new System.Drawing.Point(150, 202);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(114, 34);
-            this.btnSave.TabIndex = 2;
-            this.btnSave.Text = "保 存";
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label2.Location = new System.Drawing.Point(61, 112);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(91, 21);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "收银机ID：";
             // 
-            // progressBar1
+            // txtStoreId
             // 
-            this.progressBar1.Location = new System.Drawing.Point(37, 341);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(476, 23);
-            this.progressBar1.TabIndex = 3;
+            this.txtStoreId.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtStoreId.Location = new System.Drawing.Point(150, 61);
+            this.txtStoreId.Name = "txtStoreId";
+            this.txtStoreId.Size = new System.Drawing.Size(258, 29);
+            this.txtStoreId.TabIndex = 0;
             // 
-            // lblMsg
+            // label1
             // 
-            this.lblMsg.AutoSize = true;
-            this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblMsg.Location = new System.Drawing.Point(37, 306);
-            this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(81, 21);
-            this.lblMsg.TabIndex = 4;
-            this.lblMsg.Text = "已完成0%";
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Location = new System.Drawing.Point(76, 64);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(75, 21);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "门店ID：";
+            // 
+            // btnDown
+            // 
+            this.btnDown.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnDown.Location = new System.Drawing.Point(37, 255);
+            this.btnDown.Name = "btnDown";
+            this.btnDown.Size = new System.Drawing.Size(114, 34);
+            this.btnDown.TabIndex = 4;
+            this.btnDown.Text = "下载数据";
+            this.btnDown.UseVisualStyleBackColor = true;
+            this.btnDown.Visible = false;
+            this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
             // 
             // frmInit
             // 
@@ -170,5 +184,6 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Label lblMsg;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Button btnDown;
     }
 }

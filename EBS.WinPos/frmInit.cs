@@ -25,13 +25,13 @@ namespace EBS.WinPos
         }
 
         private BackgroundWorker _backWorker;
-        SyncService _syncService;
+       
         SettingService _settingService;
         public frmInit()
         {
             InitializeComponent();
 
-            _syncService = new SyncService(AppContext.Log);
+           
             _backWorker = new BackgroundWorker();
             _settingService = new SettingService();
 
@@ -65,6 +65,7 @@ namespace EBS.WinPos
         {
             BackgroundWorker worker = (BackgroundWorker)sender;
             worker.ReportProgress(50);
+             SyncService _syncService = new SyncService(AppContext.Log);
             _syncService.LoadDataByName();
             worker.ReportProgress(100);
             System.Threading.Thread.Sleep(500);
@@ -102,6 +103,7 @@ namespace EBS.WinPos
             System.Threading.Thread.Sleep(1000);
             this.progressBar1.Visible = true;
             _backWorker.RunWorkerAsync(null);
+          
 
         }
 
@@ -111,6 +113,12 @@ namespace EBS.WinPos
                 MessageBox.Show(message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return; 
             }
+        }
+
+        private void btnDown_Click(object sender, EventArgs e)
+        {
+           
+          
         }
     }
 }
