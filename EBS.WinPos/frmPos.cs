@@ -440,7 +440,7 @@ namespace EBS.WinPos
                 if (this.dgvData.IsCurrentCellInEditMode)   //如果当前单元格处于编辑模式   
                 {
                     var index = this.dgvData.CurrentCell.RowIndex;
-                    var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());
+                    var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());                    
                     var pid = this.dgvData.Rows[index].Cells["ProductId"].Value.ToString();
                     var productId = Convert.ToInt32(pid);
                     this._currentShopCat.ChangeQuantity(productId, quantity);

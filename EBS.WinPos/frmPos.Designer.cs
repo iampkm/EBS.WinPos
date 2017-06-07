@@ -224,22 +224,22 @@
             // lblPreChargeAmount
             // 
             this.lblPreChargeAmount.AutoSize = true;
-            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblPreChargeAmount.Font = new System.Drawing.Font("微软雅黑", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblPreChargeAmount.ForeColor = System.Drawing.Color.Red;
-            this.lblPreChargeAmount.Location = new System.Drawing.Point(391, -7);
+            this.lblPreChargeAmount.Location = new System.Drawing.Point(418, 3);
             this.lblPreChargeAmount.Name = "lblPreChargeAmount";
-            this.lblPreChargeAmount.Size = new System.Drawing.Size(312, 75);
+            this.lblPreChargeAmount.Size = new System.Drawing.Size(267, 62);
             this.lblPreChargeAmount.TabIndex = 2;
             this.lblPreChargeAmount.Text = "找零：0.00";
             // 
             // lblOrderTotal
             // 
             this.lblOrderTotal.AutoSize = true;
-            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblOrderTotal.Font = new System.Drawing.Font("微软雅黑", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lblOrderTotal.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lblOrderTotal.Location = new System.Drawing.Point(-8, -7);
+            this.lblOrderTotal.Location = new System.Drawing.Point(3, 3);
             this.lblOrderTotal.Name = "lblOrderTotal";
-            this.lblOrderTotal.Size = new System.Drawing.Size(368, 75);
+            this.lblOrderTotal.Size = new System.Drawing.Size(315, 62);
             this.lblOrderTotal.TabIndex = 16;
             this.lblOrderTotal.Text = "总金额：0.00";
             // 

@@ -36,6 +36,11 @@ namespace EBS.WinPos.Domain
            
         }
 
+        public Repository(string connstring)
+        {
+            this.Database.Connection.ConnectionString = connstring;
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();

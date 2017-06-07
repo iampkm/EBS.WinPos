@@ -7,6 +7,8 @@ using System.Web;
 using System.IO;
 using System.Text.RegularExpressions;
 using EBS.Infrastructure.Log;
+using System.Collections.Specialized;
+
 namespace EBS.Infrastructure.Helper
 {
     /// <summary>
@@ -70,6 +72,32 @@ Http请求异常！
                 WriteLog(ex, url, param);
             }
             return null;
+        }
+
+        public static string HttpPost(string url, NameValueCollection nameValues)
+        {
+            try
+            {
+                string URL = url;
+                WebClient webClient = new WebClient();
+                System.Collections.Specialized.NameValueCollection formData = nameValues;
+                //formData["Username"] = "myusername";
+                //formData["Password"] = "mypassword";
+                byte[] responseBytes = webClient.UploadValues(URL, "POST", formData);
+                string Result = Encoding.UTF8.GetString(responseBytes);
+                return Result;
+            }
+            catch (Exception ex)
+            {
+                var param = "";
+                foreach (string key in nameValues.AllKeys)
+                {
+                    param += string.Format("name={0},value={1}", key, nameValues[key]);
+                }
+                WriteLog(ex, url, param);
+            }
+            return null;
+            
         }
         #endregion
 
