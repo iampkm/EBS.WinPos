@@ -52,6 +52,11 @@ namespace EBS.WinPos.Tool
             IList<SaleOrder> list = new List<SaleOrder>();
             this.dataGridView1.DataSource = list;
             _entitys = _sqliteDB.Query<SaleOrder>("select * from saleOrder where date(UpdatedOn)=@UpdatedOn and Status in (-1,3)", new { UpdatedOn = selectDate.ToString("yyyy-MM-dd") }).ToList();
+            if (_entitys.Count == 0)
+            {
+                MessageBox.Show("本地无销售数据");
+                return;
+            }
             var entity = _entitys.FirstOrDefault();
              _serverEntitys = _serverDB.Query<SaleOrder>("select Code from saleOrder where  StoreId=@StoreId and PosId=@PosId and UpdatedOn between @StartDate and @EndDate and Status in (-1,3)",
                    new {  StoreId = entity.StoreId, PosId = entity.PosId, StartDate = selectDate, EndDate = selectDate.AddDays(1) }).ToList();
@@ -84,8 +89,21 @@ namespace EBS.WinPos.Tool
                 MessageBox.Show("单据不存在");
                 return;
             }
+            model.Code = model.Code + "0";
+            _sqliteDB.ExecuteSql("update SaleOrder set Code=@Code where Id=@Id", new { Code = model.Code, Id = id });
 
-            
+           var items =  _sqliteDB.Query<SaleOrderItem>("select * from SaleOrderItem where SaleOrderId=@Id", new { Id = id }).ToList();
+            if (items.Count == 0) {
+                MessageBox.Show("明细为空");
+                return;
+            }
+
+            model.Items = items;
+
+            // 上传
+            _syncService.Send(model);
+
+            this.lblMsg.Text = model.Code + "执行完成";
 
         }
 
@@ -98,13 +116,28 @@ namespace EBS.WinPos.Tool
                 MessageBox.Show("单据不存在");
                 return;
             }
-          //  _syncService.Send(model);
+            model.Code = model.Code + "0";
+            _sqliteDB.ExecuteSql("update SaleOrder set Code=@Code where Id=@Id", new { Code = model.Code, Id = id });
+
+            var items = _sqliteDB.Query<SaleOrderItem>("select * from SaleOrderItem where SaleOrderId=@Id", new { Id = id }).ToList();
+            if (items.Count == 0)
+            {
+                MessageBox.Show("明细为空");
+                return;
+            }
+
+            model.Items = items;
+
+            // 上传
+            _syncService.Send(model);
+            MessageBox.Show("执行完毕");
         }
 
         private void btnUpdateSummary_Click(object sender, EventArgs e)
         {
             var selectDate = dtpDate.Value.Date;
-          //  _syncService.UploadSaleSync(selectDate);
+            _syncService.UploadSaleSync(selectDate);
+            MessageBox.Show("执行完毕");
         }
     }
 }

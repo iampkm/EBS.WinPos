@@ -38,7 +38,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtSqlite = new System.Windows.Forms.TextBox();
             this.lblMsg = new System.Windows.Forms.Label();
-            this.btnUpdate = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -128,22 +127,11 @@
             this.lblMsg.Size = new System.Drawing.Size(0, 12);
             this.lblMsg.TabIndex = 18;
             // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Location = new System.Drawing.Point(590, 92);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(84, 23);
-            this.btnUpdate.TabIndex = 19;
-            this.btnUpdate.Text = "修改订单";
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-            // 
             // frmRepair
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(814, 451);
-            this.Controls.Add(this.btnUpdate);
             this.Controls.Add(this.lblMsg);
             this.Controls.Add(this.dtpDate);
             this.Controls.Add(this.btnUpdateSummary);
@@ -175,7 +163,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtSqlite;
         private System.Windows.Forms.Label lblMsg;
-        private System.Windows.Forms.Button btnUpdate;
     }
 }
 
