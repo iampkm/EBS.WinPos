@@ -270,6 +270,7 @@ namespace EBS.WinPos.Service.Task
                 string url = string.Format("{0}/PosSync/SaleOrderSync", _serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 string body = JsonConvert.SerializeObject(model, dateTimeConverter);
+                body = HttpHelper.UrlEncode(body); //Url编码
                 string param = string.Format("{0}&body={1}", BuildAccessToken(), body);
                 string result = HttpHelper.HttpPost(url, param);
                 if (result == "1")
@@ -297,6 +298,7 @@ namespace EBS.WinPos.Service.Task
                 string url = string.Format("{0}/PosSync/WorkScheduleSync", _serverUrl);
                 var dateTimeConverter = new IsoDateTimeConverter { DateTimeFormat = "yyyy-MM-dd HH:mm:ss" };
                 string body = JsonConvert.SerializeObject(model, dateTimeConverter);
+                body = HttpHelper.UrlEncode(body); //Url编码
                 string param = string.Format("{0}&body={1}", BuildAccessToken(), body);
                 string result = HttpHelper.HttpPost(url, param);
                 if (result == "1")

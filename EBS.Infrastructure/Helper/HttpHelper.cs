@@ -328,5 +328,15 @@ Http请求异常！
             }
             return result;
         }
+
+        /// <summary>
+        /// Url 编码
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static string UrlEncode(string content)
+        {
+            return HttpUtility.UrlEncode(content);
+        }
     }
 }
