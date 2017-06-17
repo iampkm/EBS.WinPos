@@ -145,9 +145,9 @@ namespace EBS.WinPos.Service
             if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2"), systemId = "2" });
+            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
             string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
-            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("sign={0}&data={1}", sign, data), timeOut: 90000);
+            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
             if (result == "1")
             {
                 //支付成功
@@ -194,9 +194,9 @@ namespace EBS.WinPos.Service
             if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2"), systemId = "2" });
+            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
             string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_AliBarcode);
-            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_AliBarcode, param: string.Format("sign={0}&data={1}", sign, data), timeOut: 90000);
+            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_AliBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
             if (result == "1")
             {
                 //支付成功
