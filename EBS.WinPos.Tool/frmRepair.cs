@@ -61,15 +61,25 @@ namespace EBS.WinPos.Tool
              _serverEntitys = _serverDB.Query<SaleOrder>("select Code from saleOrder where  StoreId=@StoreId and PosId=@PosId and UpdatedOn between @StartDate and @EndDate and Status in (-1,3)",
                    new {  StoreId = entity.StoreId, PosId = entity.PosId, StartDate = selectDate, EndDate = selectDate.AddDays(1) }).ToList();
 
-            foreach (var model in _entitys)
-            {
-                this.lblMsg.Text = "检查订单：" + model.Code;
-               
-                if (!_serverEntitys.Exists(n=>n.Code==model.Code))
-                {
-                    list.Add(model);
-                }
-            }
+            //客户少于服务器数据
+             foreach (var model in _entitys)
+             {
+                 this.lblMsg.Text = "检查订单：" + model.Code;
+
+                 if (!_serverEntitys.Exists(n => n.Code == model.Code))
+                 {
+                     list.Add(model);
+                 }
+             }
+            // 服务器多于客户端数据
+            //foreach(var model in _serverEntitys)
+            //{
+            //    if (!_entitys.Exists(n => n.Code == model.Code))
+            //    {
+            //        list.Add(model);
+            //    }
+
+            //}
 
             if (list.Count == 0)
             {

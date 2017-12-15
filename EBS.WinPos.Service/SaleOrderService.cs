@@ -14,6 +14,8 @@ using EBS.Infrastructure.Extension;
 using EBS.Infrastructure;
 using EBS.WinPos.Service.Task;
 using EBS.Infrastructure.Log;
+using EBS.WinPos.Service.WxPayAPI;
+using WxPayAPI;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
@@ -23,6 +25,7 @@ namespace EBS.WinPos.Service
         SyncService _syncService;
         ILogger _log;
         DapperContext _dbContext;
+        IMicropay _wechatPay;
         public SaleOrderService()
         {
             _log = AppContext.Log;
@@ -30,6 +33,8 @@ namespace EBS.WinPos.Service
             _printService = new DriverPrinterService();
             _syncService = new SyncService(AppContext.Log);
             _dbContext = new DapperContext();
+            _wechatPay = new Micropay();
+
         }
         public void CreateOrder(ShopCart cat)
         {
@@ -145,23 +150,34 @@ namespace EBS.WinPos.Service
             if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
             model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
-            string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
-            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
-            if (result == "1")
+            //string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
+            //string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
+            //string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
+
+            var fee = int.Parse((model.OnlinePayAmount*100).ToString()); // 金额单位为分，不能带小数
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            var body = string.Format("[{0}]-{1}", store.Name, model.Items[0].ProductName);
+            // 发起微信支付
+            try
             {
-                //支付成功
-                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
-                _db.SaveChanges();
-                //打印小票
-                PrintOrderTicket(model);
-                //同步到服务器
-                _syncService.Send(model);
+                _wechatPay.Run(model.Code, body, fee, payBarCode);
             }
-            else
+            catch (WxPayException wxex)
             {
-                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
+                throw new AppException(wxex.Message, wxex);
             }
+            catch (Exception ex)
+            {
+                throw new AppException("微信支付失败,请联系管理员", ex);
+            } 
+            //支付成功
+         //   model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+          //  _db.SaveChanges();
+            //打印小票
+           // PrintOrderTicket(model);
+            //同步到服务器
+           // _syncService.Send(model);
+           
         }
 
         public void WechatRefund(int orderId, string licenseCode, decimal payAmount, string refundAccount)

@@ -18,6 +18,7 @@ namespace EBS.WinPos.Domain.Entity
             this.Status = SaleOrderStatus.Create;
             this.OrderType = 1;
             this.OrderLevel = SaleOrderLevel.General;
+            this.PaymentWay = ValueObject.PaymentWay.Cash;
         }
         public string Code { get; set; }
 
@@ -112,8 +113,6 @@ namespace EBS.WinPos.Domain.Entity
         public void GenerateNewCode()
         {
              //账号ID + 8 为日期+ 5 时间秒+2位随机数
-            // 1+2014010100001
-            //var orderCodeMinLength = 17;
             string createdBy = this.CreatedBy.ToString();
             string orderType = this.OrderType.ToString();
             var code = Math.Abs(Guid.NewGuid().GetHashCode());
@@ -121,17 +120,15 @@ namespace EBS.WinPos.Domain.Entity
             StringBuilder sb = new StringBuilder();
             var date = this.CreatedOn;
             var ts = date - date.Date;
-            var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(5, '0');  // 5位
+            var seconds = Math.Truncate(ts.TotalSeconds).ToString().PadLeft(5, '0');  // 5位           
+            Random rd = new Random(Guid.NewGuid().GetHashCode());
+            var rdNumber= rd.Next(0, 100);
+            var rdNumberStr = rdNumber > 9 ? rdNumber.ToString() :"0"+rdNumber.ToString();
             // 账号1~N+日期8+时间数字5 
             sb.Append(orderType); //销售单据类型
             sb.Append(createdBy);
             sb.Append(date.ToString("yyyyMMdd"));
             sb.Append(seconds);
-            Random rd = new Random(Guid.NewGuid().GetHashCode());
-            var rdNumber= rd.Next(0, 100);
-            var rdNumberStr = rdNumber > 9 ? rdNumber.ToString() :"0"+rdNumber.ToString();
-            //code = Math.Abs(Guid.NewGuid().GetHashCode());
-            //hashcode = code.ToString().Substring(0, orderCodeMinLength - sb.Length);
             sb.Append(rdNumberStr);
             this.Code = sb.ToString();
         }

@@ -50,7 +50,7 @@
             // 
             // btnUpdateSummary
             // 
-            this.btnUpdateSummary.Location = new System.Drawing.Point(426, 92);
+            this.btnUpdateSummary.Location = new System.Drawing.Point(519, 93);
             this.btnUpdateSummary.Name = "btnUpdateSummary";
             this.btnUpdateSummary.Size = new System.Drawing.Size(137, 23);
             this.btnUpdateSummary.TabIndex = 16;
@@ -60,7 +60,7 @@
             // 
             // btnUpOrder
             // 
-            this.btnUpOrder.Location = new System.Drawing.Point(321, 93);
+            this.btnUpOrder.Location = new System.Drawing.Point(427, 95);
             this.btnUpOrder.Name = "btnUpOrder";
             this.btnUpOrder.Size = new System.Drawing.Size(75, 23);
             this.btnUpOrder.TabIndex = 15;

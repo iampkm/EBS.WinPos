@@ -63,6 +63,7 @@ namespace EBS.WinPos
 
             // 显示支付方式
             var paymentWays = typeof(PaymentWay).GetValueToDescription();
+            paymentWays.Remove(2);   // 去掉没实现的支付宝支付方式
             this.lstPaymentWay.DataSource = new BindingSource(paymentWays, null);
             this.lstPaymentWay.DisplayMember = "Value";
             this.lstPaymentWay.ValueMember = "Key";
@@ -81,15 +82,18 @@ namespace EBS.WinPos
             if (select.Key == (int)PaymentWay.Cash)
             {
                 this.txtPayBarCode.Enabled = false;
+                this.txtPayAmount.Enabled = true;
                 this.txtPayAmount.Text = "0.00";
                 this.txtPayBarCode.Text = "";
                 this.txtOnlinePayAmount.Text = "0.00";
+               
             }
             else
             {
                 this.txtPayBarCode.Enabled = true;
                 this.txtPayAmount.Text = "0.00";
                 this.txtOnlinePayAmount.Text = CurrentOrder.OrderAmount.ToString();
+                this.txtPayAmount.Enabled = false;
 
             }
         }
