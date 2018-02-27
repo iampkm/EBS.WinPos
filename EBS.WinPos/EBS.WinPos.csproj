@@ -246,6 +246,7 @@
     <None Include="sqlite\posdata.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="sqlite\posdata_temp.db" />
     <None Include="Task.Config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
