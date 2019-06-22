@@ -11,6 +11,8 @@ using EBS.WinPos.Domain;
 using EBS.WinPos.Service;
 using EBS.WinPos.Service.Dto;
 using EBS.Infrastructure;
+using Sunisoft.IrisSkin;
+
 namespace EBS.WinPos
 {
     public partial class frmPos : Form
@@ -47,18 +49,18 @@ namespace EBS.WinPos
             _workScheduleService = new WorkScheduleService();
             // 添加班次信息
             _currentWork = _workScheduleService.GetWorking(ContextService.StoreId, ContextService.PosId);
-           
+
 
         }
 
-       
+
         public void inputEnter()
         {
             var input = this.txtBarCode.Text;
-            //商品编码固定6位，少于6位，即认为是输入的金额
-            this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
-            if (input.Length <6)
+            //商品编码固定6位，少于6位，即认为是输入的金额           
+            if (input.Length < 6)
             {
+                this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
                 this._currentShopCat.WorkScheduleCode = _currentWork.Code;
                 if (this._currentShopCat.OrderAmount > 0)
                 {
@@ -92,16 +94,16 @@ namespace EBS.WinPos
             }
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
             //查询会员折扣
-           // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;          
+            // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;          
             //真正的销售价
             var realPrice = model.SalePrice;
             if (this.VipCustomer != null)
             {
                 var vipProduct = _vipProductService.GetByProductId(model.Id);
                 realPrice = vipProduct == null ? model.SalePrice : vipProduct.SalePrice;
-            }           
+            }
             //加入购物车
-            this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));           
+            this._currentShopCat.AddShopCart(new ShopCartItem(model, 1, realPrice));
             ShowOrderInfo();
             this.txtBarCode.Text = "";
             var lastIndex = this.dgvData.Rows.Count - 1;
@@ -131,7 +133,7 @@ namespace EBS.WinPos
         }
 
         public void ShowPreOrderInfo()
-        {           
+        {
             var model = this._currentShopCat;
             _preShopCat = model;
             this.lblPreOrderCode.Text = "上一单：" + model.OrderCode;
@@ -147,7 +149,7 @@ namespace EBS.WinPos
             this._preShopCat = model;
             this.lblPreOrderCode.Text = "上一单：" + model.OrderCode;
             this.lblPreOrderAmount.Text = "金额：" + model.OrderAmount.ToString("F2");
-            this.lblPreChargeAmount.Text = "找零：0.00" ;
+            this.lblPreChargeAmount.Text = "找零：0.00";
         }
 
         public void ClearAll()
@@ -188,7 +190,7 @@ namespace EBS.WinPos
 
             // 显示支付窗体  
             if (_currentShopCat.CheckCanPay())
-            {               
+            {
                 frmPay payForm = frmPay.CreateForm();
                 payForm.CurrentOrder = _currentShopCat;
                 payForm.PosForm = this;
@@ -245,7 +247,7 @@ namespace EBS.WinPos
         {
             try
             {
-                if (this._currentShopCat == null) { return; }
+                if (ShopCatIsEmpty()) { return; }
                 DialogResult result = MessageBox.Show("你确定作废订单？", "系统信息", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (result == DialogResult.No)
                 {
@@ -254,12 +256,7 @@ namespace EBS.WinPos
                 if (this._currentShopCat.OrderId == 0)
                 {
                     if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
-                    _currentShopCat.WorkScheduleCode = _currentWork.Code;
-                    if (_currentShopCat.Items.Count == 0)
-                    {
-                        MessageBox.Show("商品明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                    _currentShopCat.WorkScheduleCode = _currentWork.Code;                    
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
                 _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);
@@ -272,12 +269,12 @@ namespace EBS.WinPos
             {
                 MessageBox.Show(ex.Message);
             }
-           
+
         }
 
 
 
-      
+
         private void txtBarCode_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -309,13 +306,29 @@ namespace EBS.WinPos
         public void PrintPreOrderTicket()
         {
             this.txtBarCode.Text = "";
-            if (_preShopCat == null) { return; }
+            if (PreShopCatIsEmpty()) { return; }
             _saleOrderService.PrintTicket(_preShopCat.OrderId);
+        }
+        /// <summary>
+        /// 上一笔订单购物车为空
+        /// </summary>
+        /// <returns></returns>
+        private bool PreShopCatIsEmpty()
+        {
+            return this._preShopCat == null || (this._preShopCat != null && this._preShopCat.Items.Count <= 0);
+        }
+
+        /// <summary>
+        /// 当前购物车为空
+        /// </summary>
+        /// <returns></returns>
+        private bool ShopCatIsEmpty() {
+            return this._currentShopCat == null || (this._currentShopCat != null && this._currentShopCat.Items.Count <= 0);
         }
 
         public void Quit()
         {
-            if (this._currentShopCat != null)
+            if (!ShopCatIsEmpty())
             {
                 MessageBox.Show("收银台还有没完成的订单，请先完结订单。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -355,23 +368,23 @@ namespace EBS.WinPos
         {
             //设置vip对象
             this.VipCustomer = vip;
-            
+
             //刷新当前购物车折扣  
-           // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
+            // var discount = this.VipCustomer == null ? 1 : this.VipCustomer.Discount;
             this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
-            this._currentShopCat.OrderLevel =  Domain.ValueObject.SaleOrderLevel.Vip;
+            this._currentShopCat.OrderLevel = Domain.ValueObject.SaleOrderLevel.Vip;
             if (this._currentShopCat.Items.Count == 0)
-            { 
+            {
                 //如果当前还没刷商品，焦点返回输入框
                 this.txtBarCode.Focus();
                 return;
             }
             foreach (var item in this._currentShopCat.Items)
-            {                
+            {
                 //只取会员商品价，不按折扣计算
-                var realPrice = item.SalePrice;               
+                var realPrice = item.SalePrice;
                 var vipProduct = _vipProductService.GetByProductId(item.ProductId);
-                realPrice = vipProduct == null ? item.SalePrice : vipProduct.SalePrice;               
+                realPrice = vipProduct == null ? item.SalePrice : vipProduct.SalePrice;
                 item.ChangeRealPrice(realPrice);
             }
             // 重新绑定
@@ -384,7 +397,7 @@ namespace EBS.WinPos
         }
 
         private void frmPos_Load(object sender, EventArgs e)
-        {
+        {           
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.StoreId;
             lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
@@ -440,7 +453,14 @@ namespace EBS.WinPos
                 if (this.dgvData.IsCurrentCellInEditMode)   //如果当前单元格处于编辑模式   
                 {
                     var index = this.dgvData.CurrentCell.RowIndex;
-                    var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());                    
+                    var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());
+                    if (quantity > 1000) {                       
+                        MessageBox.Show("单行商品数量最大为1000。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        this.dgvData.Focus();
+                        this.dgvData.CurrentCell = this.dgvData.Rows[index].Cells["Quantity"];
+                        this.dgvData.BeginEdit(true);
+                        return true;
+                    }
                     var pid = this.dgvData.Rows[index].Cells["ProductId"].Value.ToString();
                     var productId = Convert.ToInt32(pid);
                     this._currentShopCat.ChangeQuantity(productId, quantity);

@@ -230,6 +230,7 @@
             this.lblPreChargeAmount.Name = "lblPreChargeAmount";
             this.lblPreChargeAmount.Size = new System.Drawing.Size(267, 62);
             this.lblPreChargeAmount.TabIndex = 2;
+            this.lblPreChargeAmount.Tag = "9999";
             this.lblPreChargeAmount.Text = "找零：0.00";
             // 
             // lblOrderTotal

@@ -100,7 +100,7 @@ namespace EBS.WinPos.Service.Dto
         }
 
         public void AddShopCart(ShopCartItem item)
-        {
+        {            
             var lastItem = this.Items.LastOrDefault();
             if (lastItem == null)
             {

@@ -257,7 +257,15 @@ namespace EBS.WinPos
         {
             if (e.KeyCode == Keys.Enter)
             {
-                this.txtPayAmount.Focus();
+                var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
+                if (selectedPaymentWay == PaymentWay.Cash)
+                {
+                    this.txtPayAmount.Focus();
+                }
+                else {
+                    this.txtPayBarCode.Focus();  //条码支付扫码
+                }
+               
             }
         }
 
