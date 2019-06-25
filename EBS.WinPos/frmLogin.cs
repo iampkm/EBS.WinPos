@@ -14,7 +14,7 @@ namespace EBS.WinPos
 {
     public partial class frmLogin : Form
     {
-        Sunisoft.IrisSkin.SkinEngine SkinEngine = new Sunisoft.IrisSkin.SkinEngine();
+       Sunisoft.IrisSkin.SkinEngine SkinEngine = new Sunisoft.IrisSkin.SkinEngine();
         AccountService _accountService;
         WorkScheduleService _wrokService;
         SettingService _settingService;
@@ -94,7 +94,7 @@ namespace EBS.WinPos
         {
             // 加载皮肤
           
-            SkinEngine.SkinFile = Application.StartupPath + @"/Skins/mp10.ssk";
+           SkinEngine.SkinFile = Application.StartupPath + @"/Skins/mp10.ssk";
         }
 
        
