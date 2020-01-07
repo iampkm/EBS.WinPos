@@ -52,79 +52,98 @@ namespace EBS.WinPos
         {
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); this.Close(); }
 
-            this.lblOrderAmount.Text =Math.Abs(CurrentOrder.OrderAmount).ToString("C");
-            this.txtPayAmount.Text =Math.Abs(CurrentOrder.PayAmount).ToString();
-            this.txtOnlinePayAmount.Enabled = false;
-            this.txtOnlinePayAmount.Text = "0";
-            this.txtRefundAccount.Enabled = false;
-            // 显示支付方式
-            var paymentWays = typeof(PaymentWay).GetValueToDescription();
-            this.lstPaymentWay.DataSource = new BindingSource(paymentWays, null); ;
-            this.lstPaymentWay.DisplayMember = "Value";
-            this.lstPaymentWay.ValueMember = "Key";
-            this.lstPaymentWay.SelectedIndex = 0;
-
-
-        }
-
-        private void lstPaymentWay_SelectedValueChanged(object sender, EventArgs e)
-        {
-            var select = (KeyValuePair<int, string>)this.lstPaymentWay.SelectedItem;
-            if (select.Key == (int)PaymentWay.Cash)
-            {
-                this.txtRefundAccount.Enabled = false;
-                this.txtOnlinePayAmount.Text = "0";
-                this.txtPayAmount.Text =Math.Abs(CurrentOrder.OrderAmount).ToString();
-            }
-            else
-            {
-                this.txtRefundAccount.Enabled = true;
-                this.txtOnlinePayAmount.Text =Math.Abs(this.CurrentOrder.OrderAmount).ToString();               
-                this.txtPayAmount.Text = "0";
-            }
+            this.lblOrderAmount.Text = Math.Abs(CurrentOrder.OrderAmount).ToString("F2");
+            this.txtRefundCode.Focus();
+            this.txtLicenseCode.Text = "";            
         }
 
 
-        private void txtPayAmount_TextChanged(object sender, EventArgs e)
-        {
-            //decimal amount = this.CurrentOrder.PayAmount;
-            //decimal.TryParse(txtPayAmount.Text, out amount);
-            //this.CurrentOrder.PayAmount = amount;
-            //this.txtOnlinePayAmount.Text = (Math.Abs(this.CurrentOrder.OrderAmount) - this.CurrentOrder.PayAmount).ToString();           
-        }
+        //private void TxtRefundCode_KeyPress(object sender, KeyPressEventArgs e)
+        //{
+        //    if (!(Char.IsNumber(e.KeyChar) || e.KeyChar == '\b' || (e.KeyChar == '.' && txtRefundCode.Text.IndexOf(".") < 0)))
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
-        private void txtPayAmount_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (!(Char.IsNumber(e.KeyChar) || e.KeyChar == '\b' || (e.KeyChar == '.' && txtPayAmount.Text.IndexOf(".") < 0)))
-            {
-                e.Handled = true;
-            }         
-        }
-
-        private void txtPayAmount_KeyDown(object sender, KeyEventArgs e)
+        private void TxtRefundCode_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
-                decimal amount = this.CurrentOrder.PayAmount;
-                decimal.TryParse(txtPayAmount.Text, out amount);
-                this.CurrentOrder.PayAmount = amount;
+                try
+                {
+                    this.txtLicenseCode.Focus();
+                    ConfirmPaymentWay(txtRefundCode.Text);
+                   
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
-                var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
-                if (selectedPaymentWay == PaymentWay.Cash)
+            }
+
+        }
+
+        /// <summary>
+        ///  查询退款订单
+        /// </summary>
+        /// <param name="code">原销售单单号</param>
+        private void QueryRefundOrder(string code)
+        {
+            
+            var sourceSaleOrder = _orderService.QuerySaleOrder(code);
+            if (sourceSaleOrder == null)
+            { // 增加联网查询
+                throw new AppException(string.Format("小票号{0},单据不存在。", code));
+            }
+            if (sourceSaleOrder.Status != SaleOrderStatus.Paid) { throw new AppException(string.Format("原销售单{0}未支付,不能退款。", code)); }
+
+            //已退明细
+            var refundedOrderItems = _orderService.QueryRefundOrderItems(code);
+            //判断商品是否属于原单
+            foreach (var item in this.CurrentOrder.Items)
+            {
+                var line = sourceSaleOrder.Items.FirstOrDefault(n => n.ProductId == item.ProductId);
+                if (line == null)
                 {
-                    this.txtLicenseCode.Focus();  // 现金输入完，就输入授权码
+                    throw new AppException(string.Format("商品{0}原单中不存在,不能退款。", line.ProductCode));
                 }
-                else
+                // 已退数量
+                var quantityReturned = Math.Abs(refundedOrderItems.Where(n => n.ProductId == item.ProductId).Sum(n => n.Quantity));
+                if ((item.Quantity + quantityReturned) > Math.Abs(line.Quantity))
                 {
-                    this.txtOnlinePayAmount.Text = (Math.Abs(this.CurrentOrder.OrderAmount) - this.CurrentOrder.PayAmount).ToString();   
-                    this.txtRefundAccount.Focus();  // 在线支付，输入退款账户
+                    throw new AppException(string.Format("商品{0}可退{1}，已退{2}，本次退货{3}，超过最大可退数量。",
+                        line.ProductCode, item.Quantity, quantityReturned, Math.Abs(line.Quantity)));
                 }
+
+                // 修改购物车中商品价格按原单价格计算
+                item.SalePrice = line.SalePrice;
+                item.RealPrice = line.RealPrice;
+            }
+
+            // 显示可退金额
+            this.CurrentOrder.PaymentWay = sourceSaleOrder.PaymentWay;
+            this.lblPaymentWay.Text = this.CurrentOrder.PaymentWay.Description() + "退款";
+            this.lblOrderAmount.Text = Math.Abs(this.CurrentOrder.OrderAmount).ToString("F2");
+            this.CurrentOrder.SourceSaleOrderCode = sourceSaleOrder.Code;
+
+        }
+
+        private void txtLicenseCode_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                BeginPay();
             }
         }
 
+
+
+
         public void BeginPay()
         {
-            var selectedPaymentWay = (PaymentWay)(int)lstPaymentWay.SelectedValue;
+            var selectedPaymentWay = this.CurrentOrder.PaymentWay;
             switch (selectedPaymentWay)
             {
                 case PaymentWay.Cash:
@@ -135,6 +154,12 @@ namespace EBS.WinPos
                     break;
                 case PaymentWay.WechatPay:
                     WechatPay();
+                    break;
+                case PaymentWay.AliPayScan:
+                    ScanRefund();
+                    break;
+                case PaymentWay.WechatScan:
+                    ScanRefund();
                     break;
                 default:
                     MessageBox.Show("请选择支付方式", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -151,11 +176,9 @@ namespace EBS.WinPos
         {
             try
             {
-                var payAmount = CurrentOrder.PayAmount;
-                decimal.TryParse(txtPayAmount.Text, out payAmount);
-                CurrentOrder.PayAmount = -payAmount;
+                CurrentOrder.PayAmount = CurrentOrder.OrderAmount;
                 var lincenseCode = txtLicenseCode.Text;
-                _orderService.CashRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount);
+                _orderService.CashRefund(CurrentOrder, lincenseCode);
                 PosForm.ClearItems();
                 MessageBox.Show("退款成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
@@ -168,7 +191,27 @@ namespace EBS.WinPos
             {
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-          
+
+        }
+        public void ScanRefund()
+        {
+            try
+            {
+                CurrentOrder.PayAmount = CurrentOrder.OrderAmount;
+                var lincenseCode = txtLicenseCode.Text;
+                _orderService.ScanRefund(CurrentOrder, lincenseCode);
+                PosForm.ClearItems();
+                MessageBox.Show("退款成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ClosePayForm();
+            }
+            catch (AppException aex)
+            {
+                MessageBox.Show(aex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
 
         }
 
@@ -176,15 +219,9 @@ namespace EBS.WinPos
         {
             try
             {
-                var payAmount = 0m;
-                decimal.TryParse(txtPayAmount.Text, out payAmount);
-                CurrentOrder.PayAmount = -payAmount;
-                var onlinePayAmount = 0m;
-                decimal.TryParse(txtOnlinePayAmount.Text, out onlinePayAmount);
-                CurrentOrder.OnlinePayAmount = -onlinePayAmount;
+                CurrentOrder.OnlinePayAmount = CurrentOrder.OrderAmount;
                 var lincenseCode = txtLicenseCode.Text;
-                CurrentOrder.RefundAccount = txtRefundAccount.Text;
-                _orderService.AliRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount, CurrentOrder.RefundAccount);
+                _orderService.AliRefund(CurrentOrder, lincenseCode);
                 PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
@@ -198,22 +235,17 @@ namespace EBS.WinPos
                 AppContext.Log.Error(ex);
                 MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-          
+
         }
 
         public void WechatPay()
-        {           
+        {
             try
             {
-                var payAmount = 0m;
-                decimal.TryParse(txtPayAmount.Text, out payAmount);
-                CurrentOrder.PayAmount = -payAmount;
-                var onlinePayAmount = 0m;
-                decimal.TryParse(txtOnlinePayAmount.Text, out onlinePayAmount);
-                CurrentOrder.OnlinePayAmount = -onlinePayAmount;
+
+                CurrentOrder.OnlinePayAmount = CurrentOrder.OrderAmount;
                 var lincenseCode = txtLicenseCode.Text;
-                CurrentOrder.RefundAccount = txtRefundAccount.Text;
-                _orderService.WechatRefund(CurrentOrder.OrderId, lincenseCode, CurrentOrder.PayAmount, CurrentOrder.RefundAccount);
+                _orderService.WechatRefund(CurrentOrder, lincenseCode);
                 PosForm.ClearItems();
                 MessageBox.Show("退款申请提交成功！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 ClosePayForm();
@@ -228,36 +260,45 @@ namespace EBS.WinPos
             }
         }
 
-        private void lstPaymentWay_KeyDown(object sender, KeyEventArgs e)
+        private void txtRefundCode_TextChanged(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            // 根据输入，确定是现金支付，还是支付宝，微信
+            var txtCashOrAuthCode = (TextBox)sender;
+            this.lblPaymentWay.Text = this.CurrentOrder.PaymentWay.Description() + "退款";
+        }
+
+        /// <summary>
+        ///  确认支付方式
+        /// </summary>
+        /// <param name="inputCashOrAuthCode"></param>
+        /// <returns></returns>
+        private void ConfirmPaymentWay(string inputCashOrAuthCode)
+        {
+           
+            if (string.IsNullOrEmpty(inputCashOrAuthCode))
             {
-                this.txtPayAmount.Focus();
+                // 现金退款
+                this.CurrentOrder.PaymentWay = PaymentWay.Cash;
+            }
+            if (inputCashOrAuthCode.ToUpper().StartsWith("A"))
+            {
+                //支付宝扫码退款
+                this.CurrentOrder.PaymentWay = PaymentWay.AliPayScan;
+            }
+            else if (inputCashOrAuthCode.ToUpper().StartsWith("W"))
+            {
+                // 微信扫码 退款
+                this.CurrentOrder.PaymentWay = PaymentWay.WechatScan;
+            }
+            else {
+                // 原单退款
+                QueryRefundOrder(inputCashOrAuthCode);
             }
         }
 
-        private void txtOnlinePayAmount_KeyDown(object sender, KeyEventArgs e)
+        private void btnCancel_Click(object sender, EventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
-            {
-                this.txtRefundAccount.Focus();
-            }
-        }
-
-        private void txtRefundAccount_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                this.txtLicenseCode.Focus();
-            }
-        }
-
-        private void txtLicenseCode_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter)
-            {
-                BeginPay();
-            }
+            this.Close();
         }
     }
 }

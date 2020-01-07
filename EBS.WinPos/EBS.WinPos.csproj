@@ -111,6 +111,18 @@
     <Compile Include="frmInit.Designer.cs">
       <DependentUpon>frmInit.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmPayQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmPayQuery.Designer.cs">
+      <DependentUpon>frmPayQuery.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmRefundQuery.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmRefundQuery.Designer.cs">
+      <DependentUpon>frmRefundQuery.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmUpload.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -184,6 +196,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmInit.resx">
       <DependentUpon>frmInit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmPayQuery.resx">
+      <DependentUpon>frmPayQuery.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmRefundQuery.resx">
+      <DependentUpon>frmRefundQuery.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUpload.resx">
       <DependentUpon>frmUpload.cs</DependentUpon>

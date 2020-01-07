@@ -64,7 +64,7 @@
             this.txtStoreId.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtStoreId.Location = new System.Drawing.Point(144, 24);
             this.txtStoreId.Name = "txtStoreId";
-            this.txtStoreId.Size = new System.Drawing.Size(258, 29);
+            this.txtStoreId.Size = new System.Drawing.Size(258, 34);
             this.txtStoreId.TabIndex = 6;
             // 
             // txtCDKey
@@ -72,7 +72,7 @@
             this.txtCDKey.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.txtCDKey.Location = new System.Drawing.Point(144, 94);
             this.txtCDKey.Name = "txtCDKey";
-            this.txtCDKey.Size = new System.Drawing.Size(258, 29);
+            this.txtCDKey.Size = new System.Drawing.Size(258, 34);
             this.txtCDKey.TabIndex = 5;
             // 
             // label3
@@ -81,13 +81,13 @@
             this.label3.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.Location = new System.Drawing.Point(69, 97);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(74, 21);
+            this.label3.Size = new System.Drawing.Size(92, 27);
             this.label3.TabIndex = 4;
             this.label3.Text = "授权码：";
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(144, 129);
+            this.btnSave.Location = new System.Drawing.Point(144, 141);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 35);
             this.btnSave.TabIndex = 3;
@@ -99,7 +99,7 @@
             // 
             this.txtPosId.Location = new System.Drawing.Point(144, 59);
             this.txtPosId.Name = "txtPosId";
-            this.txtPosId.Size = new System.Drawing.Size(258, 29);
+            this.txtPosId.Size = new System.Drawing.Size(258, 34);
             this.txtPosId.TabIndex = 2;
             // 
             // label2
@@ -107,7 +107,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(37, 62);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(106, 21);
+            this.label2.Size = new System.Drawing.Size(132, 27);
             this.label2.TabIndex = 1;
             this.label2.Text = "收银机编号：";
             // 
@@ -116,7 +116,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(80, 27);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(58, 21);
+            this.label1.Size = new System.Drawing.Size(72, 27);
             this.label1.TabIndex = 1;
             this.label1.Text = "门店：";
             // 
@@ -143,13 +143,13 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(21, 203);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(90, 21);
+            this.label4.Size = new System.Drawing.Size(112, 27);
             this.label4.TabIndex = 6;
             this.label4.Text = "命令输入：";
             // 
             // frmSetting
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(567, 421);
             this.Controls.Add(this.label4);

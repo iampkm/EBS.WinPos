@@ -46,84 +46,95 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.txtPasswrod);
             this.groupBox1.Controls.Add(this.txtUserName);
-            this.groupBox1.Font = new System.Drawing.Font("微软雅黑", 12F);
-            this.groupBox1.Location = new System.Drawing.Point(24, 23);
+            this.groupBox1.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.groupBox1.Location = new System.Drawing.Point(32, 29);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(387, 303);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Size = new System.Drawing.Size(516, 379);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "登 录";
+            this.groupBox1.Text = "前台收银系统";
             // 
             // lblMsg
             // 
             this.lblMsg.AutoSize = true;
-            this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblMsg.Font = new System.Drawing.Font("微软雅黑", 14F);
             this.lblMsg.ForeColor = System.Drawing.Color.Red;
-            this.lblMsg.Location = new System.Drawing.Point(93, 244);
+            this.lblMsg.Location = new System.Drawing.Point(124, 326);
+            this.lblMsg.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblMsg.Name = "lblMsg";
-            this.lblMsg.Size = new System.Drawing.Size(0, 21);
+            this.lblMsg.Size = new System.Drawing.Size(0, 31);
             this.lblMsg.TabIndex = 3;
             // 
             // btnLogin
             // 
-            this.btnLogin.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnLogin.Location = new System.Drawing.Point(130, 175);
+            this.btnLogin.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.btnLogin.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnLogin.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.btnLogin.Location = new System.Drawing.Point(164, 252);
+            this.btnLogin.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(138, 41);
+            this.btnLogin.Size = new System.Drawing.Size(184, 51);
             this.btnLogin.TabIndex = 2;
             this.btnLogin.Text = "登 录";
-            this.btnLogin.UseVisualStyleBackColor = true;
+            this.btnLogin.UseVisualStyleBackColor = false;
             this.btnLogin.Click += new System.EventHandler(this.btnLogin_Click);
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(33, 105);
+            this.label2.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.label2.Location = new System.Drawing.Point(56, 163);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(68, 21);
+            this.label2.Size = new System.Drawing.Size(100, 31);
             this.label2.TabIndex = 1;
             this.label2.Text = "密 码 ：";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(33, 46);
+            this.label1.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.label1.Location = new System.Drawing.Point(56, 90);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(68, 21);
+            this.label1.Size = new System.Drawing.Size(100, 31);
             this.label1.TabIndex = 1;
             this.label1.Text = "账 号 ：";
             // 
             // txtPasswrod
             // 
-            this.txtPasswrod.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPasswrod.Location = new System.Drawing.Point(130, 102);
+            this.txtPasswrod.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.txtPasswrod.Location = new System.Drawing.Point(164, 161);
+            this.txtPasswrod.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtPasswrod.Name = "txtPasswrod";
             this.txtPasswrod.PasswordChar = '*';
-            this.txtPasswrod.Size = new System.Drawing.Size(177, 29);
+            this.txtPasswrod.Size = new System.Drawing.Size(235, 38);
             this.txtPasswrod.TabIndex = 1;
             // 
             // txtUserName
             // 
-            this.txtUserName.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtUserName.Location = new System.Drawing.Point(130, 43);
+            this.txtUserName.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.txtUserName.Location = new System.Drawing.Point(164, 87);
+            this.txtUserName.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtUserName.Name = "txtUserName";
-            this.txtUserName.Size = new System.Drawing.Size(177, 29);
+            this.txtUserName.Size = new System.Drawing.Size(235, 38);
             this.txtUserName.TabIndex = 0;
             // 
             // frmLogin
             // 
             this.AcceptButton = this.btnLogin;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(434, 361);
+            this.ClientSize = new System.Drawing.Size(579, 451);
             this.Controls.Add(this.groupBox1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "前台收银系统";
+            this.Text = "前台收银系统-Login";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmLogin_FormClosed);
             this.Load += new System.EventHandler(this.frmLogin_Load);
             this.groupBox1.ResumeLayout(false);

@@ -79,6 +79,11 @@ namespace EBS.WinPos.Domain.Entity
         /// </summary>
         public SaleOrderLevel OrderLevel { get; set; }
 
+        /// <summary>
+        /// 原销售单单号，只有ordertype=2 时有值
+        /// </summary>
+        public string SourceSaleOrderCode { get; set; }
+
         public virtual List<SaleOrderItem> Items { get; set; }
 
         public void AddOrderItem(Product product, int quantity, decimal realPrice)

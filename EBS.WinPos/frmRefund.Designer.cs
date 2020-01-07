@@ -28,208 +28,172 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.lstPaymentWay = new System.Windows.Forms.ListBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.lblOrderAmount = new System.Windows.Forms.Label();
-            this.txtPayAmount = new System.Windows.Forms.TextBox();
+            this.lblAmount = new System.Windows.Forms.Label();
+            this.txtRefundCode = new System.Windows.Forms.TextBox();
             this.txtLicenseCode = new System.Windows.Forms.TextBox();
-            this.txtRefundAccount = new System.Windows.Forms.TextBox();
-            this.txtOnlinePayAmount = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.lblOnlinePayAmount = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel1.SuspendLayout();
+            this.lblOnlinePay = new System.Windows.Forms.Label();
+            this.lblPaymentWay = new System.Windows.Forms.Label();
+            this.lblRefundOrder = new System.Windows.Forms.Label();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.lstPaymentWay);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(259, 407);
-            this.panel1.TabIndex = 1;
-            // 
-            // lstPaymentWay
-            // 
-            this.lstPaymentWay.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstPaymentWay.Font = new System.Drawing.Font("微软雅黑", 21.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lstPaymentWay.FormattingEnabled = true;
-            this.lstPaymentWay.ItemHeight = 38;
-            this.lstPaymentWay.Items.AddRange(new object[] {
-            "现金",
-            "支付宝",
-            "微信",
-            "银联",
-            "Pos刷卡"});
-            this.lstPaymentWay.Location = new System.Drawing.Point(0, 0);
-            this.lstPaymentWay.Name = "lstPaymentWay";
-            this.lstPaymentWay.Size = new System.Drawing.Size(259, 407);
-            this.lstPaymentWay.TabIndex = 1;
-            this.lstPaymentWay.SelectedValueChanged += new System.EventHandler(this.lstPaymentWay_SelectedValueChanged);
-            this.lstPaymentWay.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstPaymentWay_KeyDown);
-            // 
             // panel2
             // 
-            this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.lblOrderAmount);
-            this.panel2.Controls.Add(this.txtPayAmount);
+            this.panel2.Controls.Add(this.lblAmount);
+            this.panel2.Controls.Add(this.txtRefundCode);
             this.panel2.Controls.Add(this.txtLicenseCode);
-            this.panel2.Controls.Add(this.txtRefundAccount);
-            this.panel2.Controls.Add(this.txtOnlinePayAmount);
-            this.panel2.Controls.Add(this.label4);
             this.panel2.Controls.Add(this.label3);
+            this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.lblOnlinePayAmount);
-            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.lblOnlinePay);
+            this.panel2.Controls.Add(this.lblPaymentWay);
+            this.panel2.Controls.Add(this.lblRefundOrder);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(259, 0);
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(396, 407);
+            this.panel2.Size = new System.Drawing.Size(873, 509);
             this.panel2.TabIndex = 2;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label1.Location = new System.Drawing.Point(41, 37);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 25);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "应退款：";
             // 
             // lblOrderAmount
             // 
             this.lblOrderAmount.AutoSize = true;
             this.lblOrderAmount.Font = new System.Drawing.Font("微软雅黑", 42F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblOrderAmount.Location = new System.Drawing.Point(108, 13);
+            this.lblOrderAmount.ForeColor = System.Drawing.Color.Red;
+            this.lblOrderAmount.Location = new System.Drawing.Point(150, 209);
+            this.lblOrderAmount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOrderAmount.Name = "lblOrderAmount";
-            this.lblOrderAmount.Size = new System.Drawing.Size(266, 75);
+            this.lblOrderAmount.Size = new System.Drawing.Size(330, 90);
             this.lblOrderAmount.TabIndex = 3;
             this.lblOrderAmount.Text = "￥120.00";
             // 
-            // txtPayAmount
+            // lblAmount
             // 
-            this.txtPayAmount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtPayAmount.Location = new System.Drawing.Point(139, 91);
-            this.txtPayAmount.Name = "txtPayAmount";
-            this.txtPayAmount.Size = new System.Drawing.Size(208, 35);
-            this.txtPayAmount.TabIndex = 2;
-            this.txtPayAmount.TextChanged += new System.EventHandler(this.txtPayAmount_TextChanged);
-            this.txtPayAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtPayAmount_KeyDown);
+            this.lblAmount.AutoSize = true;
+            this.lblAmount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblAmount.Location = new System.Drawing.Point(27, 252);
+            this.lblAmount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblAmount.Name = "lblAmount";
+            this.lblAmount.Size = new System.Drawing.Size(134, 31);
+            this.lblAmount.TabIndex = 4;
+            this.lblAmount.Text = "退款金额：";
+            // 
+            // txtRefundCode
+            // 
+            this.txtRefundCode.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtRefundCode.Location = new System.Drawing.Point(165, 23);
+            this.txtRefundCode.Margin = new System.Windows.Forms.Padding(4);
+            this.txtRefundCode.Name = "txtRefundCode";
+            this.txtRefundCode.Size = new System.Drawing.Size(422, 42);
+            this.txtRefundCode.TabIndex = 0;
+            this.txtRefundCode.TextChanged += new System.EventHandler(this.txtRefundCode_TextChanged);
+            this.txtRefundCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtRefundCode_KeyDown);
             // 
             // txtLicenseCode
             // 
             this.txtLicenseCode.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtLicenseCode.Location = new System.Drawing.Point(139, 226);
+            this.txtLicenseCode.Location = new System.Drawing.Point(165, 311);
+            this.txtLicenseCode.Margin = new System.Windows.Forms.Padding(4);
             this.txtLicenseCode.Name = "txtLicenseCode";
             this.txtLicenseCode.PasswordChar = '*';
-            this.txtLicenseCode.Size = new System.Drawing.Size(208, 35);
-            this.txtLicenseCode.TabIndex = 3;
+            this.txtLicenseCode.Size = new System.Drawing.Size(422, 42);
+            this.txtLicenseCode.TabIndex = 1;
             this.txtLicenseCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLicenseCode_KeyDown);
-            // 
-            // txtRefundAccount
-            // 
-            this.txtRefundAccount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtRefundAccount.Location = new System.Drawing.Point(139, 181);
-            this.txtRefundAccount.Name = "txtRefundAccount";
-            this.txtRefundAccount.Size = new System.Drawing.Size(208, 35);
-            this.txtRefundAccount.TabIndex = 3;
-            this.txtRefundAccount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRefundAccount_KeyDown);
-            // 
-            // txtOnlinePayAmount
-            // 
-            this.txtOnlinePayAmount.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtOnlinePayAmount.Location = new System.Drawing.Point(139, 136);
-            this.txtOnlinePayAmount.Name = "txtOnlinePayAmount";
-            this.txtOnlinePayAmount.Size = new System.Drawing.Size(208, 35);
-            this.txtOnlinePayAmount.TabIndex = 3;
-            this.txtOnlinePayAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtOnlinePayAmount_KeyDown);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("微软雅黑", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label4.ForeColor = System.Drawing.Color.Blue;
-            this.label4.Location = new System.Drawing.Point(87, 366);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(161, 28);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "按ESC 取消退单";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label3.Location = new System.Drawing.Point(3, 231);
+            this.label3.Location = new System.Drawing.Point(5, 311);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(126, 25);
+            this.label3.Size = new System.Drawing.Size(158, 31);
             this.label3.TabIndex = 0;
             this.label3.Text = "店长授权码：";
             // 
             // btnSave
             // 
-            this.btnSave.BackColor = System.Drawing.SystemColors.Control;
+            this.btnSave.BackColor = System.Drawing.Color.Red;
             this.btnSave.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnSave.Location = new System.Drawing.Point(27, 269);
+            this.btnSave.ForeColor = System.Drawing.Color.Snow;
+            this.btnSave.Location = new System.Drawing.Point(97, 381);
+            this.btnSave.Margin = new System.Windows.Forms.Padding(4);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(330, 76);
-            this.btnSave.TabIndex = 0;
-            this.btnSave.Text = "退 款";
+            this.btnSave.Size = new System.Drawing.Size(283, 95);
+            this.btnSave.TabIndex = 2;
+            this.btnSave.Text = "确认退款";
             this.btnSave.UseVisualStyleBackColor = false;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // label5
+            // lblOnlinePay
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label5.Location = new System.Drawing.Point(22, 186);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 25);
-            this.label5.TabIndex = 0;
-            this.label5.Text = "退款账号：";
+            this.lblOnlinePay.AutoSize = true;
+            this.lblOnlinePay.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblOnlinePay.ForeColor = System.Drawing.Color.Blue;
+            this.lblOnlinePay.Location = new System.Drawing.Point(64, 81);
+            this.lblOnlinePay.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblOnlinePay.Name = "lblOnlinePay";
+            this.lblOnlinePay.Size = new System.Drawing.Size(718, 124);
+            this.lblOnlinePay.TabIndex = 0;
+            this.lblOnlinePay.Text = "1.现金退款可不录入小票，按Enter键退款。\r\n2. 支付宝微信，输入小票单号或支付记录的商户订单号，\r\n按Enter键退款。\r\n3. 客户扫码退款，微信输入“" +
+    "W”，支付宝“A”，按Enter键退款";
             // 
-            // lblOnlinePayAmount
+            // lblPaymentWay
             // 
-            this.lblOnlinePayAmount.AutoSize = true;
-            this.lblOnlinePayAmount.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lblOnlinePayAmount.Location = new System.Drawing.Point(41, 141);
-            this.lblOnlinePayAmount.Name = "lblOnlinePayAmount";
-            this.lblOnlinePayAmount.Size = new System.Drawing.Size(88, 25);
-            this.lblOnlinePayAmount.TabIndex = 0;
-            this.lblOnlinePayAmount.Text = "退网银：";
+            this.lblPaymentWay.AutoSize = true;
+            this.lblPaymentWay.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblPaymentWay.ForeColor = System.Drawing.Color.Red;
+            this.lblPaymentWay.Location = new System.Drawing.Point(612, 29);
+            this.lblPaymentWay.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblPaymentWay.Name = "lblPaymentWay";
+            this.lblPaymentWay.Size = new System.Drawing.Size(110, 31);
+            this.lblPaymentWay.TabIndex = 0;
+            this.lblPaymentWay.Text = "现金退款";
             // 
-            // label2
+            // lblRefundOrder
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.label2.Location = new System.Drawing.Point(22, 96);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(107, 25);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "退现金￥：";
+            this.lblRefundOrder.AutoSize = true;
+            this.lblRefundOrder.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lblRefundOrder.Location = new System.Drawing.Point(29, 29);
+            this.lblRefundOrder.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblRefundOrder.Name = "lblRefundOrder";
+            this.lblRefundOrder.Size = new System.Drawing.Size(134, 31);
+            this.lblRefundOrder.TabIndex = 0;
+            this.lblRefundOrder.Text = "小票单号：";
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.BackColor = System.Drawing.SystemColors.Control;
+            this.btnCancel.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCancel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnCancel.Location = new System.Drawing.Point(422, 381);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(283, 95);
+            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Text = "返 回";
+            this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // frmRefund
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(655, 407);
+            this.ClientSize = new System.Drawing.Size(873, 509);
             this.ControlBox = false;
             this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
             this.KeyPreview = true;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmRefund";
-            this.Text = "选择退款方式";
+            this.Text = "销售退款";
             this.Load += new System.EventHandler(this.frmRefund_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmRefund_KeyDown);
-            this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);
@@ -237,21 +201,16 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.ListBox lstPaymentWay;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblAmount;
         private System.Windows.Forms.Label lblOrderAmount;
-        private System.Windows.Forms.TextBox txtPayAmount;
-        private System.Windows.Forms.TextBox txtOnlinePayAmount;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtRefundCode;
         private System.Windows.Forms.Button btnSave;
-        private System.Windows.Forms.Label lblOnlinePayAmount;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblOnlinePay;
+        private System.Windows.Forms.Label lblRefundOrder;
         private System.Windows.Forms.TextBox txtLicenseCode;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtRefundAccount;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblPaymentWay;
+        private System.Windows.Forms.Button btnCancel;
     }
 }

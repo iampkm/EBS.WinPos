@@ -37,11 +37,11 @@ namespace EBS.WinPos.Service.Dto
         /// <summary>
         /// 销售价
         /// </summary>
-        public decimal SalePrice { get; private set; }
+        public decimal SalePrice { get;  set; }
         /// <summary>
         /// 优惠价
         /// </summary>
-        public decimal RealPrice { get; private set; }
+        public decimal RealPrice { get;  set; }
 
         public DateTime UpdatedOn { get; private set; }
 

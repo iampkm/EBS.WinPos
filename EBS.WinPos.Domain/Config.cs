@@ -6,7 +6,7 @@ using System.Configuration;
 using EBS.Infrastructure.Extension;
 namespace EBS.WinPos.Domain
 {
-   public class Config
+    public class Config
     {
         /// <summary>
         ///sqlite 数据库连接字符串
@@ -41,7 +41,7 @@ namespace EBS.WinPos.Domain
             {
                 string configKey = "PayServer";
                 return ConfigurationManager.AppSettings[configKey].ToString();
-               
+
             }
         }
         /// <summary>
@@ -62,7 +62,7 @@ namespace EBS.WinPos.Domain
             get
             {
                 string configKey = "SignKey_WeChatBarcode";
-                return ConfigurationManager.AppSettings[configKey].ToString().Trim();               
+                return ConfigurationManager.AppSettings[configKey].ToString().Trim();
             }
         }
 
@@ -88,16 +88,31 @@ namespace EBS.WinPos.Domain
             }
         }
 
-       /// <summary>
-       /// 允许使用设置的角色
-       /// </summary>
+        /// <summary>
+        /// 允许使用设置的角色
+        /// </summary>
         public static int[] Allowsetting
         {
-            get {
+            get
+            {
                 string configKey = "Allowsetting";
                 return ConfigurationManager.AppSettings[configKey].ToString().Trim().Split(',').ToIntArray();
             }
         }
-       
+
+        /// <summary>
+        /// 是否打印小票配置，为null 或true 打印；false 不打印
+        /// </summary>
+        public static bool IsPrintTicket
+        {
+            get
+            {
+                string configKey = "IsPrintTicket";
+                var value = ConfigurationManager.AppSettings[configKey];
+                if (string.IsNullOrEmpty(value)) { return true; }  // 当没有这个配置项，默认打印小票；兼容旧版本无此项配置
+                return Convert.ToBoolean(value);              
+            }
+        }
+
     }
 }

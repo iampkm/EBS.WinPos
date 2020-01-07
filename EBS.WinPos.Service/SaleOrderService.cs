@@ -16,6 +16,7 @@ using EBS.WinPos.Service.Task;
 using EBS.Infrastructure.Log;
 using EBS.WinPos.Service.WxPayAPI;
 using WxPayAPI;
+using Newtonsoft.Json;
 namespace EBS.WinPos.Service
 {
     public class SaleOrderService
@@ -70,7 +71,7 @@ namespace EBS.WinPos.Service
                 OrderType = 2,
                 RefundAccount = cat.RefundAccount,
                 WorkScheduleCode = cat.WorkScheduleCode,
-                OrderLevel =cat.OrderLevel
+                OrderLevel = cat.OrderLevel
             };
             order.GenerateNewCode();
             foreach (ShopCartItem item in cat.Items)
@@ -100,13 +101,14 @@ namespace EBS.WinPos.Service
 
         public void CashPay(int orderId, decimal payAmount)
         {
-          var model = _db.Orders.Include(n=>n.Items).FirstOrDefault(n => n.Id == orderId);
+            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (payAmount < model.OrderAmount)
             {
                 throw new AppException("支付金额低于订单金额");
             }
-            if (payAmount > model.OrderAmount + 100) {
+            if (payAmount > model.OrderAmount + 100)
+            {
                 throw new AppException("收现金额录入过大");
             }
 
@@ -119,20 +121,14 @@ namespace EBS.WinPos.Service
             _syncService.Send(model);
         }
 
-        public void CashRefund(int orderId, string licenseCode, decimal payAmount)
+        public void ScanPay(int orderId, PaymentWay paymentWay)
         {
-            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
             var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
-            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
-            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            model.PayAmount = payAmount;
-            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount))
-            {
-                throw new AppException("退款金额不能超过订单金额");
-            }
+            model.OnlinePayAmount = model.OrderAmount;
+            model.PayAmount = 0;
 
-            model.FinishPaid(payAmount);
+            model.FinishPaid(model.PayAmount, model.OnlinePayAmount, paymentWay);
             //保存交易记录
             _db.SaveChanges();
             //打印小票
@@ -141,59 +137,19 @@ namespace EBS.WinPos.Service
             _syncService.Send(model);
         }
 
-        public void WechatPay(int orderId, string payBarCode, decimal payAmount)
-        {
-            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫微信付款条码"); }
-            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
-            if (model == null) { throw new AppException("订单不存在"); }
-            if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
-            if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
-            // 发起微信支付
-            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            //string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
-            //string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
-            //string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
-
-            var fee = int.Parse((model.OnlinePayAmount*100).ToString()); // 金额单位为分，不能带小数
-            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
-            var body = string.Format("[{0}]-{1}", store.Name, model.Items[0].ProductName);
-            // 发起微信支付
-            try
-            {
-                _wechatPay.Run(model.Code, body, fee, payBarCode);
-            }
-            catch (WxPayException wxex)
-            {
-                throw new AppException(wxex.Message, wxex);
-            }
-            catch (Exception ex)
-            {
-                throw new AppException("微信支付失败,请联系管理员", ex);
-            } 
-            //支付成功
-         //   model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
-          //  _db.SaveChanges();
-            //打印小票
-           // PrintOrderTicket(model);
-            //同步到服务器
-           // _syncService.Send(model);
-           
-        }
-
-        public void WechatRefund(int orderId, string licenseCode, decimal payAmount, string refundAccount)
+        //public void CashRefund(int orderId, string licenseCode, decimal payAmount,string sourceSaleOrderCode)
+        public void CashRefund(ShopCart cart, string licenseCode)
         {
             if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
-            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
+            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == cart.OrderId);
             if (model == null) { throw new AppException("订单不存在"); }
-            if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
-            model.RefundAccount = refundAccount;
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
-            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
-            // 发起微信支付
-            model.WaitRefund(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+
+            UpdateRefundItem(model, cart);
+
+            model.FinishPaid(cart.OrderAmount);
+            //保存交易记录
             _db.SaveChanges();
             //打印小票
             PrintOrderTicket(model);
@@ -201,19 +157,150 @@ namespace EBS.WinPos.Service
             _syncService.Send(model);
         }
 
-        public void AliPay(int orderId, string payBarCode, decimal payAmount)
+        public void ScanRefund(ShopCart cart, string licenseCode)
         {
-            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫支付宝付款条码"); }
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == cart.OrderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
+
+            UpdateRefundItem(model, cart);
+
+            model.FinishPaid(0, cart.OrderAmount, cart.PaymentWay);
+            //保存交易记录
+            _db.SaveChanges();
+            //打印小票
+            PrintOrderTicket(model);
+            //同步到服务器
+            _syncService.Send(model);
+        }
+
+        /// <summary>
+        ///  根据购物车明细，现修改退单和商品价格（按原单退）
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="cart"></param>
+        private void UpdateRefundItem(SaleOrder model, ShopCart cart)
+        {
+            model.SourceSaleOrderCode = cart.SourceSaleOrderCode;
+            // 修改明细价格
+            foreach (var item in model.Items)
+            {
+                var line = cart.Items.FirstOrDefault(n => n.ProductId == item.ProductId);
+                if (line != null)
+                {
+                    item.SalePrice = line.SalePrice;
+                    item.RealPrice = line.RealPrice;
+                }
+            }
+        }
+
+        #region 微信支付
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="payBarCode"></param>
+        /// <param name="payAmount">现金付款金额</param>
+        public void WechatPay(int orderId, string payBarCode, decimal payAmount = 0)
+        {
+            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫微信付款条码"); }
             var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
             if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
-            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("请使用现金支付"); }
+            if (model.PayAmount > model.OrderAmount) { throw new AppException("请使用现金支付"); }
             // 发起微信支付
-            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
-            string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_AliBarcode);
-            string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_AliBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
-            if (result == "1")
+            model.OnlinePayAmount = model.OrderAmount;
+            //string data = JsonHelper.GetJson(new { barcode = payBarCode, orderId = model.Code, paymentAmt = model.OnlinePayAmount.ToString("F2") });
+            //string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_WeChatBarcode);
+            //string result = HttpHelper.HttpRequest("POST", Config.Api_Pay_WeChatBarcode, param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
+
+            var fee = (model.OrderAmount * 100).ToString(); // 金额单位为分，不能带小数
+                                                            // var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            var body = model.Items[0].ProductName;
+            // 发起微信支付
+            string bizContent = JsonHelper.GetJson(new { body = body, total_amount = fee, out_trade_no = model.Code, auth_code = payBarCode });
+            PayRequest request = new PayRequest()
+            {
+                Method = "wechat.trade.barcode.pay",
+                StoreId = model.StoreId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);
+            if (result.WechatTransactionSuccess())
+            {
+                //支付成功
+                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
+                _db.SaveChanges();
+                //打印小票
+                PrintOrderTicket(model);
+                //同步到服务器
+                _syncService.Send(model);
+            }
+            else
+            {
+                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
+            }
+
+        }
+
+        public PayResponse WechatTradeQuery(string orderCode, int storeId)
+        {
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = orderCode });            //                                         
+            PayRequest request = new PayRequest()
+            {
+                Method = "wechat.trade.query",
+                StoreId = storeId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request); 
+            return result;
+        }
+
+        /// <summary>
+        /// 修正订单状态
+        /// </summary>
+        public void CorrectWechatOrderStatus(SaleOrder order, PayResponse response)
+        {
+            if (order.Status == Domain.ValueObject.SaleOrderStatus.WaitPaid && response.WechatTransactionSuccess()&&response.WechatTradeStatusSuccess())
+            {
+                order.FinishPaid(order.PayAmount,order.OnlinePayAmount,order.PaymentWay);
+                order.PaidDate = DateTime.ParseExact(response.data["TimeEnd"], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture); 
+                _db.SaveChanges();
+
+                // 同步后端服务器
+                _syncService.Send(order);
+            }
+        }
+
+        public void WechatRefund(ShopCart cart, string licenseCode)
+        {
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == cart.OrderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+
+            var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
+
+            model.OnlinePayAmount = model.OrderAmount;
+            UpdateRefundItem(model, cart);
+            // 发起微信支付
+            model.WaitRefund(0, model.OnlinePayAmount, PaymentWay.WechatPay);
+            _db.SaveChanges();
+
+            var body = "退货:" + model.Items[0].ProductName;
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = cart.SourceSaleOrderCode, total_amount = Math.Abs(model.OrderAmount) * 100, refund_amount = Math.Abs(model.OrderAmount) * 100, refund_reason = body, out_refund_no = model.Code });
+            //                                          trade_no = "", out_trade_no = "", total_amount=0, refund_amount=0, refund_desc="", out_refund_no =""
+            PayRequest request = new PayRequest()
+            {
+                Method = "wechat.trade.refund",
+                StoreId = model.StoreId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);
+            if (result.WechatTransactionSuccess())
             {
                 //支付成功
                 model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.WechatPay);
@@ -229,25 +316,186 @@ namespace EBS.WinPos.Service
             }
         }
 
-        public void AliRefund(int orderId, string licenseCode, decimal payAmount, string refundAccount)
+        public PayResponse WechatRefundQuery(string refundCode, int storeId)
         {
-            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = "", refund_no = "", out_refund_no = refundCode });            //                                         
+            PayRequest request = new PayRequest()
+            {
+                Method = "wechat.trade.refund.query",
+                StoreId = storeId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);           
+
+            return result;
+        }
+
+        public void CorrectWechatRefundStatus(SaleOrder order, PayResponse response)
+        {
+            if (order.Status == Domain.ValueObject.SaleOrderStatus.WaitPaid && response.WechatTransactionSuccess() && response.WechatTradeStatusSuccess())
+            {
+                order.FinishPaid(order.PayAmount, order.OnlinePayAmount, order.PaymentWay);
+               // order.PaidDate = DateTime.ParseExact(response.data["TimeEnd"], "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture);
+                _db.SaveChanges();
+
+                // 同步后端服务器
+                _syncService.Send(order);
+            }
+        }
+
+        #endregion
+        #region alipay 支付
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="payBarCode"></param>
+        /// <param name="payAmount">现金付款金额</param>
+        public void AliPay(int orderId, string payBarCode, decimal payAmount = 0)
+        {
+            if (string.IsNullOrEmpty(payBarCode)) { throw new AppException("请录入或扫支付宝付款条码"); }
             var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == orderId);
             if (model == null) { throw new AppException("订单不存在"); }
-            if (string.IsNullOrEmpty(refundAccount)) { throw new AppException("请输入支付宝退款账户"); }
-            model.RefundAccount = refundAccount;
+            if (model.OrderAmount <= 0) { throw new AppException("订单金额不能为0"); }
+            if (Math.Abs(model.PayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("请使用现金支付"); }
+            // 发起支付
+            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
+
+            // var fee = int.Parse((model.OnlinePayAmount * 100).ToString()); // 金额单位为分，不能带小数
+            //  var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
+            var body = model.Items[0].ProductName;
+            string bizContent = JsonHelper.GetJson(new { body = body, total_amount = model.OnlinePayAmount.ToString("F2"), out_trade_no = model.Code, auth_code = payBarCode, subject = body });
+            PayRequest request = new PayRequest()
+            {
+                Method = "alipay.trade.barcode.pay",
+                StoreId = model.StoreId.ToString(),
+                BizContent = bizContent
+            };
+
+            var result = PostPayReqeust(request);
+            if (result.AlipayTransactionSuccess())
+            {
+                //支付成功
+                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.AliPay);
+                _db.SaveChanges();
+                //打印小票
+                PrintOrderTicket(model);
+                //同步到服务器
+                _syncService.Send(model);
+            }
+            else
+            {
+                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
+            }
+        }
+
+        public PayResponse AliPayTradeQuery(string orderCode, int storeId)
+        {
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = orderCode });            //                                         
+            PayRequest request = new PayRequest()
+            {
+                Method = "aliPay.trade.query",
+                StoreId = storeId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);        
+            return result;
+        }
+
+        public void CorrentAlipayOrderStatus(SaleOrder order, PayResponse response)
+        {
+            if (order.Status == Domain.ValueObject.SaleOrderStatus.WaitPaid && response.AlipayTransactionSuccess() && response.AlipayTradeStatusSuccess())
+            {
+                order.FinishPaid(order.PayAmount, order.OnlinePayAmount, order.PaymentWay);
+                order.PaidDate = DateTime.ParseExact(response.data["SendPayDate"], "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                _db.SaveChanges();
+
+                //同步后端服务器
+                _syncService.Send(order);
+            }
+        }
+        public void CorrentAlipayRefundStatus(SaleOrder order, PayResponse response)
+        {
+            if (order.Status == Domain.ValueObject.SaleOrderStatus.WaitPaid && response.AlipayTransactionSuccess() && response.AlipayTradeStatusSuccess())
+            {
+                order.FinishPaid(order.PayAmount, order.OnlinePayAmount, order.PaymentWay);
+              //  order.PaidDate = DateTime.ParseExact(response.data["SendPayDate"], "yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture);
+                _db.SaveChanges();
+
+                //同步后端服务器
+                _syncService.Send(order);
+            }
+        }
+
+        public void AliRefund(ShopCart cart, string licenseCode)
+        {
+            if (string.IsNullOrEmpty(licenseCode)) { throw new AppException("请输入店长授权码"); }
+            var model = _db.Orders.Include(n => n.Items).FirstOrDefault(n => n.Id == cart.OrderId);
+            if (model == null) { throw new AppException("订单不存在"); }
+
+            // 修改价格，标记退款单为待退款
             var store = _db.Stores.FirstOrDefault(n => n.Id == model.StoreId);
             if (!store.VerifyLicenseCode(licenseCode)) { throw new AppException("店长授权码错误"); }
-            if (model.OrderAmount >= 0) { throw new AppException("订单金额不能大于0"); }
-            model.OnlinePayAmount = model.OrderAmount - model.PayAmount;
-            if (Math.Abs(model.PayAmount) + Math.Abs(model.OnlinePayAmount) > Math.Abs(model.OrderAmount)) { throw new AppException("退款现金不能超过应退金额"); }
-            model.WaitRefund(model.PayAmount, model.OnlinePayAmount, PaymentWay.AliPay);
+            UpdateRefundItem(model, cart);
+            model.WaitRefund(0, model.OrderAmount, PaymentWay.AliPay);
             _db.SaveChanges();
-            //打印小票
-            PrintOrderTicket(model);
-            //同步到服务器
-            _syncService.Send(model);
+
+            // 向后端服务发起退款
+            var body = "退货:" + model.Items[0].ProductName;
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = cart.SourceSaleOrderCode, refund_amount = Math.Abs(model.OrderAmount), refund_reason = body, out_refund_no = model.Code });
+            PayRequest request = new PayRequest()
+            {
+                Method = "alipay.trade.refund",
+                StoreId = model.StoreId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);
+            if (result.AlipayTransactionSuccess())
+            {
+                //支付成功
+                model.FinishPaid(model.PayAmount, model.OnlinePayAmount, PaymentWay.AliPay);
+                _db.SaveChanges();
+                //打印小票
+                PrintOrderTicket(model);
+                //同步到服务器
+                _syncService.Send(model);
+            }
+            else
+            {
+                throw new AppException("支付失败！请检查网络是否正常，稍后重试。");
+            }
         }
+
+        public PayResponse AliPayRefundQuery(string orderCode, int storeId)
+        {
+            string bizContent = JsonHelper.GetJson(new { trade_no = "", out_trade_no = orderCode, out_refund_no = "" });            //                                         
+            PayRequest request = new PayRequest()
+            {
+                Method = "aliPay.trade.refund.query",
+                StoreId = storeId.ToString(),
+                BizContent = bizContent
+            };
+            var result = PostPayReqeust(request);
+            var queryList = new List<string>();
+            
+
+            return result;
+        }
+
+        private PayResponse PostPayReqeust(PayRequest request)
+        {
+            string data = JsonHelper.GetJson(request);
+            string sign = EncryptHelpler.SignEncrypt(data, Config.SignKey_AliBarcode);
+            var paramsDics = request.toDic();
+            paramsDics.Add("sign", sign);
+            var postData = request.getKeyValueString(paramsDics);
+            //string result = HttpHelper.HttpRequest("POST", Config.ApiService+ "/Pay/Geteway", param: string.Format("appId=GGX&sign={0}&data={1}", sign, data), timeOut: 90000);
+            string result = HttpHelper.HttpRequest("POST", Config.ApiService + "/Pay/Geteway", param: postData, timeOut: 90000);
+            var payResponse = JsonConvert.DeserializeObject<PayResponse>(result);
+            return payResponse;
+        }
+
+        #endregion
 
         public void PrintTicket(int orderId)
         {
@@ -266,8 +514,15 @@ namespace EBS.WinPos.Service
         private void PrintOrderTicket(SaleOrder model)
         {
             try
-            {               
-                PrintTicket(model);
+            {
+                if (Config.IsPrintTicket)
+                {
+                    PrintTicket(model);
+                }
+                else
+                {
+                    _log.Info("配置参数：IsPrintTicket 为false，将不打印小票");
+                }
             }
             catch (Exception ex)
             {
@@ -317,7 +572,8 @@ namespace EBS.WinPos.Service
             billTemplate = billTemplate.Replace("{{chargeamount}}", model.GetChargeAmount().ToString("F2"));
             billTemplate = billTemplate.Replace("{{paymentway}}", model.PaymentWay.Description());
             billTemplate = billTemplate.Replace("{{onlinepayamount}}", model.OnlinePayAmount.ToString("F2"));
-
+            // 追加小票二维码
+            billTemplate = billTemplate.Replace("{{orderbarcode}}", model.Code.CreateBarCode());
             _printService.Print(billTemplate);
         }
 
@@ -339,6 +595,46 @@ namespace EBS.WinPos.Service
                 order.Items.AddRange(items.Where(n => n.SaleOrderId == order.Id));
             }
             return orders;
+        }
+
+        /// <summary>
+        ///  查询已支付销售单，订单不存在返回null
+        /// </summary>
+        /// <param name="code">订单或退单号</param>
+        /// <returns></returns>
+        public SaleOrder QuerySaleOrder(string code)
+        {
+            string sql = "select * from SaleOrder Where Code=@Code ";
+            var order = _dbContext.First<SaleOrder>(sql, new { Code = code });
+            if (order == null)
+            {
+                return null;
+            }
+            // 查询明细
+            string sqlitem = "select i.* from SaleOrderItem i where i.SaleOrderId =@SaleOrderId ";
+            var items = _dbContext.Query<SaleOrderItem>(sqlitem, new { SaleOrderId = order.Id }).ToList();
+            order.Items = items;
+            return order;
+        }
+
+        /// <summary>
+        /// 查询已退款明细
+        /// </summary>
+        /// <param name="sourceSaleOrderCode"></param>
+        /// <returns></returns>
+        public List<SaleOrderItem> QueryRefundOrderItems(string sourceSaleOrderCode)
+        {
+            //string sql = "select * from SaleOrder Where Status =@Paid And SourceSaleOrderCode=@SourceSaleOrderCode";
+            //var orders = _dbContext.Query<SaleOrder>(sql, new { Paid = (int)SaleOrderStatus.Paid, SourceSaleOrderCode = sourceSaleOrderCode }).ToList();
+            //if (orders.Count == 0)
+            //{
+            //    return orders;
+            //}
+            // 查询明细
+            string sqlitem = "select i.* from SaleOrderItem i inner join SaleOrder o on i.SaleOrderId=o.Id where Status =@Paid And SourceSaleOrderCode=@SourceSaleOrderCode ";
+            var items = _dbContext.Query<SaleOrderItem>(sqlitem, new { Paid = (int)SaleOrderStatus.Paid, SourceSaleOrderCode = sourceSaleOrderCode }).ToList();
+
+            return items;
         }
 
     }

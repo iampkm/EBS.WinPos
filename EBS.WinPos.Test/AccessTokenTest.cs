@@ -33,5 +33,13 @@ namespace EBS.WinPos.Test
 
             Assert.AreEqual("1", md5cdkey);
         }
+
+        [TestMethod]
+        public void TimeChangeTest()
+        {
+            var time = "20141030133525";
+             var dt= DateTime.ParseExact(time, "yyyyMMddHHmmss", System.Globalization.CultureInfo.CurrentCulture);
+            Assert.AreEqual(new DateTime(2014, 10, 30, 13, 35, 25), dt);
+        }
     }
 }

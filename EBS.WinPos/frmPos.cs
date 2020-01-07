@@ -62,18 +62,19 @@ namespace EBS.WinPos
             {
                 this._currentShopCat = this._currentShopCat ?? new ShopCart(ContextService.StoreId, ContextService.PosId, ContextService.CurrentAccount.Id);
                 this._currentShopCat.WorkScheduleCode = _currentWork.Code;
-                if (this._currentShopCat.OrderAmount > 0)
+
+                if (_currentShopCat.OrderAmount > 0)  // 订单
                 {
-                    CreateSaleOrder(input);
+                    CreateSaleOrder();
                 }
-                else if (this._currentShopCat.OrderAmount < 0)
+                else if (_currentShopCat.OrderAmount < 0) // 退单
                 {
-                    CreateSaleRefund(input);
+                    CreateRefundOrder();
                 }
-                else
-                {
-                    MessageBox.Show("请输入正确的商品条码或金额", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return;
+                else {
+                    MessageBox.Show("请输入正确的商品条码", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); 
                 }
+
             }
             else
             {
@@ -174,56 +175,49 @@ namespace EBS.WinPos
             this._currentShopCat = null;
         }
 
-        public void CreateSaleOrder(string money)
+        public void CreateSaleOrder()
         {
-            var inputAmount = 0m;
-            decimal.TryParse(money, out inputAmount);
-            _currentShopCat.PayAmount = inputAmount;
-            if (_currentShopCat.Items.Count == 0)
+            CheckItemsAndProductQuantity();
+            if (_currentShopCat.OrderId == 0)
             {
-                MessageBox.Show("商品明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                _saleOrderService.CreateOrder(_currentShopCat);
             }
-            _saleOrderService.CreateOrder(_currentShopCat);
+         
             this.lblOrderCode.Text = "订单号：" + _currentShopCat.OrderCode;
             this.txtBarCode.Text = "";
 
             // 显示支付窗体  
-            if (_currentShopCat.CheckCanPay())
-            {
-                frmPay payForm = frmPay.CreateForm();
-                payForm.CurrentOrder = _currentShopCat;
-                payForm.PosForm = this;
-                payForm.ShowDialog(this);
-            }
-            else
-            {
-                MessageBox.Show("有商品项数量为0,不能支付！请调整数量或ESC作废订单。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            frmPay payForm = frmPay.CreateForm();
+            payForm.CurrentOrder = _currentShopCat;
+            payForm.PosForm = this;
+            payForm.ShowDialog(this);
 
         }
 
-        public void CreateSaleRefund(string money)
+        private void CheckItemsAndProductQuantity()
         {
-            // 退单
-
-            if (string.IsNullOrEmpty(money))
+            if (_currentShopCat.CheckProductQuantity())
             {
-                _currentShopCat.PayAmount = _currentShopCat.OrderAmount; ;
-            }
-            else
-            {
-                var inputAmount = 0m;
-                decimal.TryParse(money, out inputAmount);
-                _currentShopCat.PayAmount = inputAmount;
-            }
-            if (_currentShopCat.Items.Count == 0)
-            {
-                MessageBox.Show("退单无明细为空", "系统信息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("订单明细为空或商品数量异常，一行商品数量最大1000。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            _currentShopCat.OrderType = 2; // 销售退单
-            _saleOrderService.CreateSaleRefund(_currentShopCat);
+
+            if (!_currentShopCat.CheckOrderType())
+            {
+                MessageBox.Show("订单明细数量全部为正，退单全部为负，不允许混编！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+        }
+
+        public void CreateRefundOrder()
+        {
+            // 退单
+            CheckItemsAndProductQuantity();    
+           
+            if (_currentShopCat.OrderId == 0)  //退出销售退款窗体，重新进入时，不重复创建单据
+            {
+                _saleOrderService.CreateSaleRefund(_currentShopCat);
+            }           
             this.lblOrderCode.Text = "订单号：" + _currentShopCat.OrderCode;
             this.txtBarCode.Text = "";
 
@@ -256,7 +250,7 @@ namespace EBS.WinPos
                 if (this._currentShopCat.OrderId == 0)
                 {
                     if (_currentShopCat.OrderAmount < 0) { _currentShopCat.OrderType = 2; }
-                    _currentShopCat.WorkScheduleCode = _currentWork.Code;                    
+                    _currentShopCat.WorkScheduleCode = _currentWork.Code;
                     _saleOrderService.CreateOrder(_currentShopCat);
                 }
                 _saleOrderService.CancelOrder(_currentShopCat.OrderId, ContextService.CurrentAccount.Id);
@@ -280,27 +274,63 @@ namespace EBS.WinPos
             switch (e.KeyCode)
             {
                 case Keys.Enter:
-                    inputEnter();
+                    inputEnter();  // 扫条码和 现金，支付宝，微信支付
                     break;
                 case Keys.Escape:
-                    CreateCancelOrder();
+                    CreateCancelOrder();  // 取消订单
                     break;
-                case Keys.F1:  // +
+                case Keys.F1:             // 修改数量
                     ModifyQuantity();
                     break;
-                case Keys.F2:  // - 
-                    // MinusQuantity();
+                case Keys.F2:            // 输入vip卡
                     inputCustomer();
                     break;
-                case Keys.F5: //主菜单
+                case Keys.F3:            //在线支付查询
+                    PayQuery();
+                    break;
+                case Keys.F4:            
+                   
+                    break;
+                case Keys.F5:            // 主菜单
                     Quit();
                     break;
-                case Keys.F6:
+                case Keys.F6:            // 打印上一单
                     PrintPreOrderTicket();
+                    break;
+                case Keys.F7:           // 现金，支付宝，微信退款
+                  //  CreateRefundOrder();
+                    break;
+                case Keys.F8:           //退款查询
+                    RefundQuery();
+                    break;
+                case Keys.F9:
+
                     break;
                 default:
                     break;
             }
+        }
+
+        private void frmPos_Load(object sender, EventArgs e)
+        {
+            this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
+            this.lblStoreId.Text = "门店：" + ContextService.StoreId;
+            lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
+            lblKeys2.Text = "F3 支付查询,F5 主菜单,F6 重打小票,F7 创建退单 ";
+            this.txtBarCode.Focus();
+            this.dgvData.ClearSelection();
+
+        }
+
+        private void PayQuery()
+        {
+            frmPayQuery win = frmPayQuery.CreateForm();
+            win.ShowDialog(this);
+        }
+
+        private void RefundQuery()
+        {
+
         }
 
         public void PrintPreOrderTicket()
@@ -322,7 +352,8 @@ namespace EBS.WinPos
         /// 当前购物车为空
         /// </summary>
         /// <returns></returns>
-        private bool ShopCatIsEmpty() {
+        private bool ShopCatIsEmpty()
+        {
             return this._currentShopCat == null || (this._currentShopCat != null && this._currentShopCat.Items.Count <= 0);
         }
 
@@ -396,16 +427,7 @@ namespace EBS.WinPos
             this.txtBarCode.Focus();
         }
 
-        private void frmPos_Load(object sender, EventArgs e)
-        {           
-            this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
-            this.lblStoreId.Text = "门店：" + ContextService.StoreId;
-            lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
-            lblKeys2.Text = "快捷键：F5 主菜单,F6 重打小票 ";
-            this.txtBarCode.Focus();
-            this.dgvData.ClearSelection();
-
-        }
+       
 
         private void dgvData_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
@@ -454,7 +476,8 @@ namespace EBS.WinPos
                 {
                     var index = this.dgvData.CurrentCell.RowIndex;
                     var quantity = Convert.ToInt32(this.dgvData.Rows[index].Cells["Quantity"].EditedFormattedValue.ToString());
-                    if (quantity > 1000) {                       
+                    if (quantity > 1000)
+                    {
                         MessageBox.Show("单行商品数量最大为1000。", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         this.dgvData.Focus();
                         this.dgvData.CurrentCell = this.dgvData.Rows[index].Cells["Quantity"];

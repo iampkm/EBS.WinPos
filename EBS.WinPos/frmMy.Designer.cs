@@ -61,14 +61,15 @@
             this.plTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.plTop.Location = new System.Drawing.Point(0, 0);
             this.plTop.Name = "plTop";
-            this.plTop.Size = new System.Drawing.Size(660, 100);
+            this.plTop.Size = new System.Drawing.Size(812, 100);
             this.plTop.TabIndex = 0;
             // 
             // btnBack
             // 
-            this.btnBack.Location = new System.Drawing.Point(481, 23);
+            this.btnBack.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnBack.Location = new System.Drawing.Point(633, 22);
             this.btnBack.Name = "btnBack";
-            this.btnBack.Size = new System.Drawing.Size(74, 31);
+            this.btnBack.Size = new System.Drawing.Size(90, 41);
             this.btnBack.TabIndex = 2;
             this.btnBack.Text = "返 回";
             this.btnBack.UseVisualStyleBackColor = true;
@@ -76,9 +77,10 @@
             // 
             // btnPrint
             // 
-            this.btnPrint.Location = new System.Drawing.Point(381, 60);
+            this.btnPrint.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnPrint.Location = new System.Drawing.Point(482, 23);
             this.btnPrint.Name = "btnPrint";
-            this.btnPrint.Size = new System.Drawing.Size(125, 31);
+            this.btnPrint.Size = new System.Drawing.Size(141, 41);
             this.btnPrint.TabIndex = 2;
             this.btnPrint.Text = "打印收银汇总";
             this.btnPrint.UseVisualStyleBackColor = true;
@@ -86,9 +88,10 @@
             // 
             // btnQuery
             // 
+            this.btnQuery.Font = new System.Drawing.Font("微软雅黑", 14F);
             this.btnQuery.Location = new System.Drawing.Point(381, 23);
             this.btnQuery.Name = "btnQuery";
-            this.btnQuery.Size = new System.Drawing.Size(75, 31);
+            this.btnQuery.Size = new System.Drawing.Size(91, 41);
             this.btnQuery.TabIndex = 2;
             this.btnQuery.Text = "查 询";
             this.btnQuery.UseVisualStyleBackColor = true;
@@ -97,9 +100,9 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(42, 29);
+            this.label2.Location = new System.Drawing.Point(33, 29);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(90, 21);
+            this.label2.Size = new System.Drawing.Size(112, 27);
             this.label2.TabIndex = 1;
             this.label2.Text = "上班日期：";
             // 
@@ -107,7 +110,7 @@
             // 
             this.dtpDate.Location = new System.Drawing.Point(151, 23);
             this.dtpDate.Name = "dtpDate";
-            this.dtpDate.Size = new System.Drawing.Size(200, 29);
+            this.dtpDate.Size = new System.Drawing.Size(209, 34);
             this.dtpDate.TabIndex = 0;
             // 
             // plBody
@@ -116,7 +119,7 @@
             this.plBody.Dock = System.Windows.Forms.DockStyle.Fill;
             this.plBody.Location = new System.Drawing.Point(0, 100);
             this.plBody.Name = "plBody";
-            this.plBody.Size = new System.Drawing.Size(660, 379);
+            this.plBody.Size = new System.Drawing.Size(812, 416);
             this.plBody.TabIndex = 0;
             // 
             // dgvData
@@ -132,9 +135,10 @@
             this.dgvData.Location = new System.Drawing.Point(0, 0);
             this.dgvData.MultiSelect = false;
             this.dgvData.Name = "dgvData";
+            this.dgvData.RowHeadersWidth = 51;
             this.dgvData.RowTemplate.Height = 23;
             this.dgvData.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvData.Size = new System.Drawing.Size(660, 379);
+            this.dgvData.Size = new System.Drawing.Size(812, 416);
             this.dgvData.TabIndex = 0;
             this.dgvData.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvData_CellClick);
             this.dgvData.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvData_RowPostPaint);
@@ -143,21 +147,26 @@
             // 
             this.Id.DataPropertyName = "Id";
             this.Id.HeaderText = "编号";
+            this.Id.MinimumWidth = 6;
             this.Id.Name = "Id";
             this.Id.ReadOnly = true;
             this.Id.Visible = false;
+            this.Id.Width = 125;
             // 
             // CreatedByName
             // 
             this.CreatedByName.DataPropertyName = "CreatedByName";
             this.CreatedByName.HeaderText = "员工";
+            this.CreatedByName.MinimumWidth = 6;
             this.CreatedByName.Name = "CreatedByName";
             this.CreatedByName.ReadOnly = true;
+            this.CreatedByName.Width = 125;
             // 
             // StartDate
             // 
             this.StartDate.DataPropertyName = "StartDate";
             this.StartDate.HeaderText = "上班时间";
+            this.StartDate.MinimumWidth = 6;
             this.StartDate.Name = "StartDate";
             this.StartDate.ReadOnly = true;
             this.StartDate.Width = 200;
@@ -166,6 +175,7 @@
             // 
             this.EndDate.DataPropertyName = "EndDate";
             this.EndDate.HeaderText = "下班时间";
+            this.EndDate.MinimumWidth = 6;
             this.EndDate.Name = "EndDate";
             this.EndDate.ReadOnly = true;
             this.EndDate.Width = 200;
@@ -174,8 +184,10 @@
             // 
             this.CashAmount.DataPropertyName = "CashAmount";
             this.CashAmount.HeaderText = "收现金额";
+            this.CashAmount.MinimumWidth = 6;
             this.CashAmount.Name = "CashAmount";
             this.CashAmount.ReadOnly = true;
+            this.CashAmount.Width = 125;
             // 
             // plBottom
             // 
@@ -183,16 +195,17 @@
             this.plBottom.Controls.Add(this.label1);
             this.plBottom.Controls.Add(this.txtCashAmount);
             this.plBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.plBottom.Location = new System.Drawing.Point(0, 379);
+            this.plBottom.Location = new System.Drawing.Point(0, 416);
             this.plBottom.Name = "plBottom";
-            this.plBottom.Size = new System.Drawing.Size(660, 100);
+            this.plBottom.Size = new System.Drawing.Size(812, 100);
             this.plBottom.TabIndex = 0;
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(293, 25);
+            this.btnSave.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.btnSave.Location = new System.Drawing.Point(449, 25);
             this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 29);
+            this.btnSave.Size = new System.Drawing.Size(90, 40);
             this.btnSave.TabIndex = 2;
             this.btnSave.Text = "保 存";
             this.btnSave.UseVisualStyleBackColor = true;
@@ -203,23 +216,24 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(24, 28);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 21);
+            this.label1.Size = new System.Drawing.Size(112, 27);
             this.label1.TabIndex = 1;
             this.label1.Text = "收现金额：";
             // 
             // txtCashAmount
             // 
-            this.txtCashAmount.Location = new System.Drawing.Point(120, 25);
+            this.txtCashAmount.Font = new System.Drawing.Font("微软雅黑", 14F);
+            this.txtCashAmount.Location = new System.Drawing.Point(151, 25);
             this.txtCashAmount.Name = "txtCashAmount";
-            this.txtCashAmount.Size = new System.Drawing.Size(136, 29);
+            this.txtCashAmount.Size = new System.Drawing.Size(266, 38);
             this.txtCashAmount.TabIndex = 0;
             this.txtCashAmount.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtCashAmount_KeyDown);
             // 
             // frmMy
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 27F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 479);
+            this.ClientSize = new System.Drawing.Size(812, 516);
             this.Controls.Add(this.plBottom);
             this.Controls.Add(this.plBody);
             this.Controls.Add(this.plTop);
