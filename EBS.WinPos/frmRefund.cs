@@ -52,9 +52,10 @@ namespace EBS.WinPos
         {
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); this.Close(); }
 
-            this.lblOrderAmount.Text = Math.Abs(CurrentOrder.OrderAmount).ToString("F2");
+            this.lblOrderAmount.Text = Math.Abs(CurrentOrder.OrderAmount).ToString("F2");            
+            this.txtLicenseCode.Text = "";
+            this.txtRefundCode.Text = "";
             this.txtRefundCode.Focus();
-            this.txtLicenseCode.Text = "";            
         }
 
 
@@ -74,13 +75,25 @@ namespace EBS.WinPos
                 {
                     this.txtLicenseCode.Focus();
                     ConfirmPaymentWay(txtRefundCode.Text);
-                   
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
+            }
+            else if (e.KeyCode == Keys.F1)
+            {
+                this.txtLicenseCode.Focus();
+                this.CurrentOrder.PaymentWay = PaymentWay.WechatScan;
+                this.lblPaymentWay.Text = "微信扫码";
+
+            }
+            else if (e.KeyCode == Keys.F2) {
+                //支付宝退款
+                this.txtLicenseCode.Focus();
+                this.CurrentOrder.PaymentWay = PaymentWay.AliPayScan;
+                this.lblPaymentWay.Text = "支付宝扫码";
             }
 
         }
@@ -279,17 +292,7 @@ namespace EBS.WinPos
             {
                 // 现金退款
                 this.CurrentOrder.PaymentWay = PaymentWay.Cash;
-            }
-            if (inputCashOrAuthCode.ToUpper().StartsWith("A"))
-            {
-                //支付宝扫码退款
-                this.CurrentOrder.PaymentWay = PaymentWay.AliPayScan;
-            }
-            else if (inputCashOrAuthCode.ToUpper().StartsWith("W"))
-            {
-                // 微信扫码 退款
-                this.CurrentOrder.PaymentWay = PaymentWay.WechatScan;
-            }
+            }            
             else {
                 // 原单退款
                 QueryRefundOrder(inputCashOrAuthCode);

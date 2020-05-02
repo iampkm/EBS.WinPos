@@ -211,6 +211,8 @@ namespace EBS.WinPos
 
         public void CreateRefundOrder()
         {
+            _currentShopCat.SetItemQuantityToNegative();
+
             // 退单
             CheckItemsAndProductQuantity();    
            
@@ -298,7 +300,7 @@ namespace EBS.WinPos
                     PrintPreOrderTicket();
                     break;
                 case Keys.F7:           // 现金，支付宝，微信退款
-                  //  CreateRefundOrder();
+                    CreateRefundOrder();
                     break;
                 case Keys.F8:           //退款查询
                     RefundQuery();
@@ -315,8 +317,8 @@ namespace EBS.WinPos
         {
             this.lblAccountId.Text = "工号：" + ContextService.CurrentAccount.Id;
             this.lblStoreId.Text = "门店：" + ContextService.StoreId;
-            lblKeys.Text = "快捷键：F1 改数量,F2 会员,ESC 作废订单 ";
-            lblKeys2.Text = "F3 支付查询,F5 主菜单,F6 重打小票,F7 创建退单 ";
+           // lblKeys.Text = "Enter付款,F1改数量,F2会员,ESC作废订单";
+           // lblKeys2.Text = "F3支付查询,F5主菜单,F6重打小票,F7创建退单";
             this.txtBarCode.Focus();
             this.dgvData.ClearSelection();
 

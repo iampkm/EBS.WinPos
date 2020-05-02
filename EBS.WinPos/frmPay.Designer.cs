@@ -35,9 +35,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblOrderAmount = new System.Windows.Forms.Label();
             this.txtCashOrAuthCode = new System.Windows.Forms.TextBox();
+            this.btnCancel = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
             this.lblInfo = new System.Windows.Forms.Label();
-            this.btnCancel = new System.Windows.Forms.Button();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,24 +76,24 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label3.ForeColor = System.Drawing.Color.Blue;
-            this.label3.Location = new System.Drawing.Point(66, 278);
+            this.label3.Location = new System.Drawing.Point(66, 290);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(766, 31);
+            this.label3.Size = new System.Drawing.Size(448, 31);
             this.label3.TabIndex = 16;
-            this.label3.Text = "3.客户扫二维码，微信输入“W”，支付宝输入“A” 然后按Enter键。\r\n";
+            this.label3.Text = "3.客户扫二维码，微信按F1，支付宝按F2\r\n";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微软雅黑", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label2.ForeColor = System.Drawing.Color.Blue;
-            this.label2.Location = new System.Drawing.Point(66, 238);
+            this.label2.Location = new System.Drawing.Point(66, 243);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(694, 31);
+            this.label2.Size = new System.Drawing.Size(490, 62);
             this.label2.TabIndex = 15;
-            this.label2.Text = "2.微信或支付宝，请扫顾客手机上的付款条码，然后按Enter键。\r\n";
+            this.label2.Text = "2.微信或支付宝，我扫顾客手机上的付款条码\r\n。\r\n";
             // 
             // label1
             // 
@@ -129,6 +129,20 @@
             this.txtCashOrAuthCode.TextChanged += new System.EventHandler(this.TxtCashOrAuthCode_TextChanged);
             this.txtCashOrAuthCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TxtCashOrAuthCode_KeyDown);
             // 
+            // btnCancel
+            // 
+            this.btnCancel.BackColor = System.Drawing.SystemColors.Control;
+            this.btnCancel.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnCancel.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnCancel.Location = new System.Drawing.Point(439, 358);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(321, 95);
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "取 消";
+            this.btnCancel.UseVisualStyleBackColor = false;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            // 
             // btnSave
             // 
             this.btnSave.BackColor = System.Drawing.Color.LimeGreen;
@@ -153,23 +167,9 @@
             this.lblInfo.Location = new System.Drawing.Point(66, 194);
             this.lblInfo.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(526, 31);
+            this.lblInfo.Size = new System.Drawing.Size(502, 31);
             this.lblInfo.TabIndex = 7;
-            this.lblInfo.Text = "1.现金支付，请输入收款金额，然后按Enter键。";
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.BackColor = System.Drawing.SystemColors.Control;
-            this.btnCancel.Font = new System.Drawing.Font("微软雅黑", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnCancel.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnCancel.Location = new System.Drawing.Point(439, 358);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(4);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(321, 95);
-            this.btnCancel.TabIndex = 2;
-            this.btnCancel.Text = "取 消";
-            this.btnCancel.UseVisualStyleBackColor = false;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.lblInfo.Text = "1.现金支付，请输入收款金额，然后按Enter键";
             // 
             // frmPay
             // 

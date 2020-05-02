@@ -61,11 +61,12 @@ namespace EBS.WinPos
         {
             if (CurrentOrder == null) { MessageBox.Show("订单创建失败返回请重试！", "系统消息", MessageBoxButtons.OK, MessageBoxIcon.Information); return; }
 
-            // 显示支付方式
-            this.txtCashOrAuthCode.Focus();            
-            this.lblInfo.Text = "现金支付，请输入收款金额，然后按Enter键。微信或支付宝，请扫顾客手机上的付款条码，然后按Enter键。如输入有问题，请手动输入条码数字串。";
+            // 显示支付方式           
+            this.txtCashOrAuthCode.Text = "";
+           // this.lblInfo.Text = "现金支付，请输入收款金额，然后按Enter键。微信或支付宝，请扫顾客手机上的付款条码，然后按Enter键。如输入有问题，请手动输入条码数字串。";
             this.lblOrderAmount.Text = CurrentOrder.OrderAmount.ToString("F2");
             this.lblPaymentWay.Text = "";
+            this.txtCashOrAuthCode.Focus();
         }
         
 
@@ -94,9 +95,23 @@ namespace EBS.WinPos
 
         private void TxtCashOrAuthCode_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter) {
+            if (e.KeyCode == Keys.Enter)
+            {
                 BeginPay();
-            }          
+            }
+            else if (e.KeyCode == Keys.F1)
+            {
+                //设置客户扫码微信支付
+                this.CurrentOrder.PaymentWay = PaymentWay.WechatScan;
+                ScanPay(PaymentWay.WechatScan);
+            }
+            else if (e.KeyCode == Keys.F2)
+            {
+                //设置客户扫码支付宝支付
+                this.CurrentOrder.PaymentWay = PaymentWay.AliPayScan;
+                ScanPay(PaymentWay.AliPayScan);
+            }
+
         }
 
         public void BeginPay()
@@ -158,17 +173,7 @@ namespace EBS.WinPos
             else if (IsAlipayAuthCode(inputCashOrAuthCode))
             {
                 return PaymentWay.AliPay;
-            }
-            else if (inputCashOrAuthCode.ToUpper().StartsWith("A"))
-            {
-                //支付宝扫码
-                return PaymentWay.AliPayScan;
-            }
-            else if (inputCashOrAuthCode.ToUpper().StartsWith("W"))
-            {
-                // 微信扫码
-                return PaymentWay.WechatScan;
-            }
+            }           
             else
             {
                 return PaymentWay.Cash;

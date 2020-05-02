@@ -130,6 +130,20 @@ namespace EBS.WinPos.Service.Dto
             }
         }
 
+        /// <summary>
+        /// 设置购物车明细项为负,退单所有明细都用负数表示
+        /// </summary>
+        public void SetItemQuantityToNegative()
+        {
+            this.Items.ForEach(item =>
+            {
+                if (item.Quantity > 0)
+                {
+                    item.Quantity = -item.Quantity;
+                }
+            });
+        }
+
         public void ChangeQuantity(int productId, int quantity)
         {
             var item = this.Items.FirstOrDefault(n => n.ProductId == productId);
